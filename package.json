@@ -1,0 +1,11 @@
+{
+  "name": "gerardantoun",
+  "version": "1.0.0",
+  "description": "My personal website",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gerard Antoun",
+  "license": "ISC"
+}
