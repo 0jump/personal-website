@@ -1,0 +1,154 @@
+* {
+    font-family: 'Open Sans', sans-serif;
+}
+
+body{
+    margin:0;
+    box-sizing: border-box;
+}
+
+.container{
+    width:100%;
+    
+    display:flex;
+    justify-content: center;
+}
+
+.tasks-container{
+    /* background-color: whitesmoke; */
+    width:100%;
+
+    margin-bottom: 81px;
+}
+
+.task{
+    padding:80px 0px;
+    margin-top: 10px;
+
+    /* border: solid black 2px; */
+
+    border: none;
+    background-color: lightgray;
+
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tasks-container div:first-child{
+    margin-top:0px;
+}
+
+.active-task{
+    background-color:magenta;
+}
+
+.done-task{
+    background-color: rgb(2, 139, 185);
+}
+
+.timer{
+    width:100%;
+    margin-bottom:10px;
+
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.numbers-ctr{
+    width:100%;
+
+    display:flex;
+    justify-content: center;
+    align-items: baseline;
+}
+
+
+.digit{
+    font-size:62px;
+
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.digit-lbl{
+    font-weight:700;
+}
+
+.task-btn-ctr{
+    
+}
+
+.task-data{
+    width:100%;
+    display: flex;
+    flex-wrap:wrap;
+}
+
+.task-title-ctr{
+    width:100%;
+
+    display: flex;
+    justify-content: center;
+}
+
+.task-title{
+    margin: 0;
+
+    font-weight: 800;
+    font-size:20px;
+}
+
+.task-description-ctr{
+    width:100%;
+
+    margin-top:20px;
+
+    display: flex;
+    justify-content: center;
+}
+
+.task-description{
+    margin: 0;
+}
+
+
+.task-btns-ctr{
+    position: fixed;
+    width:100%;
+
+    bottom:0;
+
+    display:flex;
+}
+
+.tasks-manipulation-btn{
+    font-size: 30px;
+    border:none;
+
+    width:50%;
+
+    -webkit-box-shadow: 0px 0px 8px 1px rgba(0,0,0,0.13);
+    -moz-box-shadow: 0px 0px 8px 1px rgba(0,0,0,0.13);
+    box-shadow: 0px 0px 8px 1px rgba(0,0,0,0.13);
+
+    padding:15px;
+    
+    color:white;
+}
+
+.tasks-manipulation-btn:active{
+
+}
+
+.start-pause-btn{
+    background-color: green;
+}
+
+.reset-btn{
+    background-color: red;
+}
