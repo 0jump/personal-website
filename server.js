@@ -1,1 +1,7 @@
-console.log('Fuck the world');
+const express = require('express');
+
+const app = express();
+
+app.get('/', (req, res) => {
+    res.send('Bism illah');
+});
