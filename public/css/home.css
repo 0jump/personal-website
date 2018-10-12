@@ -22,8 +22,15 @@
     overflow:hidden;
 }
 
+.tabs-container{
+    width:100%;
+
+    display:grid;
+    grid-template-columns: 3(1fr);
+}
+
 .tab{
-    width:33.33%;
+    width:100%;
 
     padding: 17px 0;
     border-bottom: rgba(0, 0, 0, 0.1) 1px solid;
@@ -44,6 +51,21 @@
 
 .tab span{
     text-align: center;
+}
+
+#login-tab{
+    grid-column: 1;
+    grid-row: 1
+}
+
+#signup-tab{
+    grid-column: 2;
+    grid-row: 1;
+}
+
+#promocode-tab{
+    grid-column: 3;
+    grid-row: 1;
 }
 
 #signup-tab, #promocode-tab{
