@@ -72,10 +72,15 @@
     border-left:rgba(0, 0, 0, 0.1) 1px solid;
 }
 
-.form-container{
+.login-box{
     width:100%;
 
     padding:10px;
+}
+
+.login-box .input-field{
+    width:100%;
+    padding:10px 20px;
 }
 
 
