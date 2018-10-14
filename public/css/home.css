@@ -11,6 +11,8 @@ body{
 
     justify-content: center;
 
+    position:relative;
+
 }
 
 .content-container{
@@ -99,12 +101,32 @@ body{
     font-size:14px;
 
     border-radius:3px;
+
+    margin-top:20px;
+
+    font-weight:500;
 }
 
 .input-field:focus{
     outline: none;
 
     border-color: red;
+}
+
+.dbl-field-ctr{
+    display:grid;
+    grid-template-columns: 2(1fr);
+    grid-column-gap:20px;
+}
+
+.dbl-field-left{
+    grid-column: 1;
+    grid-row:1;
+}
+
+.dbl-field-right{
+    grid-column: 2;
+    grid-row:1;
 }
 
 #pass-input-field{
@@ -152,3 +174,88 @@ body{
     outline:none;
 }
 
+.popup{
+    position: fixed; /* Sit on top of the page content */
+    display: none; /* Hidden by default */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0; 
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);/* Black background with opacity */
+    z-index: 2;/* Specify a stack order in case you're using a different order for other elements */
+
+    justify-content: center;
+}
+
+.popup-content {
+    padding:38px;
+    padding-top: 50px;
+
+    width:100%;
+
+    display:flex;
+
+    align-items: center;
+    justify-content: center;
+
+}
+
+.forgot-pass-box{
+    position:relative;
+
+    width:670px;
+
+    background-color: #ffffff;
+
+    display:flex;
+    flex-wrap: wrap;
+
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px, rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
+    border-radius: 2px;
+    /* overflow:hidden; */
+
+    z-index: 3;
+}
+
+.forgot-pass-text-ctr{
+    padding:40px 50px 30px 50px;
+}
+
+.forgot-pass-box h2, p{
+    margin:0;
+}
+
+.forgot-pass-box p{
+    margin-top:20px;
+}
+.exit-popup-btn{
+    position:absolute;
+
+    border:none;
+    background:none;
+    color:white;
+    font-size:28px;
+    font-weight:500;
+    right:-20px;
+    top:-32px;
+
+    cursor: pointer;
+}
+
+
+.reset-pass-form-ctr{
+    background-color:#fafbfc;
+    padding:0 50px;
+    padding-bottom:30px;
+    padding-top:10px;
+    width:100%;
+}
+
+@media (max-width: 46.24em) {
+    .dbl-field-ctr{
+        display:flex;
+        flex-wrap: wrap;
+    }
+}
