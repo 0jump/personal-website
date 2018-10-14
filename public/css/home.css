@@ -1,12 +1,16 @@
-
+body{
+    background-color: whitesmoke;
+}
 
 .container{
     width:100%;
-    padding: 20px;
+
+    padding: 25px;
 
     display: flex;
 
     justify-content: center;
+
 }
 
 .content-container{
@@ -75,12 +79,69 @@
 .login-box{
     width:100%;
 
-    padding:10px;
+    padding:10px 15px;
+    padding:30px;
 }
 
-.login-box .input-field{
+.login-page-title{
+    margin:0;
+
+    font-size: 30px;
+    font-weight:500;
+}
+
+.input-field{
+    border: 1px gray solid;
     width:100%;
-    padding:10px 20px;
+    height:44px;
+    padding:0px 15px;
+
+    font-size:14px;
+
+    border-radius:3px;
+}
+
+.input-field:focus{
+    outline: none;
+
+    border-color: red;
+}
+
+#pass-input-field{
+    margin-top:20px;
+}
+
+.submit-btn{
+    height:44px;
+    margin-top: 20px;
+    width:100%;
+
+    border:0;
+
+    border-radius:3px;
+    color: white;
+    text-transform: uppercase;
+    font-size: 15px;
+    letter-spacing: 1px;
+    font-weight:600;
+    background-color:red;
+}
+
+.forgot-pass-btn-ctr{
+    display:flex;
+    
+    justify-content: center;
+}
+
+#forgot-pass-btn{
+    margin-top:18px;
+
+    border:none;
+    background:none;
+
+    color:red;
+    font-size:16px;
+    font-weight:600;
 }
 
 
