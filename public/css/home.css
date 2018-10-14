@@ -46,7 +46,6 @@ body{
 
     color:#070707;
     text-transform: uppercase;
-    font-weight: 700;
 
     display:flex;
     justify-content: center;
@@ -56,6 +55,12 @@ body{
 
 .tab span{
     text-align: center;
+}
+
+.selected-tab{
+    border-bottom:none;
+    background-color: white;
+    color:black;
 }
 
 #login-tab{
