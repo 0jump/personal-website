@@ -127,6 +127,10 @@ body{
     background-color:red;
 }
 
+.submit-btn:focus{
+    outline:none;
+}
+
 .forgot-pass-btn-ctr{
     display:flex;
     
@@ -144,4 +148,7 @@ body{
     font-weight:600;
 }
 
+#forgot-pass-btn:focus{
+    outline:none;
+}
 
