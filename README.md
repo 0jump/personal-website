@@ -1,4 +1,5 @@
-###On Digital Ocean
+###On Digital Ocean###
+
 To start server in the background:
 
 1. Go to the folder where server files are stored `cd ~/personal-website`.
