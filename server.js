@@ -1,8 +1,10 @@
-// Server settings
-const PORT = 80;
-
+const config = require('./lib/config');
 const express = require('express');
 const path = require('path');
+const dbservices = require('./lib/dbservices');
+
+// Server settings
+const PORT = config.http.port;
 
 const app = express();
 
