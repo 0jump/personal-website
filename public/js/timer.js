@@ -2,7 +2,125 @@
 //                                      2. description
 //                                      3. duration
 
+let AthX6Min =     [{
+    "title": "Get in Position",
+    "description": "Get yourselt ready",
+    "duration": 10000
+}, {
+    "title": "AthX: Round 1",
+    "description": "Knees one at a time then jump",
+    "duration": 120000
+}, {
+    "title": "Rest",
+    "description": "-",
+    "duration": 30000
+}, {
+    "title": "AthX: Round 2",
+    "description": "Mountain Climber",
+    "duration": 120000
+}, {
+    "title": "Rest",
+    "description": "-",
+    "duration": 30000
+}, {
+    "title": "AthX: Round 3",
+    "description": "Jumping Lunges",
+    "duration": 120000
+}];
 
+let morningRoutine = [{
+    "title": "Drink water",
+    "description": "-",
+    "duration": 10000
+}, {
+    "title": "Alopexy",
+    "description": "-",
+    "duration": 30000
+}, {
+    "title": "Brush teeth",
+    "description": "-",
+    "duration": 70000
+}, {
+    "title": "Put Mat On the floor",
+    "description": "-",
+    "duration": 25000
+}, {
+    "title": "Stretch",
+    "description": "Hip Flexors - Left",
+    "duration": 45000
+}, {
+    "title": "Change legs",
+    "description": "Quick!",
+    "duration": 5000
+}, {
+    "title": "Stretch",
+    "description": "Hip Flexors - Right",
+    "duration": 45000
+}, {
+    "title": "Stretch",
+    "description": "Next: hams left",
+    "duration": 5000
+}, {
+    "title": "Stretch",
+    "description": "Hamstrings - Left Leg",
+    "duration": 45000
+}, {
+    "title": "Stretch",
+    "description": "Change Legs\nNext: hams right",
+    "duration": 5000
+}, {
+    "title": "Stretch",
+    "description": "Hamstrings - Right Leg",
+    "duration": 45000
+}, {
+    "title": "Stretch",
+    "description": "sit on the floor\nNext Butterfly stretch",
+    "duration": 5000
+}, {
+    "title": "Stretch",
+    "description": "Butterfly stretch",
+    "duration": 50000
+}, {
+    "title": "Stretch",
+    "description": "Stand up:\nNext: chest left arm",
+    "duration": 5000
+}, {
+    "title": "Stretch",
+    "description": "Chest - Left arm",
+    "duration": 40000
+}, {
+    "title": "Stretch",
+    "description": "Next: chest right arm",
+    "duration": 5000
+}, {
+    "title": "Stretch",
+    "description": "Chest - Right arm",
+    "duration": 40000
+}, {
+    "title": "Put Mat Back",
+    "description": "Quick!",
+    "duration": 30000
+}, {
+    "title": "Make bed",
+    "description": "-",
+    "duration": 40000
+}, {
+    "title": "Meditate",
+    "description": "-",
+    "duration": 10*60000
+}, {
+    "title": "Make And Eat Bkfast",
+    "description": "-",
+    "duration": 12*60000
+}, {
+    "title": "Write 3 Goals for Today",
+    "description": "-",
+    "duration": 4*60000
+}, {
+    "title": "Put Plan on paper",
+    "description": "-",
+    "duration": 4*60000
+}];
 
 allTasks = []
 
@@ -334,31 +452,7 @@ class Task_Manager {
 
 let taskMgr = new Task_Manager(_('tasks-container'), _('start-pause-btn'), _('reset-btn'));
 taskMgr.addTaskArray(
-    [{
-        "title": "Get in Position",
-        "description": "Get yourselt ready",
-        "duration": 10000
-    }, {
-        "title": "AthX: Round 1",
-        "description": "Knees one at a time then jump",
-        "duration": 120000
-    }, {
-        "title": "Rest",
-        "description": "-",
-        "duration": 30000
-    }, {
-        "title": "AthX: Round 2",
-        "description": "Mountain Climber",
-        "duration": 120000
-    }, {
-        "title": "Rest",
-        "description": "-",
-        "duration": 30000
-    }, {
-        "title": "AthX: Round 3",
-        "description": "Jumping Lunges",
-        "duration": 120000
-    }]
+    morningRoutine
 );
 
 _('tasks-container').scrollIntoView(false);
