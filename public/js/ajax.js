@@ -1,14 +1,30 @@
+// Holds all ajax-related functions
+const ajax = {};
+
+
 /* 
 -------------HIGH LEVEL AJAX FUNCTIONS--------------
 */
 
-// All requests to the server that is running the website (NOT to other apis)
+// All requests to the server that is running the website 'me' (NOT to other apis)
 ajax.me = {};
 
-// Users service request
-ajax.me.createUser = () => {
+// Users service requests
 
+// Create new user
+ajax.me.createUser = (fName, lName, emailAddr, pass, passConf, tosAgreement, callback) => {
+    let reqPayload = {
+        'fName': fName,
+        'lName':lName,
+        'emailAddr': emailAddr,
+        'pass': pass,
+        'passConf': passConf,
+        'tosAgreement': true
+    };
+
+    ajax.sendJsonPostRequest('users?fct=createUser', {}, reqPayload, callback);
 };
+
 
 /* 
 -------------LOW LEVEL AJAX FUNCTIONS--------------
