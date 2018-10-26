@@ -135,13 +135,6 @@ dPromocodeTab.onclick = () => {
     loginBoxObj.displayPromocode();
 }
 
-
-// Show popup on "forgot password" button click
-/* dForgotPassBtn.onclick = () => {
-    dPopup.style.display = 'block';
-    dOverlay.style.display = 'block';
-}; */
-
 dPopupExitBtn.onclick= () => {
     dPopup.style.display = 'none';
     dOverlay.style.display = 'none';
