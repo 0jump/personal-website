@@ -22,7 +22,7 @@ ajax.me.createUser = (fName, lName, emailAddr, pass, passConf, tosAgreement, cal
         'tosAgreement': true
     };
 
-    ajax.sendJsonPostRequest('users?fct=createUser', {}, reqPayload, callback);
+    ajax.sendJsonPostRequest('users?func=createUser', {}, reqPayload, callback);
 };
 
 
