@@ -1,0 +1,73 @@
+body{
+    background-color: whitesmoke;
+}
+
+.container{
+    width:100%;
+
+    padding: 25px;
+
+    display: flex;
+
+    justify-content: center;
+}
+
+.content-container{
+    width:650px;
+
+    background-color: #ffffff;
+
+    display:flex;
+    flex-wrap: wrap;
+
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px, rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
+    border-radius: 2px;
+    overflow:hidden;
+}
+
+.confirm-msg-ctr{
+    padding:30px;
+}
+
+.text-ctr{
+    margin-bottom:40px;
+}
+
+.bold-text{
+    font-weight:630;
+}
+
+p{
+    font-size:14px;
+
+    margin:0;
+}
+
+#resend-btn{
+    margin-left:10px;
+
+    color:red;
+    border:none;
+    background:none;
+
+    cursor: pointer;
+
+    font-weight:600;
+}
+
+#resend-btn:hover{
+    font-weight:610;
+    margin-left:8.9px;
+}
+
+#resend-btn:focus{
+    outline:none;
+}
+
+.btn-ctr{
+    width:100%;
+
+    display:flex;
+
+    justify-content: flex-end
+}
