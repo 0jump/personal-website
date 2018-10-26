@@ -6,7 +6,7 @@ const ajax = {};
 -------------HIGH LEVEL AJAX FUNCTIONS--------------
 */
 
-// All requests to the server that is running the website 'me' (NOT to other apis)
+// Holds all requests to the server that is running the website 'me' (NOT to other apis)
 ajax.me = {};
 
 // Users service requests
