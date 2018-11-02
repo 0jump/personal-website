@@ -36,7 +36,6 @@ app.get('/timer', (req, res) => {
 
 // AJAX Requests from Client-Side
 app.post('/users', (req, res) => {
-    console.log(req.query);
     let func = typeof(req.query.func) == 'string' && req.query.func.trim().length > 0 ? req.query.func.trim() : false;
     // Create User
     if (func == 'createUser'){
@@ -57,24 +56,26 @@ app.post('/users', (req, res) => {
         invalid = helpers.checkForKeysWithFalseValues(newUser);
 
         if (invalid.length == 0){
-            // Add user to DB
+            // Add user to DB if doesn't already exist (email addr)
+            dbservices.addNewUser(newUser);
 
             // If everything is good, send User a confirmation email
 
-            // send response
+            // Redirect to user dashboard
             res.status(200);
+            
         } else {
             res.status(400).json({
                 'error':'Missing Required Fields',
                 'missingFields': invalid
             });
         }
-        console.log(invalid);
 
     // No func or func doesn't exist
     } else {
         res.status(400);
     }
+    res.send();
 });
 
 

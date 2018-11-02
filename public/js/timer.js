@@ -452,7 +452,8 @@ class Task_Manager {
 
 let taskMgr = new Task_Manager(_('tasks-container'), _('start-pause-btn'), _('reset-btn'));
 taskMgr.addTaskArray(
-    morningRoutine
+    AthX6Min
+    /* morningRoutine */
 );
 
 _('tasks-container').scrollIntoView(false);

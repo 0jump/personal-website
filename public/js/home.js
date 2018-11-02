@@ -128,6 +128,14 @@ dSignInTab.onclick = () => {
 dSignUpTab.onclick = () => {
     loginBoxObj.displaySignUp();
 
+    ajax.me.createUser('Gerard', 'Antoun', 'gerard.antoun@yahoo.com', '127yhd90', '127yhd90', true, (xhr)=>{
+        if (xhr.status == 200){
+            console.log(xhr.response);
+        } else {
+            console.log(xhr.status);
+        }
+    });
+
 }
 
 // Promo Code Tab
