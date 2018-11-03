@@ -53,7 +53,7 @@ app.post('/users', (req, res) => {
 
         // Make sure everything is correct
         // Array to store all invalid fields to send to client to display to the user
-        invalid = helpers.checkForKeysWithFalseValues(newUser);
+        let invalid = helpers.checkForKeysWithFalseValues(newUser);
 
         if (invalid.length == 0){
             // Add user to DB if doesn't already exist (email addr)
