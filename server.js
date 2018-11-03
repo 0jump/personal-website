@@ -57,25 +57,42 @@ app.post('/users', (req, res) => {
 
         if (invalid.length == 0){
             // Add user to DB if doesn't already exist (email addr)
-            dbservices.addNewUser(newUser);
+            dbservices.userExists(newUser.emailAddr, (error, error_desc,returned)=>{
+                if (error) {
+                    console.log('Error checking if user exists');
+                    res.status(500);
+                } else {
+                    if (returned == true){
+                        // User Already Exists
+                        console.log('Unable to add user, an email is already associated with an existing account');
+                        res.status(409).send();
+                    } else {
+                        // User Does not already exist, can be added
+                        dbservices.addNewUser(newUser, (error, error_desc, returned)=> {
+                            if (!error){
+                                // If everything is good, send User a confirmation email
 
-            // If everything is good, send User a confirmation email
-
-            // Redirect to user dashboard
-            res.status(200);
-            
+                                // Redirect to user dashboard
+                                res.status(200).send();
+                                console.log('Successfully added:', newUser.emailAddr);
+                            }else {
+                                console.log(error_desc);
+                                res.status(500);
+                            }
+                        });
+                    }
+                }
+            });
         } else {
             res.status(400).json({
                 'error':'Missing Required Fields',
                 'missingFields': invalid
             });
         }
-
     // No func or func doesn't exist
     } else {
         res.status(400);
     }
-    res.send();
 });
 
 
