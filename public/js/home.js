@@ -59,7 +59,7 @@ class LoginBoxSignUp {
             this.fNameInputField = CDE('input', [['class',"input-field dbl-field-left"], ['id',"first-name-input-field"], ['type',"text"] ,['placeholder',"First Name"]]);
             this.dblFieldCtrNames.appendChild(this.fNameInputField);
 
-            this.lNameInputField = CDE('input' [['class',"input-field dbl-field-right"], ['id',"last-name-input-field"], ['type',"text"], ['placeholder', "Last Name"]]);
+            this.lNameInputField = CDE('input', [['class',"input-field dbl-field-right"], ['id',"last-name-input-field"], ['type',"text"], ['placeholder', "Last Name"]]);
             this.dblFieldCtrNames.appendChild(this.lNameInputField);
         this.form.appendChild(this.dblFieldCtrNames);
 
@@ -83,7 +83,7 @@ class LoginBoxSignUp {
 }
 class LoginBox {
     constructor(parentDiv){
-        
+
         this.HTML_promocode = `<div class="title-desc-container">
             <h2 class="login-page-title">
                 Welcome
@@ -114,7 +114,7 @@ class LoginBox {
                 dPopup.style.display = 'block';
                 dOverlay.style.display = 'block';
             };
-    
+
             dSignInTab.classList.add('selected-tab');
             dSignUpTab.classList.remove('selected-tab');
             dPromocodeTab.classList.remove('selected-tab');
@@ -129,6 +129,63 @@ class LoginBox {
             }
 
             this.HTML_signup = new LoginBoxSignUp(this.loginBox);
+
+            this.HTML_signup.signUpBtn.onclick = () => {
+                let newUser = {};
+                // TODO: Validate this information (e.g. Make sure an email is valid, password conditions etc...)
+                newUser.fName = typeof(this.HTML_signup.fNameInputField.value) == 'string' && this.HTML_signup.fNameInputField.value.trim().length > 0 ? this.HTML_signup.fNameInputField.value.trim() : false;
+                newUser.lName = typeof(this.HTML_signup.lNameInputField.value) == 'string' && this.HTML_signup.lNameInputField.value.trim().length > 0 ? this.HTML_signup.lNameInputField.value.trim() : false;
+                newUser.emailAddr = typeof(this.HTML_signup.emailInputField.value) == 'string' && this.HTML_signup.emailInputField.value.trim().length > 0 ? this.HTML_signup.emailInputField.value.trim() : false;
+                newUser.pass = typeof(this.HTML_signup.passInputField.value) == 'string' && this.HTML_signup.passInputField.value.length > 0 ? this.HTML_signup.passInputField.value : false;
+                newUser.passConf = typeof(this.HTML_signup.confPassInputField.value) == 'string' && this.HTML_signup.confPassInputField.value.length > 0 ? this.HTML_signup.confPassInputField.value : false;
+
+
+                
+
+                // Make sure everything is correct
+                // Array to store all invalid fields to send to client to display to the user
+                let emptyFields = helpers.checkForKeysWithFalseValues(newUser);
+                
+                // Make all fields display as normal
+                let domFields = [this.HTML_signup.fNameInputField, this.HTML_signup.lNameInputField, this.HTML_signup.emailInputField, this.HTML_signup.passInputField, this.HTML_signup.confPassInputField];
+                for (let i=0; i < domFields.length; i++){
+                    console.log(domFields[i]);
+                    domFields[i].classList.remove('missing');
+                }
+
+                // Check for Empty Fields
+                if (emptyFields.length != 0){
+                    for(let i=0; i < emptyFields.length; i++){
+                        switch(emptyFields[i]){
+                            case 'fName':
+                                // Display that 1st name is missing
+                                console.log('First Name is missing');
+                                this.HTML_signup.fNameInputField.classList.add('missing');
+                                break;
+                            case 'lName':
+                                // Display that last name is missing
+                                console.log('Last Name is missing');
+                                this.HTML_signup.lNameInputField.classList.add('missing');
+                                break;
+                            case 'emailAddr':
+                                // Display that email address is missing
+                                console.log('Email is missing');
+                                this.HTML_signup.emailInputField.classList.add('missing');
+                                break;
+                            case 'pass':
+                                // Display that password is missing
+                                console.log('Password is missing');
+                                this.HTML_signup.passInputField.classList.add('missing');
+                                break;
+                            case 'passConf':                            
+                                // Display that passowrd confirmation is missing
+                                console.log('Password Confirmation is missing');
+                                this.HTML_signup.confPassInputField.classList.add('missing');
+                                break;
+                        }
+                    }
+                }
+            }
     
             dSignInTab.classList.remove('selected-tab');
             dSignUpTab.classList.add('selected-tab');

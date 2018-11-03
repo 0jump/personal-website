@@ -10,8 +10,6 @@ body{
     display: flex;
 
     justify-content: center;
-
-
 }
 
 .content-container{
@@ -115,6 +113,14 @@ body{
     outline: none;
 
     border-color: red;
+}
+
+.missing{
+    background-color: lightcoral;
+}
+
+.missing::placeholder{
+    color:red;
 }
 
 .dbl-field-ctr{
