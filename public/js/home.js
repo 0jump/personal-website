@@ -86,7 +86,7 @@ class LoginBox {
 
         this.HTML_promocode = `<div class="title-desc-container">
             <h2 class="login-page-title">
-                Welcome
+                Promocode
             </h2>
             <p class="login-page-desc">
                 Please enter your promocode
@@ -149,7 +149,6 @@ class LoginBox {
                 // Make all fields display as normal
                 let domFields = [this.HTML_signup.fNameInputField, this.HTML_signup.lNameInputField, this.HTML_signup.emailInputField, this.HTML_signup.passInputField, this.HTML_signup.confPassInputField];
                 for (let i=0; i < domFields.length; i++){
-                    console.log(domFields[i]);
                     domFields[i].classList.remove('missing');
                 }
 
@@ -184,8 +183,32 @@ class LoginBox {
                                 break;
                         }
                     }
+                }else {
+                    // Check if password is valid match
+                    if(helpers.isValidPassword(newUser.pass)){
+                        // Check if password matches confirmation
+                        if (newUser.pass == newUser.passConf){
+                            ajax.me.createUser(newUser.fName, newUser.lName, newUser.emailAddr, newUser.pass, newUser.passConf, true, (xhr)=>{
+                                if (xhr.status == 200){
+                                    console.log(xhr.response);
+                                } else {
+                                    // Display Message According to Status Code and response
+                                    console.log(xhr.status);
+                                }
+                            });
+                        } else {
+                            // TODO: Msg that pass and conf do not match
+                            console.log('Passwords do not Match.');
+                            this.HTML_signup.passInputField.classList.add('missing');
+                            this.HTML_signup.confPassInputField.classList.add('missing');
+                        }
+                    } else {
+                        // TODO: Msg: 'Make sure your password is 8 characters long.'
+                        console.log('Password is less that 8 characters long.');
+                        this.HTML_signup.passInputField.classList.add('missing');
+                    }
                 }
-            }
+            } 
     
             dSignInTab.classList.remove('selected-tab');
             dSignUpTab.classList.add('selected-tab');
@@ -221,13 +244,7 @@ dSignInTab.onclick = () => {
 dSignUpTab.onclick = () => {
     loginBoxObj.displaySignUp();
 
-    ajax.me.createUser('Gerard', 'Antoun', 'gerard.antoun@yahoo.com', '127yhd90', '127yhd90', true, (xhr)=>{
-        if (xhr.status == 200){
-            console.log(xhr.response);
-        } else {
-            console.log(xhr.status);
-        }
-    });
+
 
 }
 
