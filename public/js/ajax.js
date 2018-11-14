@@ -25,6 +25,28 @@ ajax.me.createUser = (fName, lName, emailAddr, pass, passConf, tosAgreement, cal
     ajax.sendJsonPostRequest('users?func=createUser', {}, reqPayload, callback);
 };
 
+// Token Services 
+
+ajax.me.signIn = (emailAddr, pass, callback) => {
+    let reqPayload = {
+        'emailAddr': emailAddr,
+        'pass': pass
+    };
+
+    ajax.sendJsonPostRequest('tokens?func=signIn', {}, reqPayload, callback);
+};
+
+
+// Promocode Services
+
+ajax.me.submitPromocode = (promocode, callback) => {
+    let reqPayload = {
+        promocode
+    };
+
+    ajax.sendJsonPostRequest('promocode?func=submitPromocode', {}, reqPayload, callback);
+}
+
 
 /* 
 -------------LOW LEVEL AJAX FUNCTIONS--------------

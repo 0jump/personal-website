@@ -95,6 +95,24 @@ app.post('/users', (req, res) => {
     }
 });
 
+app.post('/tokens', (req,res)=> {
+    console.log(`Received:`, req.body);
+    res.status(200).json({tokens: 'Working'});
+
+    // Authenticate User
+
+    // Send Token and Redirect to Dashboard
+});
+
+app.post('/promocode', (req,res)=> {
+    console.log(`Received:`, req.body);
+    res.status(200).json({promo: 'Working'});
+
+    // Check where this promo code leads 
+
+    // Send to where it leads
+});
+
 
 
 

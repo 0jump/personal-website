@@ -154,6 +154,14 @@ class LoginBox {
                     }
                 } else {
                     // Send User info to server
+                    ajax.me.signIn(userInfo.emailAddr, userInfo.pass, (xhr)=> {
+                        if (xhr.status == 200){
+                            console.log(xhr.response);
+                        } else {
+                            // Display Message According to Status Code and response
+                            console.log(xhr.status);
+                        }
+                    });
                 }
             } 
             
@@ -274,6 +282,14 @@ class LoginBox {
                 if (promocode){
                     // Send Promocode to Server
                     promocode = promocode.toLowerCase(); 
+
+                    ajax.me.submitPromocode(promocode, (xhr) => {
+                        if (xhr.status == 200) {
+                            console.log(xhr.response);
+                        } else {
+                            console.log('Status', xhr.status);
+                        }
+                    });
                 } else {
                     this.HTML_promocode.promocodeInputField.classList.add('missing');
                     console.log('Promocode is missing');
@@ -301,9 +317,6 @@ dSignInTab.onclick = () => {
 // Sign Up Tab
 dSignUpTab.onclick = () => {
     loginBoxObj.displaySignUp();
-
-
-
 }
 
 // Promo Code Tab
