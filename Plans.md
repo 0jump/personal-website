@@ -28,3 +28,9 @@
   (Give user a token they can use)
   - Database for permissions
   
+  
+### Other Issues
+
+  - All forms do not submit when I press enter, bcs input is `type="button"` and not `"submit"`
+  
+  
