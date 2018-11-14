@@ -186,6 +186,14 @@ body{
     outline:none;
 }
 
+#promocode-input-field{
+    text-transform: uppercase;
+}
+
+#promocode-input-field::placeholder{
+    text-transform: capitalize;
+}
+
 .popup{
     position: absolute; /* Sit on top of the page content */
     display: none; /* Hidden by default */
