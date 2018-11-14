@@ -266,7 +266,19 @@ class LoginBox {
                 this.loginBox.removeChild(this.loginBox.firstChild);
             }
             this.HTML_promocode = new LoginBoxPromoCode(this.loginBox);
+            this.HTML_promocode.promocodeBtn.onclick = () => {
+                let promocode = typeof(this.HTML_promocode.promocodeInputField.value) == 'string' && this.HTML_promocode.promocodeInputField.value.trim().length > 0 ? this.HTML_promocode.promocodeInputField.value.trim() : false;
 
+                this.HTML_promocode.promocodeInputField.classList.remove('missing');
+
+                if (promocode){
+                    // Send Promocode to Server
+                    promocode = promocode.toLowerCase(); 
+                } else {
+                    this.HTML_promocode.promocodeInputField.classList.add('missing');
+                    console.log('Promocode is missing');
+                }
+            };
             dSignInTab.classList.remove('selected-tab');
             dSignUpTab.classList.remove('selected-tab');
             dPromocodeTab.classList.add('selected-tab');
