@@ -31,6 +31,6 @@
   
 ### Other Issues
 
-  - All forms do not submit when I press enter, bcs input is `type="button"` and not `"submit"`
+  - All forms do not submit when I press enter, bcs input is `type="button"` and not `type="submit"`
   
   
