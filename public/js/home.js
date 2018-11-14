@@ -190,9 +190,6 @@ class LoginBox {
                 newUser.pass = typeof(this.HTML_signup.passInputField.value) == 'string' && this.HTML_signup.passInputField.value.length > 0 ? this.HTML_signup.passInputField.value : false;
                 newUser.passConf = typeof(this.HTML_signup.confPassInputField.value) == 'string' && this.HTML_signup.confPassInputField.value.length > 0 ? this.HTML_signup.confPassInputField.value : false;
 
-
-                
-
                 // Make sure everything is correct
                 // Array to store all invalid fields to send to client to display to the user
                 let emptyFields = helpers.checkForKeysWithFalseValues(newUser);
