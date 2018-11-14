@@ -8,10 +8,10 @@
     1. Password must contain special characters & numbers
     2. Email and Password Specifics (length and '@')
     3. ~~Add user if doesn't already exist~~
-  - Secure Password storage
-    1. Hash passwords
-    2. Create Salt
-    3. Add hashed pass and salt to db
+  - ~~Secure Password storage~~
+    1. ~~Hash passwords~~
+    2. ~~Create Salt~~
+    3. ~~Add hashed pass and salt to db~~
   - Error description boxes
 
 #### Sign in
@@ -47,5 +47,6 @@
 ### Other Issues
 
   - All forms do not submit when I press enter, bcs input is `type="button"` and not `type="submit"`
+  - Hashing & Salting password on signup is done synchronously (might slow the server)
   
   
