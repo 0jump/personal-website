@@ -81,25 +81,32 @@ class LoginBoxSignUp {
     parentDiv.appendChild(this.formCtr);
     }
 }
+
+class LoginBoxPromoCode {
+    constructor(parentDiv){
+        this.titleDescContainer = CDE('div', [['class','title-desc-container']]);
+            this.loginPageTitle = CDE('h2', [['class','login-page-title']]);
+                this.loginPageTitle.innerText = 'Promocode';
+        this.titleDescContainer.appendChild(this.loginPageTitle);
+
+            this.loginPageDesc = CDE('p', [['class','login-page-desc']]);
+            this.loginPageDesc.innerText = 'Please enter your promocode.';
+        this.titleDescContainer.appendChild(this.loginPageDesc);
+        parentDiv.appendChild(this.titleDescContainer);
+
+        this.formCtr = CDE('div', [['class', 'form-ctr']]);
+            this.form = CDE ('form', [['action', ''], ['method', 'post']]);
+                this.promocodeInputField = CDE('input', [['class', "input-field"], ['id',"promocode-input-field"], ['type',"text"], ['placeholder','Promocode']]);
+            this.form.appendChild(this.promocodeInputField);
+            this.promocodeBtn = CDE ('input', [['class',"submit-btn"], ['type',"button"], ['value',"Submit"]]);
+            this.form.appendChild(this.promocodeBtn);
+        this.formCtr.appendChild(this.form);
+        parentDiv.appendChild(this.formCtr);
+    }
+}
+
 class LoginBox {
     constructor(parentDiv){
-
-        this.HTML_promocode = `<div class="title-desc-container">
-            <h2 class="login-page-title">
-                Promocode
-            </h2>
-            <p class="login-page-desc">
-                Please enter your promocode
-            </p>
-        </div>
-        <div class="form-ctr">
-            <form action="" method="post">
-                <input class="input-field dbl-field-left" id="first-name-input-field" type="text" placeholder="Promocode">
-
-                <input class="submit-btn" type="button" value="Submit">
-            </form>
-        </div>`;
-
         this.loginBox = parentDiv;
     }
     displaySignIn(){
@@ -114,6 +121,42 @@ class LoginBox {
                 dPopup.style.display = 'block';
                 dOverlay.style.display = 'block';
             };
+
+            let userInfo = {};
+
+            this.HTML_signin.signInBtn.onclick = ()=>{
+                userInfo.emailAddr = typeof(this.HTML_signin.emailInputField.value) == 'string' && this.HTML_signin.emailInputField.value.trim().length > 0 ? this.HTML_signin.emailInputField.value.trim() : false;
+                userInfo.pass = typeof(this.HTML_signin.passInputField.value) == 'string' && this.HTML_signin.passInputField.value.length > 0 ? this.HTML_signin.passInputField.value : false;
+
+                let emptyFields = helpers.checkForKeysWithFalseValues(userInfo);
+
+                // Make all fields display as normal
+                let domFields = [this.HTML_signin.emailInputField, this.HTML_signin.passInputField];
+                for (let i=0; i < domFields.length; i++){
+                    domFields[i].classList.remove('missing');
+                }
+
+                // Check for Empty Fields
+                if (emptyFields.length != 0){
+                    for(let i=0; i < emptyFields.length; i++){
+                        switch(emptyFields[i]){
+                            case 'emailAddr':
+                                // Display that email address is missing
+                                console.log('Email is missing');
+                                this.HTML_signin.emailInputField.classList.add('missing');
+                                break;
+                            case 'pass':
+                                // Display that password is missing
+                                console.log('Password is missing');
+                                this.HTML_signin.passInputField.classList.add('missing');
+                                break;
+                        }
+                    }
+                } else {
+                    // Send User info to server
+                }
+            } 
+            
 
             dSignInTab.classList.add('selected-tab');
             dSignUpTab.classList.remove('selected-tab');
@@ -219,8 +262,11 @@ class LoginBox {
     }
     displayPromocode(){
         if (clickedTab != 'promocode'){
-            this.loginBox.innerHTML = this.HTML_promocode;
-    
+            while (this.loginBox.firstChild) {
+                this.loginBox.removeChild(this.loginBox.firstChild);
+            }
+            this.HTML_promocode = new LoginBoxPromoCode(this.loginBox);
+
             dSignInTab.classList.remove('selected-tab');
             dSignUpTab.classList.remove('selected-tab');
             dPromocodeTab.classList.add('selected-tab');
