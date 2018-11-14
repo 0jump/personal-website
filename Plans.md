@@ -8,13 +8,15 @@
 
 #### Sign in
   
-  - Take info from form
+  - ~~Take info from form~~
+  - Build ajax functions to send sign in data
   - Service for it server-side
   - Error description boxes
   
 #### Promocode
 
-  - Take info from form
+  - ~~Take info from form~~
+  - Build ajax functions to send promocode data
   - Service for it server-side
   - Error description
   
