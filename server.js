@@ -4,9 +4,13 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const dbservices = require('./lib/dbservices');
 const helpers = require('./lib/helpers'); 
+const bcrypt = require('bcrypt');
 
 // Server settings
 const PORT = config.http.port;
+
+// Bcrypt settings
+const saltRounds = 8;
 
 const app = express();
 
@@ -68,16 +72,23 @@ app.post('/users', (req, res) => {
                         res.status(409).send();
                     } else {
                         // User Does not already exist, can be added
+
+                        // Hash & Salt password
+                        var salt = bcrypt.genSaltSync(saltRounds);
+                        var hashedPass = bcrypt.hashSync(newUser.pass, salt);
+
+                        newUser.salt = salt;
+                        newUser.hashedPass = hashedPass;
+
                         dbservices.addNewUser(newUser, (error, error_desc, returned)=> {
                             if (!error){
-                                // If everything is good, send User a confirmation email
-
+                                
                                 // Redirect to user dashboard
                                 res.status(200).send();
                                 console.log('Successfully added:', newUser.emailAddr);
                             }else {
                                 console.log(error_desc);
-                                res.status(500);
+                                res.status(500).send();
                             }
                         });
                     }
@@ -96,19 +107,32 @@ app.post('/users', (req, res) => {
 });
 
 app.post('/tokens', (req,res)=> {
-    console.log(`Received:`, req.body);
-    res.status(200).json({tokens: 'Working'});
+    console.log('RECEIVED: ', req.body);
+    let emailAddr = typeof(req.body.emailAddr) == 'string' && req.body.emailAddr.trim().length > 0 ?  req.body.emailAddr.trim() : false;
+    let plainTextPass =  typeof(req.body.pass) == 'string' && req.body.pass.trim().length > 0 ?  req.body.pass.trim() : false;
 
-    // Authenticate User
-
-    // Send Token and Redirect to Dashboard
+    if (emailAddr && plainTextPass){
+        // Authenticate User
+        dbservices.isPasswordMatchesEmailAddr(emailAddr, plainTextPass, (error, error_desc, result) => {
+            if(result){
+                // Password Matches - User Authenticated
+                res.status(200).json({'Authentication':'User Authenticated'});
+                // Send Token and Redirect to Dashboard
+            }else{
+                // Password Does not Match - Authentication Failed
+                res.status(400).json({'Error':'Invalid Email Address or Password'});
+            }
+        });
+    } else {
+        res.status(400).json({'Error': 'Missing Required Fields'});
+    }
 });
 
 app.post('/promocode', (req,res)=> {
     console.log(`Received:`, req.body);
     res.status(200).json({promo: 'Working'});
 
-    // Check where this promo code leads 
+    // Check where this promo code leads
 
     // Send to where it leads
 });
