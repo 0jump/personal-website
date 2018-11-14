@@ -21,8 +21,9 @@
   - Service for it server-side
     1. ~~Receive and respond with simple status~~
     2. Validate email and password (length and '@')
-    3. Compare them in DB
-    4. Redirect to another page
+    3. ~~Compare them in DB~~
+    4. Create & send token
+    5. Redirect to another page
   - Error description boxes
   
 #### Promocode
