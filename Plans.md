@@ -3,14 +3,22 @@
 ### Display
 
 #### Sign up
-
+  
+  - Validate User info
+    1. Password must contain special characters & numbers
+    2. Email and Password Specifics (length and '@')
+    
   - Error description boxes
 
 #### Sign in
   
   - ~~Take info from form~~
-  - Build ajax functions to send sign in data
+  - ~~Build ajax functions to send sign in data~~
   - Service for it server-side
+    1. Receive and respond with simple status
+    2. Validate email and password (length and '@')
+    3. Compare them in DB
+    4. Redirect to another page
   - Error description boxes
   
 #### Promocode
@@ -18,6 +26,9 @@
   - ~~Take info from form~~
   - Build ajax functions to send promocode data
   - Service for it server-side
+    1. Receive and respond with simple status
+    2. Compare them in DB
+    3. Redirect to another page
   - Error description
   
 ### Authentication
