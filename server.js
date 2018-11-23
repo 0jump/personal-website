@@ -31,7 +31,13 @@ app.use(bodyParser.json());
 // Home Route
 app.get('/', (req, res) => {
     res.render('home');
-    console.log(req.connection.remoteAddress.substring(req.connection.remoteAddress.lastIndexOf(':') + 1));
+
+    let ipAddr = req.connection.remoteAddress.substring(req.connection.remoteAddress.lastIndexOf(':') + 1);
+    console.log(req.connection.remoteAddress);
+
+    ajax.getIpInfo(ipAddr, (ipInfo)=>{
+        console.log(ipInfo);
+    });
     //mySmtp.send.notifications.homePageVisit();
 });
 
