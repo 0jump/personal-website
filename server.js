@@ -31,8 +31,8 @@ app.use(bodyParser.json());
 // Home Route
 app.get('/', (req, res) => {
     res.render('home');
-    console.log(req.connection.remoteAddress.substring(req.connection.remoteAddress.lastIndexOf(':')));
-    mySmtp.send.notifications.homePageVisit();
+    console.log(req.connection.remoteAddress.substring(req.connection.remoteAddress.lastIndexOf(':') + 1));
+    //mySmtp.send.notifications.homePageVisit();
 });
 
 // Timer Route
