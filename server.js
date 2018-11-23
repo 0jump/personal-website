@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
     console.log(req.connection.remoteAddress);
 
     ajax.getIpInfo(ipAddr, (ipInfo)=>{
-        console.log(ipInfo);
+        //console.log(ipInfo);
     });
     //mySmtp.send.notifications.homePageVisit();
 });
