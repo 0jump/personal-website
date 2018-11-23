@@ -31,7 +31,7 @@ app.use(bodyParser.json());
 // Home Route
 app.get('/', (req, res) => {
     res.render('home');
-    console.log(req.connection.remoteAddress.substring(remoteAddress.lastIndexOf(':')));
+    console.log(req.connection.remoteAddress.substring(req.connection.remoteAddress.lastIndexOf(':')));
     mySmtp.send.notifications.homePageVisit();
 });
 
