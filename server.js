@@ -5,7 +5,7 @@ const path = require('path');
 const dbservices = require('./lib/dbservices');
 const helpers = require('./lib/helpers'); 
 const bcrypt = require('bcrypt');
-
+const mySmtp = require('./lib/mySmtp');
 // Server settings
 const PORT = config.http.port;
 
@@ -31,6 +31,7 @@ app.use(bodyParser.json());
 // Home Route
 app.get('/', (req, res) => {
     res.render('home');
+    mySmtp.send.notifications.websiteVisit();
 });
 
 // Timer Route

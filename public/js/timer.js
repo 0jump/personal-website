@@ -122,6 +122,14 @@ let morningRoutine = [{
     "duration": 4*60000
 }];
 
+morningRoutine2 = [
+{
+    "title": "Brush Teeth",
+    "description": "-",
+    "duration": 70000
+}
+];
+
 allTasks = []
 
 let msToTime = (duration) => {
