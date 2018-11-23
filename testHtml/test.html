@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="../public/css/universal.css">
+    <link rel="stylesheet" href="../public/css/home.css">
+
+    <title>Gerard Antoun Official Website</title>
+
+</head>
+<body>
+        <div class="container">
+            <div class="content-container">
+                <div class="tabs-container">
+                    <div class="login-tab tab" id="login-tab">
+                    <span>Sign in</span>
+                    </div>
+                    <div class="signup-tab tab" id="signup-tab">
+                        <span>Sign up</span>
+                    </div>
+                    <div class="promocode-tab tab" id="promocode-tab">
+                        <span>Promo Code</span>
+                    </div>
+                </div>
+                
+                <div class="login-box" id="login-box">
+                    <div class="title-desc-container">
+                        <h2 class="login-page-title">
+                            Login
+                        </h2>
+                        <p class="login-page-desc">
+                            Login to access your web apps.
+                        </p>
+                    </div>
+                    <div class="form-ctr">
+                        <form action="" method="post">
+                            <input class="input-field" id="email-input-field" type="text" placeholder="Email Address">
+    
+                            <input class="input-field" id="pass-input-field" type="password" placeholder="Password">
+    
+                            <input class="submit-btn" type="button" value="Sign in">
+                            
+                        </form>
+                        <div class="forgot-pass-btn-ctr">
+                            <button id="forgot-pass-btn">Forgot your password?</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="popup" id="popup">
+            <div class="popup-content">
+                <div class="forgot-pass-box">
+                    <div class="forgot-pass-text-ctr">
+                        <div class="exit-popup-btn" id="exit-popup">
+                            X
+                        </div>
+                        <h2>Reset Your Password</h2>
+                        <p>Please provide the email address you used when you signed up for your account.<br><br>An email will be sent to you with a link to reset your password.</p>
+                    </div>
+                    <div class="reset-pass-form-ctr">
+                        <form class="dbl-field-ctr" action="" method="post">
+                            <input type="email" class="input-field dbl-field-left" placeholder="Email Address">
+                            <input class="submit-btn dbl-field-right" type="button" value="Send Email">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="overlay" id="overlay"></div>
+        <script src="../public/js/dom.js"></script>
+        <script src="../public/js/home.js"></script>
+    </body>
+</html>

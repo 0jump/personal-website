@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const dbservices = require('./lib/dbservices');
 const helpers = require('./lib/helpers'); 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt-nodejs');
 const mySmtp = require('./lib/mySmtp');
 // Server settings
 const PORT = config.http.port;
