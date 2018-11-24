@@ -38,12 +38,23 @@
   
 ### Authentication
 
-  - Password Hash and salt
+  - ~~Password Hash and salt~~
   - DB for tokens
   - Be able to authenticate user when they login
   (Give user a token they can use)
   - Database for permissions
+ 
+### Dashboard
+  - Main menu
   
+### TTS
+  - Main menu
+    1. Mockup html
+      - Create new
+      - Delete
+      - Edit
+    2. Convert to js
+    
   
 ### Other Issues
 
