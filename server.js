@@ -48,6 +48,11 @@ app.get('/timer', (req, res) => {
     res.render('timer');
 });
 
+// TTS Main Menu Route
+app.get('/tts-main', (req, res) => {
+    res.render('tts-main-menu');
+});
+
 // AJAX Requests from Client-Side
 app.post('/users', (req, res) => {
     let func = typeof(req.query.func) == 'string' && req.query.func.trim().length > 0 ? req.query.func.trim() : false;
