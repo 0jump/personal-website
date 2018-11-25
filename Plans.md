@@ -58,7 +58,7 @@
   
 ### Other Issues
 
-  - DB storage of ip addresses is using `varchar(16)` can be optimized
+  - DB storage of ip addresses (in home_page_visits) is using `varchar(16)`, can be optimized 
   - All forms do not submit when I press enter, bcs input is `type="button"` and not `type="submit"`
   - Hashing & Salting password on signup is done synchronously (might slow the server)
   
