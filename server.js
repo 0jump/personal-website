@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
         ajax.getIpInfo(ipAddr, (ipInfo)=>{
             if (ipInfo.status == 'success'){
                 helpers.getDbFriendlyIpData(ipInfo, (dbFriendlyIpObj) => {
-                    db.addHomePageVisit([dbFriendlyIpObj], (error, error_desc, returned)=> {
+                    dbservices.addHomePageVisit([dbFriendlyIpObj], (error, error_desc, returned)=> {
                         if(!error){
                             console.log('Saved IP Information for', ipAddr);
                         }else {
