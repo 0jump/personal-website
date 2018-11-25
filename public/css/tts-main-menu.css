@@ -89,8 +89,13 @@ body{
     box-shadow: inset 0px 0px 2px 1px rgba(0,0,0,0.25);
 
     margin-top:12px;
+    padding:10px;
 
     cursor: pointer;
+
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .tts:nth-child(2n) {
@@ -102,7 +107,7 @@ body{
 }
 
 .tts-title-ctr{
-    padding:10px;
+    
 }
 
 .tts-title{
@@ -112,3 +117,10 @@ body{
 }
 
 
+.tts-edit-btn-ctr{
+
+}
+
+.tts-edit-icon{
+
+}
