@@ -38,10 +38,23 @@ app.get('/', (req, res) => {
     let ipAddr = req.connection.remoteAddress.substring(req.connection.remoteAddress.lastIndexOf(':') + 1);
     console.log(req.connection.remoteAddress);
 
-    ajax.getIpInfo(ipAddr, (ipInfo)=>{
-        //console.log(ipInfo);
-    });
-    //mySmtp.send.notifications.homePageVisit();
+    if (ipAddr.length > 2) {
+        ajax.getIpInfo(ipAddr, (ipInfo)=>{
+            if (ipInfo.status == 'success'){
+                helpers.getDbFriendlyIpData(ipInfo, (dbFriendlyIpObj) => {
+                    db.addHomePageVisit([dbFriendlyIpObj], (error, error_desc, returned)=> {
+                        if(!error){
+                            console.log('Saved IP Information for', ipAddr);
+                        }else {
+                            console.log(error_desc);
+                        }
+                    })
+                });
+            } else {
+                console.log('Failed to get ip info for: ',ipAddr);
+            }
+        });
+    }
 });
 
 // Timer Route
@@ -50,7 +63,7 @@ app.get('/timer', (req, res) => {
 });
 
 // TTS Main Menu Route
-app.get('/tts-main', (req, res) => {
+app.get('/tts-main-menu', (req, res) => {
     res.render('tts-main-menu');
 });
 
