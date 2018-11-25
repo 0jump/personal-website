@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt-nodejs');
 const mySmtp = require('./lib/mySmtp');
 const ajax = require('./lib/ajax');
 
+
 // Server settings
 const PORT = config.http.port;
 
