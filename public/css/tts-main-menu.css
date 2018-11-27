@@ -92,10 +92,6 @@ body{
     padding:10px;
 
     cursor: pointer;
-
-    display:flex;
-    align-items: center;
-    justify-content: space-between;
 }
 
 .tts:nth-child(2n) {
@@ -105,22 +101,84 @@ body{
 .tts:first-child{
     margin-top:0;
 }
+.tts-row{
+    width:100%;
+}
+.tts-header-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
 .tts-title-ctr{
-    
+
 }
 
-.tts-title{
+.tts-title {
+    color:black;
     margin:0;
-    font-size:20px;
-    font-weight:400;
+    font-size:18px;
+    font-weight:600;
 }
+
+.tts-duration-ctr{
+
+}
+
+.tts-duration{
+    color:black;
+    font-weight:500;
+    font-size:15px;
+}
+
+
+.tts-row-2{
+    margin-top:13px;
+
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tts-status-ctr{
+    display:flex;
+    align-items: center;
+}
+
+.tts-status-icon-ctr{
+
+}
+
+.tts-status-icon{
+    border-radius: 50%;
+    background-color: darkred;
+    width:6px;
+    height:6px;
+
+    margin-top:1.5px;
+}
+.tts-status{
+    font-weight:400;
+    color:darkred;
+    
+    margin-left:5px;
+}
+
 
 
 .tts-edit-btn-ctr{
 
 }
 
-.tts-edit-icon{
+.tts-edit-btn{
+    background-color: transparent;
+    outline:none;
+    border:none;
+    border: 1px black solid;
+    border-radius:50%;
+}
+
+
+.tts-edit-btn-icon{
 
 }
