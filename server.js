@@ -67,6 +67,12 @@ app.get('/tts-main-menu', (req, res) => {
     res.render('tts-main-menu');
 });
 
+// TTS Details Route
+app.get('/tts-details', (req, res) => {
+    res.render('tts-details');
+});
+
+
 // AJAX Requests from Client-Side
 app.post('/users', (req, res) => {
     let func = typeof(req.query.func) == 'string' && req.query.func.trim().length > 0 ? req.query.func.trim() : false;
