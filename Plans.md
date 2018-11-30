@@ -42,24 +42,30 @@
   - DB for tokens
   - Be able to authenticate user when they login
   (Give user a token they can use)
+    1. Email and pass sent by client
+    2. they are processed and matched
+    3. If they were correctly matched send back:
+      1. an auth object with token and user id inside it
+      2. store it in sessionStorage in the client and redirect to tts-main-menu
+      3. get token and userId from sessionStorage and use it to request tts main menu items
   - Database for permissions
- 
+
 ### Dashboard
   - Main menu
   
 ### TTS
   - Main menu
-    1. Mockup html
-      - Create new
-      - Delete
-      - Edit
-    2. Convert to js
-    
+    1. ~~Mockup html~~
+      - ~~Create new~~
+      - ~~Delete~~
+      - ~~Edit~~
+    2. ~~Convert to js~~
+  
   
 ### Other Issues
 
+  - Add secret information to environment variables
+  - make https work instead of http
   - DB storage of ip addresses (in home_page_visits) is using `varchar(16)`, can be optimized 
   - All forms do not submit when I press enter, bcs input is `type="button"` and not `type="submit"`
   - Hashing & Salting password on signup is done synchronously (might slow the server)
-  
-  
