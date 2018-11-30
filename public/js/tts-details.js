@@ -93,10 +93,15 @@ class Countdown {
 
 
 class CountdownDom extends Countdown {
-    constructor(container, hU, hD, mU, mD, sU, sD){
+    constructor(container, hU, hD, mU, mD, sU, sD, cdDomId){
 
         super();
+
+        this.id = cdDomId;
+
         this.isActive = false;
+        this.is1stKeypress = true;
+        //this.containerClicked = false;
 
         this.userInput = ["0","0","0","0","0","0"];
 
@@ -108,24 +113,39 @@ class CountdownDom extends Countdown {
         this.sU = sU;
         this.sD = sD;
 
+
+
         this.ctr.onclick = ()=>{
-            if(!this.isActive){
-                this.activate();
+            console.log('clicked container');
+            gLastCountdownDomClicked = this;
+            console.log(gLastCountdownDomClicked);
+            /* if(!this.isActive){
+                setActiveTask(this);
+                gLastCountdownDomClicked = this.id;
             }else if (this.isActive){
                 this.deactivate();
-            }
+            } */
         };
+
+
         
     }
     activate(){
         if(!this.isActive){
+            ;
             this.pause();
             this.ctr.classList.add('active');
+            this.is1stKeypress = true;
             // Add event listeners for keybord typing
+            console.log(this.id ,'Keypress Active');
             document.onkeypress = (evt) =>{
-                
+
                 let isNbr = this.isNumberKey(evt);
                 if( isNbr >= 0){
+                    if (this.is1stKeypress){
+                        this.userInput = ["0","0","0","0","0","0"];
+                    }
+
                     this.userInput.push(isNbr);
                     this.userInput.shift();
                     let timeEnteredInMs = timeToMs(this.userInput[0] + this.userInput[1] + ":" + this.userInput[2] + this.userInput[3] + ":" + this.userInput[4] + this.userInput[5] + ":00");
@@ -138,28 +158,36 @@ class CountdownDom extends Countdown {
                     this.sD.innerText = this.userInput[4];
                     this.sU.innerText = this.userInput[5];
 
-                    this.fillDigit(hD)
-                    this.fillDigit(hU)
-                    this.fillDigit(mD)
-                    this.fillDigit(mU)
-                    this.fillDigit(sD)
-                    this.fillDigit(sU)
+                    this.fillDigit(this.hD)
+                    this.fillDigit(this.hU)
+                    this.fillDigit(this.mD)
+                    this.fillDigit(this.mU)
+                    this.fillDigit(this.sD)
+                    this.fillDigit(this.sU)
             
 
                     this.set(timeEnteredInMs);
+
+                    this.is1stKeypress = false;
                 }
             }
             this.ctr
             this.ctr.on
             this.isActive = true;
-        }  
+        } 
     } 
     deactivate(){
         if(this.isActive){
             this.ctr.classList.remove('active');
             // remove event listeners for keyboard typing
-            document.removeEventListener("keypress", ()=>{});
+            // FIXME: removeEventListener does not work so i used onkeypress with empty function
+            /* document.removeEventListener("keypress", ()=>{}); */
+            document.onkeypress = (evt) =>{};
+            console.log(this.id,'Keypress INActive');
+
+
             this.isActive = false;
+            
         }
     }
     fillDigit(digitDiv){
@@ -194,10 +222,11 @@ class CountdownDom extends Countdown {
 
 
 
-class Task {
-    constructor(parentDiv){
+class Task{
+    constructor(parentDiv, taskId){
+        this.id = taskId;
         this.parentDiv = parentDiv;
-
+        
         this.task = CDE('div', [["class","task hh"]]);
             this.leftCtr = CDE('div', [["class","left-ctr"]]);
                 this.taskTitleCtr = CDE('div', [['class', 'task-title-ctr']]);
@@ -216,7 +245,7 @@ class Task {
                         
                     this.taskDurationCtr.appendChild(this.taskDuration); */
                     this.nbrsCtr = CDE('div', [['class',"numbers-ctr"], ['id',"numbers-ctr"]]);
-                        this.hD = CDE('span', ['class', "digit"], [['id',"hD"]]);
+                        this.hD = CDE('span', [['class', "digit"], ['id',"hD"]]);
                             this.hD.innerText = '0';
                         this.nbrsCtr.appendChild(this.hD);
                         this.hU = CDE('span', [['class',"digit"],['id',"hU"]]);
@@ -226,7 +255,7 @@ class Task {
                             this.digitLblH.innerText = 'h';
                         this.nbrsCtr.appendChild(this.digitLblH);
 
-                        this.mD = CDE('span', ['class', "digit"], [['id',"mD"]]);
+                        this.mD = CDE('span', [['class', "digit"], ['id',"mD"]]);
                             this.mD.innerText = '0';
                         this.nbrsCtr.appendChild(this.mD);
                         this.mU = CDE('span', [['class',"digit"],['id',"mU"]]);
@@ -236,7 +265,7 @@ class Task {
                             this.digitLblM.innerText = 'm';
                         this.nbrsCtr.appendChild(this.digitLblM);
 
-                        this.sD = CDE('span', ['class', "digit"], [['id',"sD"]]);
+                        this.sD = CDE('span', [['class', "digit"], ['id',"sD"]]);
                             this.sD.innerText = '0';
                         this.nbrsCtr.appendChild(this.sD);
                         this.sU = CDE('span', [['class',"digit"],['id',"sU"]]);
@@ -246,7 +275,7 @@ class Task {
                             this.digitLblS.innerText = 's';
                         this.nbrsCtr.appendChild(this.digitLblS);
 
-                        this.cdDom = new CountdownDom(this.nbrsCtr, this.hU, this.hD,this.mU,this.mD,this.sU, this.sD);
+                        this.cdDom = new CountdownDom(this.nbrsCtr, this.hU, this.hD,this.mU,this.mD,this.sU, this.sD, this.id);
 
                     this.taskDurationCtr.appendChild(this.nbrsCtr);
                 this.leftCtr.appendChild(this.taskDurationCtr);
@@ -293,7 +322,38 @@ class Task {
 
 let newTaskBtn = _('new-task-btn');
 let taskCtr = _('task-ctr');
+let gLastCountdownDomClicked;
+let gActiveCdDom;
+
+let taskObjList = [];
+
+let id = 0;
 
 newTaskBtn.onclick= () => {
-    let newTask = new Task(taskCtr);
+    let newTask = new Task(taskCtr, ++id);
+    taskObjList.push(newTask);
 };
+
+let setActiveCountdownDom = (pCdDomObj) => {
+    console.log('Setting Active:', pCdDomObj.id)
+    if (gActiveCdDom) {
+        gActiveCdDom.deactivate();
+    }
+    gActiveCdDom = pCdDomObj;
+    pCdDomObj.activate();
+}
+window.onclick = () => {
+    console.log('clicked window');
+    if (gLastCountdownDomClicked){
+        setActiveCountdownDom(gLastCountdownDomClicked);
+    } else {
+        if(gActiveCdDom){
+            console.log('Setting INactive:', gActiveCdDom.id);
+            gActiveCdDom.deactivate();
+            gActiveCdDom = 0;
+        }
+    }
+    gLastCountdownDomClicked=0; 
+}
+
+

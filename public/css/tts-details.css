@@ -66,7 +66,21 @@ body {
     
 }
 
-.duration{
+.numbers-ctr{
+    color:black;
+    font-weight:600;
+}
+
+.active{
+    color:red;
+}
+
+
+.digit{
+    font-size: 20px;
+}
+
+.digit-lbl {
 
 }
 
