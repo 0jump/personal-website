@@ -1,3 +1,198 @@
+let msToTime = (duration) => {
+    let milliseconds = parseInt((duration % 1000) / 100),
+    seconds = parseInt((duration / 1000) % 60),
+    minutes = parseInt((duration / (1000 * 60)) % 60),
+    hours = parseInt((duration / (1000 * 60 * 60)) % 24);
+
+    hours = (hours < 10) ? "0" + hours : hours;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+    return hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
+}
+
+let timeToMs = (timeInMs) => {
+    let orgTime = timeInMs.split(':');
+    return (orgTime[0] * 3600 * 1000) + (orgTime[1] * 60 * 1000) + (orgTime[2] * 1000);
+}
+
+class Countdown {
+    constructor(){
+        this.iniMs = 0;
+        this.leftMs = 0;
+
+        this.startTime;
+        this.reqanimationreference;
+
+        this.state = 'stopped';
+        this.shouldStop;
+    }
+    set(iniMs){
+        this.iniMs = iniMs;
+
+        this.reset();
+    }
+    start(callback){
+        let referenceTime;
+        if (this.state != 'ongoing'){
+            if (this.state == 'paused') {
+                referenceTime = this.leftMs;
+            } else if (this.state == 'stopped'){
+                referenceTime = this.iniMs;
+            }
+            this.shouldStop = false;
+            let ctdnStep = (timestamp) => { 
+                let timeElapsed = (timestamp - this.startTime);
+                this.leftMs = referenceTime - timeElapsed;
+
+                if (this.leftMs <= 0) {
+                    
+                    this.leftMs = 0;
+                    this.stopAnimation();
+                    this.shouldStop = true;
+                }
+
+                callback(this.leftMs);
+
+                if (!this.shouldStop){
+                    this.reqanimationreference = requestAnimationFrame(ctdnStep);
+                } 
+            };
+
+            window.requestAnimationFrame((timestamp) => {
+                this.startTime = timestamp;
+                ctdnStep(timestamp);
+            });
+
+            this.state = 'ongoing';
+        } else {
+            console.log('already started');
+        }
+    }
+    pause(){
+        if(this.state == 'ongoing'){
+            this.stopAnimation();
+            this.state = 'paused';
+        }
+    }
+    reset(){
+        if(this.state != 'stopped'){
+            this.stopAnimation();
+            this.leftMs = this.iniMs;
+            this.state = 'stopped';
+        }
+
+    }
+    stopAnimation() {
+        this.shouldStop = true;
+        cancelAnimationFrame(this.reqanimationreference);
+    }
+}
+
+
+
+
+class CountdownDom extends Countdown {
+    constructor(container, hU, hD, mU, mD, sU, sD){
+
+        super();
+        this.isActive = false;
+
+        this.userInput = ["0","0","0","0","0","0"];
+
+        this.ctr = container;
+        this.hU = hU;
+        this.hD = hD;
+        this.mU = mU;
+        this.mD = mD;
+        this.sU = sU;
+        this.sD = sD;
+
+        this.ctr.onclick = ()=>{
+            if(!this.isActive){
+                this.activate();
+            }else if (this.isActive){
+                this.deactivate();
+            }
+        };
+        
+    }
+    activate(){
+        if(!this.isActive){
+            this.pause();
+            this.ctr.classList.add('active');
+            // Add event listeners for keybord typing
+            document.onkeypress = (evt) =>{
+                
+                let isNbr = this.isNumberKey(evt);
+                if( isNbr >= 0){
+                    this.userInput.push(isNbr);
+                    this.userInput.shift();
+                    let timeEnteredInMs = timeToMs(this.userInput[0] + this.userInput[1] + ":" + this.userInput[2] + this.userInput[3] + ":" + this.userInput[4] + this.userInput[5] + ":00");
+                    console.log('time entered: ', timeEnteredInMs);
+
+                    this.hD.innerText = this.userInput[0];
+                    this.hU.innerText = this.userInput[1];
+                    this.mD.innerText = this.userInput[2];
+                    this.mU.innerText = this.userInput[3];
+                    this.sD.innerText = this.userInput[4];
+                    this.sU.innerText = this.userInput[5];
+
+                    this.fillDigit(hD)
+                    this.fillDigit(hU)
+                    this.fillDigit(mD)
+                    this.fillDigit(mU)
+                    this.fillDigit(sD)
+                    this.fillDigit(sU)
+            
+
+                    this.set(timeEnteredInMs);
+                }
+            }
+            this.ctr
+            this.ctr.on
+            this.isActive = true;
+        }  
+    } 
+    deactivate(){
+        if(this.isActive){
+            this.ctr.classList.remove('active');
+            // remove event listeners for keyboard typing
+            document.removeEventListener("keypress", ()=>{});
+            this.isActive = false;
+        }
+    }
+    fillDigit(digitDiv){
+        digitDiv.classList.add('full');
+    }
+    unfillDigit(digitDiv){
+        digitDiv.classList.remove('full');
+    }
+    updateCountdown(timeInMs){
+        let orgTimeLeft = msToTime(timeInMs).split(':');
+        hU.innerText = orgTimeLeft[0][1];
+        hD.innerText = orgTimeLeft[0][0];
+        mU.innerText = orgTimeLeft[1][1];
+        mD.innerText = orgTimeLeft[1][0];
+        sU.innerText = orgTimeLeft[2][1];
+        sD.innerText = orgTimeLeft[2][0];
+    }
+    isNumberKey(evt){
+        
+        let charCode = (evt.which) ? evt.which : evt.keyCode;
+        
+        if (charCode == 46 || charCode > 31 && (charCode < 48 || charCode > 57)){
+            evt.preventDefault();
+            return -1;
+        }
+        return String.fromCharCode(charCode);
+    }
+    pause(){
+        super.pause();
+    }
+}
+
+
 
 class Task {
     constructor(parentDiv){
@@ -17,9 +212,43 @@ class Task {
                 this.leftCtr.appendChild(this.taskDescCtr);
 
                 this.taskDurationCtr = CDE('div', [['class', 'task-duration-ctr']]);
-                    this.taskDuration = CDE('input', [['class',"task-duration-ctr"], ['placeholder', 'hh:mm:ss']]);
+                    /* this.taskDuration = CDE('input', [['class',"task-duration-ctr"], ['placeholder', 'hh:mm:ss']]);
                         
-                    this.taskDurationCtr.appendChild(this.taskDuration);
+                    this.taskDurationCtr.appendChild(this.taskDuration); */
+                    this.nbrsCtr = CDE('div', [['class',"numbers-ctr"], ['id',"numbers-ctr"]]);
+                        this.hD = CDE('span', ['class', "digit"], [['id',"hD"]]);
+                            this.hD.innerText = '0';
+                        this.nbrsCtr.appendChild(this.hD);
+                        this.hU = CDE('span', [['class',"digit"],['id',"hU"]]);
+                            this.hU.innerText = '0';
+                        this.nbrsCtr.appendChild(this.hU);
+                        this.digitLblH = CDE('span', [['class',"digit-lbl"]]);
+                            this.digitLblH.innerText = 'h';
+                        this.nbrsCtr.appendChild(this.digitLblH);
+
+                        this.mD = CDE('span', ['class', "digit"], [['id',"mD"]]);
+                            this.mD.innerText = '0';
+                        this.nbrsCtr.appendChild(this.mD);
+                        this.mU = CDE('span', [['class',"digit"],['id',"mU"]]);
+                            this.mU.innerText = '0';
+                        this.nbrsCtr.appendChild(this.mU);
+                        this.digitLblM = CDE('span', [['class',"digit-lbl"]]);
+                            this.digitLblM.innerText = 'm';
+                        this.nbrsCtr.appendChild(this.digitLblM);
+
+                        this.sD = CDE('span', ['class', "digit"], [['id',"sD"]]);
+                            this.sD.innerText = '0';
+                        this.nbrsCtr.appendChild(this.sD);
+                        this.sU = CDE('span', [['class',"digit"],['id',"sU"]]);
+                            this.sU.innerText = '0';
+                        this.nbrsCtr.appendChild(this.sU);
+                        this.digitLblS = CDE('span', [['class',"digit-lbl"]]);
+                            this.digitLblS.innerText = 's';
+                        this.nbrsCtr.appendChild(this.digitLblS);
+
+                        this.cdDom = new CountdownDom(this.nbrsCtr, this.hU, this.hD,this.mU,this.mD,this.sU, this.sD);
+
+                    this.taskDurationCtr.appendChild(this.nbrsCtr);
                 this.leftCtr.appendChild(this.taskDurationCtr);
             this.task.appendChild(this.leftCtr);
 
