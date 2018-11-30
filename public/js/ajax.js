@@ -47,6 +47,11 @@ ajax.me.submitPromocode = (promocode, callback) => {
     ajax.sendJsonPostRequest('promocode?func=submitPromocode', {}, reqPayload, callback);
 }
 
+// TTS Services
+ajax.me.createNewTts = (callback) => {
+    ajax.sendJsonPostRequest('tts?func=createNewTts', {}, {}, callback);
+}
+
 
 /* 
 -------------LOW LEVEL AJAX FUNCTIONS--------------

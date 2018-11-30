@@ -172,8 +172,16 @@ app.post('/promocode', (req,res)=> {
     // Send to where it leads
 });
 
-
-
+app.post('/tts', (req,res) => {
+    let func = typeof(req.query.func) == 'string' && req.query.func.trim().length > 0 ? req.query.func.trim() : false;
+    if (func){
+        if (func == 'createNewTts'){
+            
+        }
+    } else {
+        res.status(400, {'Error': 'Missing Required Fields'});
+    }
+});
 
 app.listen(PORT, ()=> {
     console.log(`Server started on port ${PORT}`);

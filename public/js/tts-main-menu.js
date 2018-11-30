@@ -72,7 +72,12 @@ class TimedTaskSequence {
 }
 
 newTtsButton.onclick = () => {
-    let newTTS = new TimedTaskSequence(ttsCtr);
+    ajax.me.createNewTts((xhr)=>{
+        if (xhr.status != 200){
+            console.log('Error creating new TTS');
+        }
+    });
+    /* let newTTS = new TimedTaskSequence(ttsCtr); */
 }
 
 
