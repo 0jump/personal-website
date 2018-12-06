@@ -248,7 +248,7 @@ class Task{
                         
                     this.taskDurationCtr.appendChild(this.taskDuration); */
                     this.nbrsCtr = CDE('div', [['class',"numbers-ctr"], ['id',"numbers-ctr"]]);
-                        this.hiddenTimerInput = CDE('input', [['type','number'],['class','hidden-timer-input']]);
+                        this.hiddenTimerInput = CDE('input', [/* ['type','number'], */['class','hidden-timer-input']]);
                         this.nbrsCtr.appendChild(this.hiddenTimerInput);
                         this.hD = CDE('span', [['class', "digit"], ['id',"hD"]]);
                             this.hD.innerText = '0';
