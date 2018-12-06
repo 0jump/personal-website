@@ -72,10 +72,10 @@ body {
 }
 
 .hidden-timer-input{
-/*     position:absolute;
+    position:absolute;
     height:0;
     width:0;
-    border:none; */
+    border:none;
 }
 
 .active{
