@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
     res.render('home');
 
     let ipAddr = req.connection.remoteAddress.substring(req.connection.remoteAddress.lastIndexOf(':') + 1);
-    console.log(req.connection.remoteAddress);
+    //console.log(req.connection.remoteAddress);
 
     if (ipAddr.length > 2) {
         ajax.getIpInfo(ipAddr, (ipInfo)=>{
