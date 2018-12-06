@@ -4,18 +4,18 @@ const ttsCtr = _('tts-container');
 let gEditClick = false;
 
 class TimedTaskSequence {
-    constructor(parentDiv){
+    constructor(parentDiv, pTtsTitle, pTtsDuration){
         this.tts = CDE('div', [['class', 'tts']]);       
             this.ttsHeaderRow = CDE('div', [['class','tts-header-row tts-row']]);
                 this.ttsTitleCtr = CDE('div', [['class',"tts-title-ctr"]]);
                     this.ttsTitle = CDE('h4' , [['class', "tts-title"]]);
-                        this.ttsTitle.innerText = 'Morning Routine';
+                        this.ttsTitle.innerText = pTtsTitle;
                     this.ttsTitleCtr.appendChild(this.ttsTitle);
                 this.ttsHeaderRow.appendChild(this.ttsTitleCtr);
 
                 this.ttsDurationCtr = CDE('div', [['class',"tts-duration-ctr"]]);
                     this.ttsDuration = CDE('span', [['class',"tts-duration"]]);
-                        this.ttsDuration.innerText = '20';
+                        this.ttsDuration.innerText = pTtsDuration;
                     this.ttsDurationCtr.appendChild(this.ttsDuration);
                 this.ttsHeaderRow.appendChild(this.ttsDurationCtr);
             this.tts.appendChild(this.ttsHeaderRow);
@@ -72,15 +72,24 @@ class TimedTaskSequence {
 }
 
 newTtsButton.onclick = () => {
-    ajax.me.createNewTts((xhr)=>{
-        if (xhr.status != 200){
-            console.log('Error creating new TTS');
-        }
-    });
-    /* let newTTS = new TimedTaskSequence(ttsCtr); */
+    window.location.assign("tts-details");
 }
 
 
-new TimedTaskSequence(ttsCtr);
-new TimedTaskSequence(ttsCtr);
-new TimedTaskSequence(ttsCtr); 
+
+ajax.me.getAllTts('NOTWORKING' ,(xhr)=> {
+    if(xhr.status == 200){
+
+        let ttsList = xhr.response;
+        ttsList = JSON.parse(ttsList);
+        console.log('ttsList: ',ttsList);
+
+        for (let i=0; i < ttsList.length; i++){
+            let ttsObj = ttsList[i];
+            new TimedTaskSequence(ttsCtr, ttsObj.title, ttsObj.duration);
+        }
+    } else {
+        console.log(xhr.status);
+    }
+});
+

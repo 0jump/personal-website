@@ -93,7 +93,7 @@ class Countdown {
 
 
 class CountdownDom extends Countdown {
-    constructor(container, hU, hD, mU, mD, sU, sD, cdDomId){
+    constructor(container, hU, hD, mU, mD, sU, sD, cdDomId, hiddenTimerInput){
 
         super();
 
@@ -102,6 +102,7 @@ class CountdownDom extends Countdown {
         this.isActive = false;
         this.is1stKeypress = true;
         //this.containerClicked = false;
+        this.hiddenTimerInput = hiddenTimerInput;
 
         this.userInput = ["0","0","0","0","0","0"];
 
@@ -136,6 +137,8 @@ class CountdownDom extends Countdown {
             this.pause();
             this.ctr.classList.add('active');
             this.is1stKeypress = true;
+            // Set the hidden input field to focus so the keyboard shows up on mobile phone
+            this.hiddenTimerInput.focus();
             // Add event listeners for keybord typing
             console.log(this.id ,'Keypress Active');
             document.onkeypress = (evt) =>{
@@ -227,7 +230,7 @@ class Task{
         this.id = taskId;
         this.parentDiv = parentDiv;
         
-        this.task = CDE('div', [["class","task hh"]]);
+        this.task = CDE('div', [["class","task"]]);
             this.leftCtr = CDE('div', [["class","left-ctr"]]);
                 this.taskTitleCtr = CDE('div', [['class', 'task-title-ctr']]);
                     this.taskTitle = CDE('input', [['class',"task-title"], ['placeholder','Your Task Title']]);
@@ -245,6 +248,8 @@ class Task{
                         
                     this.taskDurationCtr.appendChild(this.taskDuration); */
                     this.nbrsCtr = CDE('div', [['class',"numbers-ctr"], ['id',"numbers-ctr"]]);
+                        this.hiddenTimerInput = CDE('input', [['type','number'],['class','hidden-timer-input']]);
+                        this.nbrsCtr.appendChild(this.hiddenTimerInput);
                         this.hD = CDE('span', [['class', "digit"], ['id',"hD"]]);
                             this.hD.innerText = '0';
                         this.nbrsCtr.appendChild(this.hD);
@@ -275,7 +280,7 @@ class Task{
                             this.digitLblS.innerText = 's';
                         this.nbrsCtr.appendChild(this.digitLblS);
 
-                        this.cdDom = new CountdownDom(this.nbrsCtr, this.hU, this.hD,this.mU,this.mD,this.sU, this.sD, this.id);
+                        this.cdDom = new CountdownDom(this.nbrsCtr, this.hU, this.hD,this.mU,this.mD,this.sU, this.sD, this.id, this.hiddenTimerInput);
 
                     this.taskDurationCtr.appendChild(this.nbrsCtr);
                 this.leftCtr.appendChild(this.taskDurationCtr);
@@ -356,4 +361,26 @@ window.onclick = () => {
     gLastCountdownDomClicked=0; 
 }
 
+
+// Initial send tts object to save after writing something as tts title
+let ttsTitleInput = _('tts-title');
+/* ttsTitleInput.style.backgroundColor = 'red'; */
+let ttsObj = {
+    'title':'',
+    'description':'',
+    'duration':'2',
+    'creator_user_id':'1'
+}
+
+
+ttsTitleInput.onclick = () => {
+    let ttsTitle = ttsTitleInput.value;
+    console.log(ttsTitle);
+    ttsObj.title = ttsTitle;
+    ajax.me.createNewTts(ttsObj, (xhr)=>{
+        if(xhr.status == 200){
+            console.log(xhr.response);
+        }
+    });
+}
 

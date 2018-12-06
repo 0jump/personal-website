@@ -42,8 +42,8 @@
   - DB for tokens
   - Be able to authenticate user when they login
   (Give user a token they can use)
-    1. Email and pass sent by client
-    2. they are processed and matched
+    1. ~~Email and pass sent by client~~
+    2. ~~they are processed and matched~~
     3. If they were correctly matched send back:
       1. an auth object with token and user id inside it
       2. store it in sessionStorage in the client and redirect to tts-main-menu

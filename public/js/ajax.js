@@ -48,8 +48,15 @@ ajax.me.submitPromocode = (promocode, callback) => {
 }
 
 // TTS Services
-ajax.me.createNewTts = (callback) => {
-    ajax.sendJsonPostRequest('tts?func=createNewTts', {}, {}, callback);
+ajax.me.createNewTts = (ttsObj, callback) => {
+    let reqPayload = {
+        'tts': ttsObj
+    }
+    ajax.sendJsonPostRequest('tts?func=createNewTts', {}, reqPayload, callback);
+}
+
+ajax.me.getAllTts = (pUserId ,callback) => {
+    ajax.sendJsonPostRequest('tts?func=getAllTts', {}, {}, callback);
 }
 
 

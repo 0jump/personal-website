@@ -69,6 +69,7 @@ app.get('/tts-main-menu', (req, res) => {
 
 // TTS Details Route
 app.get('/tts-details', (req, res) => {
+    console.log('ASKED FOPR DETAILS');
     res.render('tts-details');
 });
 
@@ -174,14 +175,41 @@ app.post('/promocode', (req,res)=> {
 
 app.post('/tts', (req,res) => {
     let func = typeof(req.query.func) == 'string' && req.query.func.trim().length > 0 ? req.query.func.trim() : false;
+    
     if (func){
+        
         if (func == 'createNewTts'){
-            
+
+            // TODO: Validate TTS Object
+            // TODO: Remove test object
+            let newTTS = req.body.tts;
+            let testObj = {
+                title: 'Test title',
+                description: 'test desc',
+                duration: 13213,
+                date_created: '2018-11-14 16:27:56',
+                creator_user_id: 1
+            }
+            testObj.title = newTTS.title;
+
+            // Save in Database
+            dbservices.addNewTts(testObj, ()=> {
+                // TODO: Check for errors
+                res.status(200).json({'Msg':'Saved'});
+            });
+        }else if (func == 'getAllTts') {
+            dbservices.getAllTts('1', (error, error_desc, returned)=>{
+                if(!error){
+                    res.status(200).json(returned);
+                    
+                }
+            });
         }
-    } else {
-        res.status(400, {'Error': 'Missing Required Fields'});
+    } else{
+        res.status(400).json({'Error': 'Missing Required Fields'});
     }
 });
+
 
 app.listen(PORT, ()=> {
     console.log(`Server started on port ${PORT}`);

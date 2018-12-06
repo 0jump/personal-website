@@ -71,6 +71,10 @@ body {
     font-weight:600;
 }
 
+.hidden-timer-input{
+    display:none;
+}
+
 .active{
     color:red;
 }
