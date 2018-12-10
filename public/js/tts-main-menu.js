@@ -76,8 +76,9 @@ newTtsButton.onclick = () => {
 }
 
 
+const gAccessToken = window.localStorage.getItem('access_token');
 
-ajax.me.getAllTts('NOTWORKING' ,(xhr)=> {
+ajax.me.getAllTts(gAccessToken,(xhr)=> {
     if(xhr.status == 200){
 
         let ttsList = xhr.response;
@@ -86,10 +87,12 @@ ajax.me.getAllTts('NOTWORKING' ,(xhr)=> {
 
         for (let i=0; i < ttsList.length; i++){
             let ttsObj = ttsList[i];
-            new TimedTaskSequence(ttsCtr, ttsObj.title, ttsObj.duration);
+            let ttsDomObj = new TimedTaskSequence(ttsCtr, ttsObj.title, ttsObj.duration);
+            console.log(ttsDomObj);
         }
     } else {
-        console.log(xhr.status);
+        //console.log(xhr.status);
+        window.location.assign("/");
     }
 });
 

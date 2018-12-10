@@ -33,7 +33,7 @@ ajax.me.signIn = (emailAddr, pass, callback) => {
         'pass': pass
     };
 
-    ajax.sendJsonPostRequest('tokens?func=signIn', {}, reqPayload, callback);
+    ajax.sendJsonPostRequest('auth?func=signIn', {}, reqPayload, callback);
 };
 
 
@@ -55,8 +55,11 @@ ajax.me.createNewTts = (ttsObj, callback) => {
     ajax.sendJsonPostRequest('tts?func=createNewTts', {}, reqPayload, callback);
 }
 
-ajax.me.getAllTts = (pUserId ,callback) => {
-    ajax.sendJsonPostRequest('tts?func=getAllTts', {}, {}, callback);
+ajax.me.getAllTts = (pAccessToken, callback) => {
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tts?func=getAllTts', headersObj, {}, callback);
 }
 
 
@@ -98,6 +101,7 @@ ajax.sendJsonPostRequest = (url, headersObject, jsonObj,callback)=> {
         }
     };
     var data = JSON.stringify(jsonObj);
+    console.log(xhr);
     xhr.send(data);
 };
 
@@ -150,7 +154,7 @@ ajax.sendJsonPutRequest = (url, headersObject, jsonObj, callback) => {
 
     if (Object.keys(headersObject).length > 0) {
         for (i = 0; i < Object.keys(headersObject).length; i++) {
-            xhr.setRequestHeader(Object.keys(headersObject)[i], headersObject[Object.keys(headersObject)[i]]);
+            xhr.setRequestHeader(Object.keys(headersObject)[i],headersObject[Object.keys(headersObject)[i]]);
         }
     }
 

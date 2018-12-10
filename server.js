@@ -7,13 +7,17 @@ const helpers = require('./lib/helpers');
 const bcrypt = require('bcrypt-nodejs');
 const mySmtp = require('./lib/mySmtp');
 const ajax = require('./lib/ajax');
-
+const jwt = require('jsonwebtoken');
+const moment = require('moment');
 
 // Server settings
 const PORT = config.http.port;
 
 // Bcrypt settings
 const saltRounds = 8;
+
+// List of Tokens
+const tokenList = {};
 
 const app = express();
 
@@ -66,6 +70,16 @@ app.get('/timer', (req, res) => {
 // TTS Main Menu Route
 app.get('/tts-main-menu', (req, res) => {
     res.render('tts-main-menu');
+/*     jwt.verify(req.token, config.jwt.secret, (err, authData) => {
+        if (err) {
+            res.status(403).json({'Error':'Access to TTS Main menu is Forbidden'});
+        } else {
+            res.json({
+                authData
+            });
+        }
+    });
+ */
 });
 
 // TTS Details Route
@@ -142,26 +156,47 @@ app.post('/users', (req, res) => {
     }
 });
 
-app.post('/tokens', (req,res)=> {
-    console.log('RECEIVED: ', req.body);
-    let emailAddr = typeof(req.body.emailAddr) == 'string' && req.body.emailAddr.trim().length > 0 ?  req.body.emailAddr.trim() : false;
-    let plainTextPass =  typeof(req.body.pass) == 'string' && req.body.pass.trim().length > 0 ?  req.body.pass.trim() : false;
+app.post('/auth', (req,res)=> {
+    let func = typeof(req.query.func) == 'string' && req.query.func.trim().length > 0 ? req.query.func.trim() : false;
+    // Sing in
+    if (func == 'signIn'){
+        let emailAddr = typeof(req.body.emailAddr) == 'string' && req.body.emailAddr.trim().length > 0 ?  req.body.emailAddr.trim() : false;
+        let plainTextPass =  typeof(req.body.pass) == 'string' && req.body.pass.trim().length > 0 ?  req.body.pass.trim() : false;
 
-    if (emailAddr && plainTextPass){
-        // Authenticate User
-        dbservices.isPasswordMatchesEmailAddr(emailAddr, plainTextPass, (error, error_desc, result) => {
-            if(result){
-                // Password Matches - User Authenticated
-                res.status(200).json({'Authentication':'User Authenticated'});
-                // Send Token and Redirect to Dashboard
-            }else{
-                // Password Does not Match - Authentication Failed
-                res.status(400).json({'Error':'Invalid Email Address or Password'});
-            }
-        });
+        if (emailAddr && plainTextPass){
+            // Authenticate User
+            dbservices.checkPassAndReturnUserInfo(emailAddr, plainTextPass, (error, error_desc, userId) => {
+                if(userId){
+                    /* // Password Matches - User Authenticated
+                    res.status(200).json({'Authentication':'User Authenticated'}); */
+                    
+                    let userInfo = {
+                        user_id: userId
+                    }
+                    // Generate Tokens
+                    const access_token = jwt.sign(userInfo, config.jwt.secret, { expiresIn: config.jwt.tokenLife } , (jwt_err, access_token)=> {
+                        if(!jwt_err){
+                            res.status(200).json({auth:{
+                                access_token
+                            }});
+                        } else {
+                            // console.log("JWT error",jwt_err);
+                            res.status(500).json({'Error':'Could not sign jwt'});
+                        }
+                    });
+                }else{
+                    // Password Does not Match - Authentication Failed
+                    res.status(401).json({'Error':'Invalid Email Address or Password'});
+                    console.log('Error: ', error_desc);
+                }
+            });
+        } else {
+            res.status(400).json({'Error': 'Missing Required Fields'});
+        }
     } else {
-        res.status(400).json({'Error': 'Missing Required Fields'});
+        res.status(400).json({'Error': 'Unknown function'});
     }
+    
 });
 
 app.post('/promocode', (req,res)=> {
@@ -173,37 +208,49 @@ app.post('/promocode', (req,res)=> {
     // Send to where it leads
 });
 
-app.post('/tts', (req,res) => {
+app.post('/tts',(req,res) => {
     let func = typeof(req.query.func) == 'string' && req.query.func.trim().length > 0 ? req.query.func.trim() : false;
     
     if (func){
-        
-        if (func == 'createNewTts'){
+        let access_token = req.header('access_token');
+        if (typeof access_token == 'string' && access_token.length > 0){
+            if (func == 'createNewTts'){
+                let datetime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
 
-            // TODO: Validate TTS Object
-            // TODO: Remove test object
-            let newTTS = req.body.tts;
-            let testObj = {
-                title: 'Test title',
-                description: 'test desc',
-                duration: 13213,
-                date_created: '2018-11-14 16:27:56',
-                creator_user_id: 1
-            }
-            testObj.title = newTTS.title;
-
-            // Save in Database
-            dbservices.addNewTts(testObj, ()=> {
-                // TODO: Check for errors
-                res.status(200).json({'Msg':'Saved'});
-            });
-        }else if (func == 'getAllTts') {
-            dbservices.getAllTts('1', (error, error_desc, returned)=>{
-                if(!error){
-                    res.status(200).json(returned);
-                    
+                // TODO: Validate TTS Object
+                // TODO: Remove test object
+                let newTTS = req.body.tts;
+                let testObj = {
+                    title: 'Test title',
+                    description: 'test desc',
+                    duration: 13213,
+                    date_created: datetime,
+                    creator_user_id: 1
                 }
-            });
+                testObj.title = newTTS.title;
+
+                // Save in Database
+                dbservices.addNewTts(testObj, ()=> {
+                    // TODO: Check for errors
+                    res.status(200).json({'Msg':'Saved'});
+                });
+            }else if (func == 'getAllTts') {
+                jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+                    if (err) {
+                        res.status(403).send();
+                    } else {
+                        dbservices.getAllTts(authData.user_id, (error, error_desc, returned)=>{
+                            if(!error){
+                                res.status(200).json(returned);
+                            } else{
+                                res.status(500).send();
+                            }
+                        });
+                    }
+                });
+            }
+        } else {
+            res.status(403).send();
         }
     } else{
         res.status(400).json({'Error': 'Missing Required Fields'});

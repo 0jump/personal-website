@@ -40,15 +40,20 @@
 
   - ~~Password Hash and salt~~
   - DB for tokens
-  - Be able to authenticate user when they login
+  - ~~Be able to authenticate user when they login~~
   (Give user a token they can use)
     1. ~~Email and pass sent by client~~
     2. ~~they are processed and matched~~
-    3. If they were correctly matched send back:
-      1. an auth object with token and user id inside it
-      2. store it in sessionStorage in the client and redirect to tts-main-menu
-      3. get token and userId from sessionStorage and use it to request tts main menu items
+    3. ~~If they were correctly matched send back:~~
+      1. ~~an auth object JWT with user_id inside it~~
+      2. ~~store it in localStorage in the client and redirect to tts-main-menu~~
+      3. ~~get token and userId from localStorage and use it to request tts main menu items~~
   - Database for permissions
+  - Refresh Tokens
+  - Protect Routes
+    1. ~~tts-main-menu~~
+    2. tts-details
+    3. timer
 
 ### Dashboard
   - Main menu

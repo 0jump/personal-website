@@ -156,7 +156,12 @@ class LoginBox {
                     // Send User info to server
                     ajax.me.signIn(userInfo.emailAddr, userInfo.pass, (xhr)=> {
                         if (xhr.status == 200){
-                            console.log(xhr.response);
+                            // Save Access token in Local Storage
+                            let responseObj = JSON.parse(xhr.response);
+                            window.localStorage.setItem('access_token',responseObj.auth.access_token);
+
+                            // Redirect User to tts-main-menu
+                            window.location.assign('tts-main-menu');
                         } else {
                             // Display Message According to Status Code and response
                             console.log(xhr.status);
