@@ -44,14 +44,15 @@ app.get('/', (req, res) => {
                 helpers.getDbFriendlyIpData(ipInfo, (dbFriendlyIpObj) => {
                     dbservices.addHomePageVisit([dbFriendlyIpObj], (error, error_desc, returned)=> {
                         if(!error){
-                            console.log('Saved IP Information for', ipAddr);
+                            // console.log('Saved IP Information for', ipAddr);
                         }else {
-                            console.log(error_desc);
+                            // console.log(error_desc);
+                            console.log('Failed to add home page visit for IP Address: ',ipAddr);
                         }
                     })
                 });
             } else {
-                console.log('Failed to get ip info for: ',ipAddr);
+                console.log('Failed to get ip info for IP Address: ',ipAddr);
             }
         });
     }
@@ -69,7 +70,6 @@ app.get('/tts-main-menu', (req, res) => {
 
 // TTS Details Route
 app.get('/tts-details', (req, res) => {
-    console.log('ASKED FOPR DETAILS');
     res.render('tts-details');
 });
 
