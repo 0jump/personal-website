@@ -76,7 +76,6 @@ class TimedTaskSequence {
 }
 
 newTtsButton.onclick = () => {
-    // TODO: If not new tts should not create new tts
     ajax.me.createNewTts(gAccessToken,(xhr)=>{
         if(xhr.status == 200){
             let responseObj = JSON.parse(xhr.response);
