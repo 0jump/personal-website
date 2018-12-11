@@ -1,3 +1,8 @@
+const gAccessToken = window.localStorage.getItem('access_token');
+const gTtsId = helpers.getAllUrlParams().tts_id;
+
+// Get Tasks belonging to this TTS
+
 let msToTime = (duration) => {
     let milliseconds = parseInt((duration % 1000) / 100),
     seconds = parseInt((duration / 1000) % 60),
@@ -364,23 +369,13 @@ window.onclick = () => {
 
 // Initial send tts object to save after writing something as tts title
 let ttsTitleInput = _('tts-title');
-/* ttsTitleInput.style.backgroundColor = 'red'; */
-let ttsObj = {
-    'title':'',
-    'description':'',
-    'duration':'2',
-    'creator_user_id':'1'
-}
 
 
-ttsTitleInput.onclick = () => {
+
+ttsTitleInput.onblur = () => {
     let ttsTitle = ttsTitleInput.value;
     console.log(ttsTitle);
     ttsObj.title = ttsTitle;
-    ajax.me.createNewTts(ttsObj, (xhr)=>{
-        if(xhr.status == 200){
-            console.log(xhr.response);
-        }
-    });
+
 }
 

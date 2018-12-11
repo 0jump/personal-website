@@ -215,25 +215,31 @@ app.post('/tts',(req,res) => {
         let access_token = req.header('access_token');
         if (typeof access_token == 'string' && access_token.length > 0){
             if (func == 'createNewTts'){
-                let datetime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+                jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+                    if (err) {
+                        res.status(403).send();
+                    } else {
+                        let datetime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
 
-                // TODO: Validate TTS Object
-                // TODO: Remove test object
-                let newTTS = req.body.tts;
-                let testObj = {
-                    title: 'Test title',
-                    description: 'test desc',
-                    duration: 13213,
-                    date_created: datetime,
-                    creator_user_id: 1
-                }
-                testObj.title = newTTS.title;
-
-                // Save in Database
-                dbservices.addNewTts(testObj, ()=> {
-                    // TODO: Check for errors
-                    res.status(200).json({'Msg':'Saved'});
+                        let emptyTtsObj = {
+                            title: '',
+                            description: '',
+                            duration: 0,
+                            date_created: datetime,
+                            creator_user_id: authData.user_id
+                        }
+        
+                        // Save in Database
+                        dbservices.addNewTts(emptyTtsObj, (error_type, error_desc, newTtsId)=> {
+                            // TODO: Check for errors
+                            res.status(200).json({'tts_id':newTtsId});
+                        });
+                    }
                 });
+                
+
+
+
             }else if (func == 'getAllTts') {
                 jwt.verify(access_token, config.jwt.secret, (err, authData) => {
                     if (err) {

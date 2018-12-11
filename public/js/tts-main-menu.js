@@ -1,10 +1,14 @@
+const gAccessToken = window.localStorage.getItem('access_token');
+
 const newTtsButton = _('new-tts-btn');
 const ttsCtr = _('tts-container');
 
 let gEditClick = false;
 
+
 class TimedTaskSequence {
-    constructor(parentDiv, pTtsTitle, pTtsDuration){
+    constructor(parentDiv,pTtsId, pTtsTitle, pTtsDuration){
+        this.tts_id = pTtsId;
         this.tts = CDE('div', [['class', 'tts']]);       
             this.ttsHeaderRow = CDE('div', [['class','tts-header-row tts-row']]);
                 this.ttsTitleCtr = CDE('div', [['class',"tts-title-ctr"]]);
@@ -66,29 +70,34 @@ class TimedTaskSequence {
 
         this.ttsEditBtn.onclick = () => {
             gEditClick = true;
-            console.log('EDIT');
+            window.location.assign("tts-details?tts_id=" + this.tts_id);
         }
     }
 }
 
 newTtsButton.onclick = () => {
-    window.location.assign("tts-details");
+    // TODO: If not new tts should not create new tts
+    ajax.me.createNewTts(gAccessToken,(xhr)=>{
+        if(xhr.status == 200){
+            let responseObj = JSON.parse(xhr.response);
+
+            //Save TTS ID 
+            window.location.assign("tts-details?tts_id=" + responseObj.tts_id);
+        }
+    });
+    
 }
 
-
-const gAccessToken = window.localStorage.getItem('access_token');
 
 ajax.me.getAllTts(gAccessToken,(xhr)=> {
     if(xhr.status == 200){
 
         let ttsList = xhr.response;
         ttsList = JSON.parse(ttsList);
-        console.log('ttsList: ',ttsList);
 
         for (let i=0; i < ttsList.length; i++){
             let ttsObj = ttsList[i];
-            let ttsDomObj = new TimedTaskSequence(ttsCtr, ttsObj.title, ttsObj.duration);
-            console.log(ttsDomObj);
+            let ttsDomObj = new TimedTaskSequence(ttsCtr, ttsObj.id,ttsObj.title, ttsObj.duration);
         }
     } else {
         //console.log(xhr.status);

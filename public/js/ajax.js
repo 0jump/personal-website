@@ -25,7 +25,7 @@ ajax.me.createUser = (fName, lName, emailAddr, pass, passConf, tosAgreement, cal
     ajax.sendJsonPostRequest('users?func=createUser', {}, reqPayload, callback);
 };
 
-// Token Services 
+// Auth Services 
 
 ajax.me.signIn = (emailAddr, pass, callback) => {
     let reqPayload = {
@@ -48,11 +48,12 @@ ajax.me.submitPromocode = (promocode, callback) => {
 }
 
 // TTS Services
-ajax.me.createNewTts = (ttsObj, callback) => {
-    let reqPayload = {
-        'tts': ttsObj
+ajax.me.createNewTts = (pAccessToken,callback) => {
+    // Created new entry in db and returns id
+    let headersObj = {
+        'access_token': pAccessToken
     }
-    ajax.sendJsonPostRequest('tts?func=createNewTts', {}, reqPayload, callback);
+    ajax.sendJsonPostRequest('tts?func=createNewTts', headersObj, {}, callback);
 }
 
 ajax.me.getAllTts = (pAccessToken, callback) => {
