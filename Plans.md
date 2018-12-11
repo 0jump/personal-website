@@ -65,6 +65,8 @@
       - ~~Delete~~
       - ~~Edit~~
     2. ~~Convert to js~~
+    3. Replace •stopped with duration (bottom left)
+
   - New TTS
     1. Time setting UX
       - when selected if i press anywhere on the screen it should deselect
