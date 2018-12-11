@@ -67,13 +67,16 @@
     2. ~~Convert to js~~
     3. Replace •stopped with duration (bottom left)
 
-  - New TTS
+  - Edit TTS
     1. Time setting UX
       - when selected if i press anywhere on the screen it should deselect
       - Make keyboard show up on mobile devices
       - Support times like 99h99m99s (they do not work at the moment)
     2. Make Design nice
     3. Drag and drop to change order
+    4. Delete TTS
+      - Ask in a popup if sure
+      - ajax delete function
   
 ### Other Issues
 
