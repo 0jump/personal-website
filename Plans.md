@@ -79,6 +79,7 @@
 
   - Add secret information to environment variables
   - make https work instead of http
-  - DB storage of ip addresses (in home_page_visits) is using `varchar(16)`, can be optimized 
+  - DB storage of ip addresses (in home_page_visits) is using `varchar(16)`, can be optimized
   - All forms do not submit when I press enter, bcs input is `type="button"` and not `type="submit"`
   - Hashing & Salting password on signup is done synchronously (might slow the server)
+  - Verification of JWT can be done as middleware instead of running verify in each route (maybe)
