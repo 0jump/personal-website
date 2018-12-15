@@ -60,7 +60,7 @@ app.get('/', (req, res) => {
             }
         });
     } else if(!ipAddr) {
-        console.log('Request came with IP Address that could not be identified, Here is the req.connection object', JSON.stringify(req.connection));
+        console.log('Request came with IP Address that could not be identified, Here is the req.connection object', req.connection);
     }
 });
 
