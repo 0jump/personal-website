@@ -87,3 +87,4 @@
   - Hashing & Salting password on signup is done synchronously (might slow the server)
   - Verification of JWT can be done as middleware instead of running verify in each route (maybe)
   - In DB I do not update the duration of the whole tts when i change one of the tasks' duration individually
+  - I do not check with every request if the user has the right to change the tts or tts task, which would require multiple MySQL requests every time I update a task description or another minor detail (Ask pap for his opinion)
