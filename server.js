@@ -275,7 +275,7 @@ app.post('/tts',(req,res) => {
                         }
                     }
                 });
-            }else if (func == 'getAllTasksForTtsInOrder') {
+            }else if (func == 'getAllTasksForTtsInOrder' || func == 'getTtsTitleAndAllTasksForTtsInOrder') {
                 jwt.verify(access_token, config.jwt.secret, (err, authData) => {
                     if (err) {
                         res.status(403).send();
@@ -289,7 +289,18 @@ app.post('/tts',(req,res) => {
                                         // The User ID is indeed linked to this TTS
                                         dbservices.getAllTasksForTtsInOrder(ttsId, (error_type, error_desc, ttsTasksArray)=> {
                                             if(!error_type){
-                                                res.status(200).json({'tts_tasks_array': ttsTasksArray});
+                                                switch(func) {
+                                                    case 'getAllTasksForTtsInOrder':
+                                                        res.status(200).json({'tts_tasks_array': ttsTasksArray});
+                                                        break;
+                                                    case 'getTtsTitleAndAllTasksForTtsInOrder':
+                                                        res.status(200).json({
+                                                            'tts_tasks_array': ttsTasksArray,
+                                                            'tts_title': ttsObj.title
+                                                        });
+                                                        break;
+                                                }
+                                                
                                             }else{
                                                 console.log(error_desc);
                                                 res.status(500).json({"Error":'Could not get TTS Tasks'});

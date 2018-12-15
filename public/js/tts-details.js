@@ -106,7 +106,7 @@ class CountdownDom extends Countdown {
         this.TASK = parentTaskObject;
 
         // Important Variables from this task
-        this.ctr = this.TASK.task;
+        this.ctr = this.TASK.nbrsCtr;
         this.hU = this.TASK.hU;
         this.hD = this.TASK.hD;
         this.mU = this.TASK.mU;
@@ -354,29 +354,34 @@ class Task{
 
 
 class TaskContainer {
-    constructor(taskContainer, newTaskBtn){
-        this.newTaskBtn = newTaskBtn;
-        this.taskCtr = taskContainer;
+    constructor(taskContainer, newTaskBtn, ttsTitleInput){
+        // Important DOM Elements that are external to the task container
+        this.newTaskBtn = newTaskBtn;       // Button to create a new task
+        this.taskCtr = taskContainer;       // Container of all the Task DOM elements
+        this.ttsTitleInput = ttsTitleInput; // Input Element to Display TTS Name
 
-        this.tasksList = [];
-        this.timerBeingEdited = '';
+        this.tasksList = [];        // Store all existing "Task" Class instances
+        this.timerBeingEdited = ''; // Hold the id of the Task who's timer is being edited
 
         //  ------------------------
         //  Things To Do Immediately after Instantiating this Class, which should coincide with immediately after the page loads
         //  ------------------------
         
         // Ask server for TTS Title and all Tasks
-        ajax.me.getAllTtsTasks(gTtsId, gAccessToken, (xhr) => {
+        ajax.me.getTtsTitleAndAllTtsTasks(gTtsId, gAccessToken, (xhr) => {
             if (xhr.status == 200){
-                let allTasks = JSON.parse(xhr.response).tts_tasks_array;
-                this.createListOfTasks(allTasks);
+                let responseObj = JSON.parse(xhr.response);
+                // Create(=Display) all tasks given by the server
+                this.createListOfTasks(responseObj.tts_tasks_array);
+                // Display TTS Name in the Title Input Field
+                this.ttsTitleInput.value = responseObj.tts_title;
             }else if(xhr.status == 403){
                 window.location.assign("/");
             }else{
                 console.log(xhr.status);
             }
         });
-        // Create(=Display) all tasks given by the server
+        
         
         
         // Set up Event Listeners
@@ -472,7 +477,7 @@ let ttsTitleInput = _('tts-title');
 
 
 // Initialize TaskContainer As soon as page loads
-let TaskContainerObj = new TaskContainer(taskCtr, newTaskBtn);
+let TaskContainerObj = new TaskContainer(taskCtr, newTaskBtn, ttsTitleInput);
 
 
 

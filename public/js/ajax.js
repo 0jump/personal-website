@@ -114,6 +114,16 @@ ajax.me.updateTtsTask = (pTtsTaskId, pNewTitle, pNewDescription, pNewDuration, p
     }
     ajax.sendJsonPostRequest('tts?func=updateTtsTask',headersObj, reqPayload, callback);
 }
+
+ajax.me.getTtsTitleAndAllTtsTasks = (pTtsId, pAccessToken, callback) => {
+    let reqPayload = { 
+        'tts_id':pTtsId
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tts?func=getTtsTitleAndAllTasksForTtsInOrder',headersObj, reqPayload, callback);
+}
 /* 
 -------------LOW LEVEL AJAX FUNCTIONS--------------
 
