@@ -84,7 +84,6 @@ newTtsButton.onclick = () => {
             window.location.assign("tts-details?tts_id=" + responseObj.tts_id);
         }
     });
-    
 }
 
 

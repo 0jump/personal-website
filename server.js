@@ -254,6 +254,132 @@ app.post('/tts',(req,res) => {
                         });
                     }
                 });
+            }else if (func == 'addNewTtsTask') {
+                jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+                    if (err) {
+                        res.status(403).send();
+                    } else {
+                        let newTtsTaskObj = typeof(req.body.tts_task) == 'object' ? req.body.tts_task : false;
+                        if (newTtsTaskObj){
+                            dbservices.addNewTtsTask(newTtsTaskObj, authData.user_id, (error, error_desc, newTtsTaskObjWithId)=>{
+                                if(!error){
+                                    res.status(200).json({'tts_task':newTtsTaskObjWithId});
+                                } else{
+                                    res.status(500).send();
+                                }
+                            });
+                        } else{ 
+                            res.status(400).json({'Error':'Missing TTS Task'});
+                        }
+                    }
+                });
+            }else if (func == 'getAllTasksForTtsInOrder') {
+                jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+                    if (err) {
+                        res.status(403).send();
+                    } else {
+                        let ttsId = typeof(req.body.tts_id) == 'string' ? req.body.tts_id : false;
+                        // Check if user has access to this tts
+                        if (ttsId){
+                            dbservices.getTts(ttsId, authData.user_id, (error_type, error_desc, ttsObj) => {
+                                if(!error_type){
+                                    if(ttsObj){
+                                        // The User ID is indeed linked to this TTS
+                                        dbservices.getAllTasksForTtsInOrder(ttsId, (error_type, error_desc, ttsTasksArray)=> {
+                                            if(!error_type){
+                                                res.status(200).json({'tts_tasks_array': ttsTasksArray});
+                                            }else{
+                                                console.log(error_desc);
+                                                res.status(500).json({"Error":'Could not get TTS Tasks'});
+                                            }
+                                        });
+                                    } else {
+                                        res.status(403).json({'Error': 'You cannot access this TTS'});
+                                    }
+                                } else {
+                                    console.log(error_desc)
+                                    res.status(500).send();
+                                }
+                            });
+                        } else{
+                            res.status(400).json({'Error':"Missing TTS id"});
+                        }
+                    }
+                });
+            }else if (func == 'deleteTtsTask') {
+                jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+                    if (err) {
+                        res.status(403).send();
+                    } else {
+                        let needed = {};
+                        needed.ttsId = typeof(req.body.tts_id) == 'string' ? req.body.tts_id : false;
+                        needed.ttsTaskId = typeof(req.body.tts_task_id) == 'string' ? req.body.tts_task_id : false;
+                        let invalid = helpers.checkForKeysWithFalseValues(needed);
+                        
+                        if (invalid.length > 0) {
+                            res.status(400).json({'Missing':invalid});
+                        } else {
+                            // Check if user has access to this tts
+                            dbservices.getTts(needed.ttsId, authData.user_id, (error_type, error_desc, ttsObj) => {
+                                if(!error_type){
+                                    if(ttsObj){
+                                        // The User ID is indeed linked to this TTS
+                                        dbservices.deleteTtsTask(needed.ttsTaskId, (error_type, error_desc, isDone)=> {
+                                            if(!error_type){
+                                                res.status(200).send();
+                                            }else{
+                                                console.log(error_desc);
+                                                res.status(500).json({"Error":'Could not delete TTS Task'});
+                                            }
+                                        });
+                                    } else {
+                                        res.status(403).json({'Error': 'You cannot access this TTS'});
+                                    }
+                                } else {
+                                    console.log(error_desc)
+                                    res.status(500).send();
+                                }
+                            });
+                        }
+                    }
+                });
+            }else if (func == 'updateTtsTask') {
+                jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+                    if (err) {
+                        res.status(403).send();
+                    } else {
+                        let needed = {};
+                        needed.ttsId = typeof(req.body.tts_id) == 'string' ? req.body.tts_id : false;
+                        needed.ttsTask = typeof(req.body.tts_task) == 'object' ? req.body.tts_task : false;
+                        let invalid = helpers.checkForKeysWithFalseValues(needed);
+                        
+                        if (invalid.length > 0) {
+                            res.status(400).json({'Missing':invalid});
+                        } else {
+                            // Check if user has access to this tts
+                            dbservices.getTts(needed.ttsId, authData.user_id, (error_type, error_desc, ttsObj) => {
+                                if(!error_type){
+                                    if(ttsObj){
+                                        // The User ID is indeed linked to this TTS
+                                        dbservices.updateTtsTask(needed.ttsTask, (error_type, error_desc, isDone)=> {
+                                            if(!error_type){
+                                                res.status(200).send();
+                                            }else{
+                                                console.log(error_desc);
+                                                res.status(500).json({"Error":'Could not update TTS Task'});
+                                            }
+                                        });
+                                    } else {
+                                        res.status(403).json({'Error': 'You cannot access this TTS'});
+                                    }
+                                } else {
+                                    console.log(error_desc)
+                                    res.status(500).send();
+                                }
+                            });
+                        }
+                    }
+                });
             }
         } else {
             res.status(403).send();

@@ -54,16 +54,66 @@ ajax.me.createNewTts = (pAccessToken,callback) => {
         'access_token': pAccessToken
     }
     ajax.sendJsonPostRequest('tts?func=createNewTts', headersObj, {}, callback);
-}
+};
 
 ajax.me.getAllTts = (pAccessToken, callback) => {
     let headersObj = {
         'access_token': pAccessToken
     }
     ajax.sendJsonPostRequest('tts?func=getAllTts', headersObj, {}, callback);
+};
+
+ajax.me.addNewTtsTask = (pTtsId, pAccessToken, callback) => {
+    let reqPayload = { 
+        'tts_task':{
+            'title':'',
+            'description':'',
+            'duration': '0',
+            'tts_id':pTtsId
+        }
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tts?func=addNewTtsTask',headersObj, reqPayload, callback);
+};
+
+ajax.me.getAllTtsTasks = (pTtsId, pAccessToken, callback) => {
+    let reqPayload = { 
+        'tts_id':pTtsId
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tts?func=getAllTasksForTtsInOrder',headersObj, reqPayload, callback);
 }
 
+ajax.me.deleteTtsTask = (pTtsTaskId ,pTtsId, pAccessToken, callback) => {
+    let reqPayload = { 
+        'tts_id':pTtsId,
+        'tts_task_id':pTtsTaskId.toString()
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tts?func=deleteTtsTask',headersObj, reqPayload, callback);
+}
 
+ajax.me.updateTtsTask = (pTtsTaskId, pNewTitle, pNewDescription, pNewDuration, pTtsId, pAccessToken, callback) => {
+    let reqPayload = { 
+        'tts_id':pTtsId,
+        'tts_task':{
+            'title':pNewTitle,
+            'description': pNewDescription,
+            'duration':pNewDuration,
+            'tts_task_id':pTtsTaskId
+        }
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tts?func=updateTtsTask',headersObj, reqPayload, callback);
+}
 /* 
 -------------LOW LEVEL AJAX FUNCTIONS--------------
 

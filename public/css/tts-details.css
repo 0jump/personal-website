@@ -78,7 +78,7 @@ body {
     border:none;
 }
 
-.active{
+.task-timer-being-edited{
     color:red;
 }
 

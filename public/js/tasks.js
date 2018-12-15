@@ -106,14 +106,14 @@ class CountdownDom extends Countdown {
         this.TASK = parentTaskObject;
 
         // Important Variables from this task
-        this.ctr = this.TASK.task;
-        this.hU = this.TASK.hU;
-        this.hD = this.TASK.hD;
-        this.mU = this.TASK.mU;
-        this.mD = this.TASK.mD;
-        this.sU = this.TASK.sU;
-        this.sD = this.TASK.sD;
-        this.hiddenTimerInput = this.TASK.hiddenTimerInput;
+        this.ctr = TASK.container;
+        this.hU = TASK.hU;
+        this.hD = TASK.hD;
+        this.mU = TASK.mU;
+        this.mD = TASK.mD;
+        this.sU = TASK.sU;
+        this.sD = TASK.sD;
+        this.hiddenTimerInput = TASK.hiddenTimerInput;
 
         /*TODO: Remove this after testing  this.isActive = false; */
 
@@ -242,15 +242,14 @@ class Task{
         // This is the TaskContainer Instance that created this task
         this.TASK_CONTAINER = TaskContainer;
 
-        this.id = taskObject.tts_task_id;
+        this.id = taskObject.id;
         this.parentDiv = this.TASK_CONTAINER.taskCtr;
         
         this.task = CDE('div', [["class","task"]]);
             this.leftCtr = CDE('div', [["class","left-ctr"]]);
                 this.taskTitleCtr = CDE('div', [['class', 'task-title-ctr']]);
                     this.taskTitle = CDE('input', [['class',"task-title"], ['placeholder','Your Task Title']]);
-                        this.taskTitle.value = taskObject.title;
-                        
+                        this.taskTitle.innerText = taskObject.title;
                     this.taskTitleCtr.appendChild(this.taskTitle);
                 this.leftCtr.appendChild(this.taskTitleCtr);
 
@@ -335,19 +334,6 @@ class Task{
                 this.rightCtr.appendChild(this.deleteBtnCtr);
             this.task.appendChild(this.rightCtr);
         this.parentDiv.appendChild(this.task);
-
-        this.taskTitle.onblur = () => {this.inputFieldsOnBlurHandler()};
-        this.taskDesc.onblur = () => {this.inputFieldsOnBlurHandler()};
-    }
-    inputFieldsOnBlurHandler(){
-        ajax.me.updateTtsTask(this.id,this.taskTitle.value,this.taskDesc.value, this.cdDom.iniMs, gTtsId, gAccessToken, (xhr)=>{
-            if(xhr.status==200){
-
-            } else {
-                alert('Could not update Task');
-                console.log(xhr.status)
-            }
-        });
     }
 }
 
@@ -359,55 +345,13 @@ class TaskContainer {
 
         this.tasksList = [];
         this.timerBeingEdited = '';
-
-        //  ------------------------
-        //  Things To Do Immediately after Instantiating this Class, which should coincide with immediately after the page loads
-        //  ------------------------
-        
-        // Ask server for TTS Title and all Tasks
-        ajax.me.getAllTtsTasks(gTtsId, gAccessToken, (xhr) => {
-            if (xhr.status == 200){
-                let allTasks = JSON.parse(xhr.response).tts_tasks_array;
-                this.createListOfTasks(allTasks);
-            }else if(xhr.status == 403){
-                window.location.assign("/");
-            }else{
-                console.log(xhr.status);
-            }
-        });
-        // Create(=Display) all tasks given by the server
-        
-        
-        // Set up Event Listeners
-
-        // New Task Button = onclick
-        this.newTaskBtn.onclick = () => {
-            // Ask server to create a new entry (returns task object)
-            ajax.me.addNewTtsTask(gTtsId, gAccessToken, (xhr)=> {
-                if(xhr.status == 200){
-                    let resObj = JSON.parse(xhr.response);
-                    let newTtsTaskObj = resObj.tts_task
-                    console.log('newTtsTaskObj: ', newTtsTaskObj);
-                    // Create(=Display) new Task if everything went right
-                    this.createTask(newTtsTaskObj);
-                }else{
-                    console.log(xhr.status);
-                }
-            });
-            
-        }
-
-        // Event Listener for Any clicks on the window
-        // If there is a timer being edited, set it to not being edited
     }
     getTaskIndexFromTasksList(pTaskIdToFind){
         // Find task in tasks list and return its index in the list as well as the task
         let foundTaskIndex = false;
-        for(let i = 0; i < this.tasksList.length; i++){
+        for(let i = 0; i < this.tasksList; i++){
             let task = this.tasksList[i];
-            console.log(`[${i}]` + 'Going through task.id: ', task.id);
-            if (task.id == pTaskIdToFind){
-                
+            if (task.id === pTaskIdToFind){
                 foundTaskIndex = i;
                 break
             }
@@ -419,7 +363,7 @@ class TaskContainer {
         let newTask = new Task(this, pTaskObject);
 
         // Add new task to the list of tasks
-        this.tasksList.push(newTask);
+        this.tasksList.append(newTask);
     }
     createListOfTasks (pArrayOfTaskObjects){
         // Add to the Task Container DOM Element all the Task Objects in the Input Array
@@ -428,90 +372,21 @@ class TaskContainer {
         }
     }
     deleteTask(pTaskObject){
-        let indexOfTaskToBeDeleted = this.getTaskIndexFromTasksList(pTaskObject.id);
-        if(indexOfTaskToBeDeleted >= 0){
-            
+        let indexOfTaskToBeDeleted = getTaskIndexFromTasksList(pTaskObject.id);
+        if(indexOfTaskToBeDeleted){
             // Ask server if it can be deleted
-            ajax.me.deleteTtsTask(pTaskObject.id ,gTtsId, gAccessToken, (xhr)=>{
-                if(xhr.status == 200){
-                    
-                    // It has been deleted from DB
-                    // Now to remove it from display and browser memory
-                    // Delete the Task.task (which is the DOM Element)
-                    this.taskCtr.removeChild(pTaskObject.task);
-                    // Delete its record from tasks list (Make sure to check the id before deleting it, because maybe something else modified it in the mean time)
-                    if (this.tasksList[indexOfTaskToBeDeleted].id === pTaskObject.id){
-                        this.tasksList.splice(indexOfTaskToBeDeleted, 1);
-                    } else {
-                        let newIndexOfTaskToBeDeleted = this.getTaskIndexFromTasksList(pTaskObject.id);
-                        this.tasksList.splice(newIndexOfTaskToBeDeleted, 1);
-                    }
-                }else{
-                    console.log('status: ', xhr.status);
-                    console.log('Could not remove Task')
-                }
-            });
+            
+            // Delete the Task.task (which is the DOM Element)
+            this.taskCtr.removeChild(pTaskObject.task);
+            // Delete its record from tasks list (Make sure to check the id before deleting it, because maybe something else modified it in the mean time)
+            if (this.tasksList[indexOfTaskToBeDeleted].id === pTaskObject.id){
+                this.tasksList.splice(indexOfTaskToBeDeleted, 1);
+            } else {
+                let newIndexOfTaskToBeDeleted = getTaskIndexFromTasksList(pTaskObject.id);
+                this.tasksList.splice(newIndexOfTaskToBeDeleted, 1);
+            }
         } else {
-            console.log('Could not find Task:', pTaskObject.id);
+            console.log('Failed to delete Task:', pIdOfTaskToDelete);
         }
     }
 }
-
-
-
-// Needed global variables in order for TaskContainer class to Work
-
-// Button to Create a new Task
-let newTaskBtn = _('new-task-btn');
-
-// Container for all the tasks
-let taskCtr = _('task-ctr');
-
-// Initial send tts object to save after writing something as tts title
-let ttsTitleInput = _('tts-title');
-
-
-// Initialize TaskContainer As soon as page loads
-let TaskContainerObj = new TaskContainer(taskCtr, newTaskBtn);
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* let setActiveCountdownDom = (pCdDomObj) => {
-    console.log('Setting Active:', pCdDomObj.id)
-    if (gActiveCdDom) {
-        gActiveCdDom.deactivate();
-    }
-    gActiveCdDom = pCdDomObj;
-    pCdDomObj.activate();
-}
-window.onclick = () => {
-    console.log('clicked window');
-    if (gLastCountdownDomClicked){
-        setActiveCountdownDom(gLastCountdownDomClicked);
-    } else {
-        if(gActiveCdDom){
-            console.log('Setting INactive:', gActiveCdDom.id);
-            gActiveCdDom.deactivate();
-            gActiveCdDom = 0;
-        }
-    }
-    gLastCountdownDomClicked=0; 
-} */
-
-
-
-
-
-
-
-
