@@ -406,7 +406,6 @@ class TaskContainer {
         let foundTaskIndex = false;
         for(let i = 0; i < this.tasksList.length; i++){
             let task = this.tasksList[i];
-            console.log(`[${i}]` + 'Going through task.id: ', task.id);
             if (task.id == pTaskIdToFind){
                 
                 foundTaskIndex = i;
