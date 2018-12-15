@@ -256,6 +256,7 @@ class Task{
 
                 this.taskDescCtr = CDE('div',[['class', 'task-desc-ctr']]);
                     this.taskDesc = CDE('textarea', [['class', 'task-desc'], ['placeholder', 'Your Task Description']]);
+                        this.taskDesc.value = taskObject.description;
                     this.taskDescCtr.appendChild(this.taskDesc);
                 this.leftCtr.appendChild(this.taskDescCtr);
 
