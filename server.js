@@ -39,7 +39,7 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => {
     res.render('home');
 
-    let ipAddr = req.connection.remoteAddress.substring(req.connection.remoteAddress.lastIndexOf(':') + 1);
+    let ipAddr = typeof(req.connection.remoteAddress) !== 'undefined' ? req.connection.remoteAddress.substring(req.connection.remoteAddress.lastIndexOf(':') + 1) : false;
     //console.log(req.connection.remoteAddress);
 
     if (ipAddr.length > 2) {
@@ -59,6 +59,8 @@ app.get('/', (req, res) => {
                 console.log('Failed to get ip info for IP Address: ',ipAddr);
             }
         });
+    } else if(!ipAddr) {
+        console.log('Request came with IP Address that could not be identified, Here is the req.connection object', JSON.stringify(req.connection));
     }
 });
 
