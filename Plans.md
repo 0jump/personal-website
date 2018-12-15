@@ -86,3 +86,4 @@
   - All forms do not submit when I press enter, bcs input is `type="button"` and not `type="submit"`
   - Hashing & Salting password on signup is done synchronously (might slow the server)
   - Verification of JWT can be done as middleware instead of running verify in each route (maybe)
+  - In DB I do not update the duration of the whole tts when i change one of the tasks' duration individually
