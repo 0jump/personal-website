@@ -10,10 +10,12 @@ body {
     display: flex;
 
     justify-content: center;
+    align-items: center;
 }
 
 .details-ctr {
     width: 100%;
+    max-width:400px;
     
     background-color:white; 
 
