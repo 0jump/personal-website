@@ -121,6 +121,7 @@ class CountdownDom extends Countdown {
         this.is1stKeypress = true;
 
         this.userInput = ["0","0","0","0","0","0"];
+        
 
 
 
@@ -142,6 +143,7 @@ class CountdownDom extends Countdown {
         
     }
     setToBeingEdited(){
+        console.log(`Task[${this.TASK.id}] is being edited`);
         // 1. Add a DOM class linked to a style for being edited
         this.ctr.classList.add('task-timer-being-edited');
         // 2. Focus the hidden input field (so the virtual keyboard pops up on mobile devices)  
@@ -158,23 +160,28 @@ class CountdownDom extends Countdown {
         // Tell TASK_CONTAINER that this timer is not being edited anymore
         this.TASK.TASK_CONTAINER.timerBeingEdited = '';
     }
-    keydownHandler (evt) {
+    keydownHandler(evt) {
+        // "this" here refers to the element that the event listener is listening for
+        
         // Check if the key pressed is a number
-        let isNbr = this.isNumberKey(evt);
-        let isBackspace =  this.isBackspace(evt)
+        let isNbr = _self.isNumberKey(evt);
+        let isBackspace =  _self.isBackspace(evt);
         if( isNbr >= 0){
-            if (this.is1stKeypress){
-                this.userInput = ["0","0","0","0","0","0"];
+            if (_self.is1stKeypress){
+                _self.userInput = ["0","0","0","0","0","0"];
             }
             // Add the input to display to the user
-            this.addOneUserInput(isNbr);
+            _self.addOneUserInput(isNbr);
 
             // Specifie that the user has already entered a number before
-            this.is1stKeypress = false;
+            _self.is1stKeypress = false;
         } else if (isBackspace){
             // Remove the last number entered
-            this.deleteOneUserInput(isNbr);
+            _self.deleteOneUserInput(isNbr);
         }
+    }
+    _keydownHandler(evt){
+
     }
     addOneUserInput(nbrToInput){
         this.userInput.push(nbrToInput);
@@ -209,7 +216,6 @@ class CountdownDom extends Countdown {
         sD.innerText = orgTimeLeft[2][0];
     }
     isNumberKey(evt){
-        
         let charCode = (evt.which) ? evt.which : evt.keyCode;
         
         if (charCode == 46 || charCode > 31 && (charCode < 48 || charCode > 57)){
@@ -221,13 +227,15 @@ class CountdownDom extends Countdown {
     isBackspace(evt){
         // TODO: Delete if it works without the line below after testing
         /* let charCode = (evt.which) ? evt.which : evt.keyCode; */
-        
+        let key = event.keyCode || event.charCode;
+        console.log(key);
         if (key == 8 || key == 46){
             evt.preventDefault();
+            console.log('Pressed Backspace');
             return -1;
         }
         // TODO: Remove console log after testing
-        console.log('Pressed Backspace');
+        
         return true;
     }
     pause(){
@@ -337,10 +345,10 @@ class Task{
             this.task.appendChild(this.rightCtr);
         this.parentDiv.appendChild(this.task);
 
-        this.taskTitle.onblur = () => {this.inputFieldsOnBlurHandler()};
-        this.taskDesc.onblur = () => {this.inputFieldsOnBlurHandler()};
+        this.taskTitle.onblur = () => {this.taskInputFieldsOnBlurHandler()};
+        this.taskDesc.onblur = () => {this.taskInputFieldsOnBlurHandler()};
     }
-    inputFieldsOnBlurHandler(){
+    taskInputFieldsOnBlurHandler(){
         ajax.me.updateTtsTask(this.id,this.taskTitle.value,this.taskDesc.value, this.cdDom.iniMs, gTtsId, gAccessToken, (xhr)=>{
             if(xhr.status==200){
 
@@ -350,6 +358,7 @@ class Task{
             }
         });
     }
+
 }
 
 
@@ -385,6 +394,9 @@ class TaskContainer {
         
         
         // Set up Event Listeners
+
+        // Changing the TTS Title
+        this.ttsTitleInput.onblur = () => {this.ttsTitleInputFieldsOnBlurHandler()};
 
         // New Task Button = onclick
         this.newTaskBtn.onclick = () => {
@@ -459,6 +471,17 @@ class TaskContainer {
         } else {
             console.log('Could not find Task:', pTaskObject.id);
         }
+    }
+    ttsTitleInputFieldsOnBlurHandler(){
+        console.log('TTS Title Input: ', this.ttsTitleInput.value);
+        ajax.me.updateTtsTitle(this.ttsTitleInput.value, gTtsId, gAccessToken, (xhr)=>{
+            if(xhr.status==200){
+
+            } else {
+                alert('Could not update Task');
+                console.log(xhr.status)
+            }
+        });
     }
 }
 
