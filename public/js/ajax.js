@@ -63,6 +63,17 @@ ajax.me.getAllTts = (pAccessToken, callback) => {
     ajax.sendJsonPostRequest('tts?func=getAllTts', headersObj, {}, callback);
 };
 
+ajax.me.updateTtsTitle = (pNewTitle, pTtsId, pAccessToken, callback) => {
+    let reqPayload = { 
+        'tts_id':pTtsId,
+        'tts_title':pNewTitle
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tts?func=updateTtsTitle',headersObj, reqPayload, callback);
+}
+
 ajax.me.addNewTtsTask = (pTtsId, pAccessToken, callback) => {
     let reqPayload = { 
         'tts_task':{
