@@ -393,6 +393,44 @@ app.post('/tts',(req,res) => {
                         }
                     }
                 });
+            }else if (func == 'updateTtsTitle') {
+                jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+                    if (err) {
+                        res.status(403).send();
+                    } else {
+                        let needed = {};
+                        needed.ttsId = typeof(req.body.tts_id) == 'string' ? req.body.tts_id : false;
+                        needed.ttsTitle = typeof(req.body.tts_title) == 'string' ? req.body.tts_title : false;
+                        console.log('req.body.tts_title: ', req.body.tts_title);
+                        let invalid = helpers.checkForKeysWithFalseValues(needed);
+                        
+                        if (invalid.length > 0) {
+                            res.status(400).json({'Missing':invalid});
+                        } else {
+                            // Check if user has access to this tts
+                            dbservices.getTts(needed.ttsId, authData.user_id, (error_type, error_desc, ttsObj) => {
+                                if(!error_type){
+                                    if(ttsObj){
+                                        // The User ID is indeed linked to this TTS
+                                        dbservices.updateTtsTitle(needed.ttsId, needed.ttsTitle, (error_type, error_desc, isDone)=> {
+                                            if(!error_type){
+                                                res.status(200).send();
+                                            }else{
+                                                console.log(error_desc);
+                                                res.status(500).json({"Error":'Could not update TTS Title'});
+                                            }
+                                        });
+                                    } else {
+                                        res.status(403).json({'Error': 'You cannot access this TTS'});
+                                    }
+                                } else {
+                                    console.log(error_desc)
+                                    res.status(500).send();
+                                }
+                            });
+                        }
+                    }
+                });
             }
         } else {
             res.status(403).send();
