@@ -144,6 +144,7 @@ class CountdownDom extends Countdown {
     }
     setToBeingEdited(){
         console.log(`Task[${this.TASK.id}] is being edited`);
+        this.TASK.TASK_CONTAINER.is1stClickForTimerEdit = true;
         // 1. Add a DOM class linked to a style for being edited
         this.ctr.classList.add('task-timer-being-edited');
         // 2. Focus the hidden input field (so the virtual keyboard pops up on mobile devices)  
@@ -152,6 +153,7 @@ class CountdownDom extends Countdown {
         this.hiddenTimerInput.addEventListener("keydown", this.keydownHandler);
     }
     setToNotBeingEdited(){
+        console.log(`Task[${this.TASK.id}] stopped being edited, new time is ${this.iniMs}ms`);
         this.ctr.classList.remove('task-timer-being-edited');
 
         // Remove event listener for keydown
@@ -159,29 +161,40 @@ class CountdownDom extends Countdown {
 
         // Tell TASK_CONTAINER that this timer is not being edited anymore
         this.TASK.TASK_CONTAINER.timerBeingEdited = '';
+
+        // Tell server to save new time
+        ajax.me.updateTtsTask(this.TASK.id,this.TASK.taskTitle.value,this.TASK.taskDesc.value, this.iniMs, gTtsId, gAccessToken, (xhr)=>{
+            if(xhr.status==200){
+                this.updateCountdown(this.iniMs);
+            } else {
+                alert('Could not update Task');
+                console.log(xhr.status)
+            }
+        });
     }
     keydownHandler(evt) {
         // "this" here refers to the element that the event listener is listening for
-        
+
+        let taskObjBeingEdited = TaskContainerObj.tasksList[TaskContainerObj.getTaskIndexFromTasksList(TaskContainerObj.timerBeingEdited)];
+        console.log('taskObjBeingEdited: ', taskObjBeingEdited);
         // Check if the key pressed is a number
-        let isNbr = _self.isNumberKey(evt);
-        let isBackspace =  _self.isBackspace(evt);
+        let isNbr = taskObjBeingEdited.cdDom.isNumberKey(evt);
+        let isBackspace =  taskObjBeingEdited.cdDom.isBackspace(evt);
         if( isNbr >= 0){
-            if (_self.is1stKeypress){
-                _self.userInput = ["0","0","0","0","0","0"];
+            if (taskObjBeingEdited.cdDom.is1stKeypress){
+                taskObjBeingEdited.cdDom.userInput = ["0","0","0","0","0","0"];
             }
             // Add the input to display to the user
-            _self.addOneUserInput(isNbr);
+            taskObjBeingEdited.cdDom.addOneUserInput(isNbr);
 
-            // Specifie that the user has already entered a number before
-            _self.is1stKeypress = false;
+            // Specify that the user has already entered a number before
+            taskObjBeingEdited.cdDom.is1stKeypress = false;
+
         } else if (isBackspace){
             // Remove the last number entered
-            _self.deleteOneUserInput(isNbr);
+            taskObjBeingEdited.cdDom.deleteOneUserInput(isNbr);
         }
-    }
-    _keydownHandler(evt){
-
+        
     }
     addOneUserInput(nbrToInput){
         this.userInput.push(nbrToInput);
@@ -196,24 +209,31 @@ class CountdownDom extends Countdown {
         this.sU.innerText = this.userInput[5];
 
         this.set(timeEnteredInMs);
+        console.log(this.iniMs);
     }
     deleteOneUserInput(){
+        this.userInput.unshift('0');
+        this.userInput.pop();
+        let timeEnteredInMs = timeToMs(this.userInput[0] + this.userInput[1] + ":" + this.userInput[2] + this.userInput[3] + ":" + this.userInput[4] + this.userInput[5] + ":00");
         // Just like the backspace (deleting the last written element)
-        this.hD.innerText = '0';
-        this.hU.innerText = this.userInput[0];
-        this.mD.innerText = this.userInput[1];
-        this.mU.innerText = this.userInput[2];
-        this.sD.innerText = this.userInput[3];
-        this.sU.innerText = this.userInput[4];
+        this.hD.innerText = this.userInput[0];
+        this.hU.innerText = this.userInput[1];
+        this.mD.innerText = this.userInput[2];
+        this.mU.innerText = this.userInput[3];
+        this.sD.innerText = this.userInput[4];
+        this.sU.innerText = this.userInput[5];
+
+        this.set(timeEnteredInMs);
     }
     updateCountdown(timeInMs){
         let orgTimeLeft = msToTime(timeInMs).split(':');
-        hU.innerText = orgTimeLeft[0][1];
-        hD.innerText = orgTimeLeft[0][0];
-        mU.innerText = orgTimeLeft[1][1];
-        mD.innerText = orgTimeLeft[1][0];
-        sU.innerText = orgTimeLeft[2][1];
-        sD.innerText = orgTimeLeft[2][0];
+        
+        this.hU.innerText = orgTimeLeft[0][1];
+        this.hD.innerText = orgTimeLeft[0][0];
+        this.mU.innerText = orgTimeLeft[1][1];
+        this.mD.innerText = orgTimeLeft[1][0];
+        this.sU.innerText = orgTimeLeft[2][1];
+        this.sD.innerText = orgTimeLeft[2][0];
     }
     isNumberKey(evt){
         let charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -234,8 +254,7 @@ class CountdownDom extends Countdown {
             console.log('Pressed Backspace');
             return -1;
         }
-        // TODO: Remove console log after testing
-        
+
         return true;
     }
     pause(){
@@ -269,9 +288,7 @@ class Task{
                 this.leftCtr.appendChild(this.taskDescCtr);
 
                 this.taskDurationCtr = CDE('div', [['class', 'task-duration-ctr']]);
-                    /* this.taskDuration = CDE('input', [['class',"task-duration-ctr"], ['placeholder', 'hh:mm:ss']]);
-                        
-                    this.taskDurationCtr.appendChild(this.taskDuration); */
+
                     this.nbrsCtr = CDE('div', [['class',"numbers-ctr"], ['id',"numbers-ctr"]]);
                         this.hiddenTimerInput = CDE('input', [['type','tel'],['class','hidden-timer-input']]);
                         this.nbrsCtr.appendChild(this.hiddenTimerInput);
@@ -347,6 +364,11 @@ class Task{
 
         this.taskTitle.onblur = () => {this.taskInputFieldsOnBlurHandler()};
         this.taskDesc.onblur = () => {this.taskInputFieldsOnBlurHandler()};
+
+        // Put updated time
+        console.log(`Updated time for Task[${this.id}], it is ${taskObject.duration}`);
+        this.cdDom.updateCountdown(taskObject.duration);
+        
     }
     taskInputFieldsOnBlurHandler(){
         ajax.me.updateTtsTask(this.id,this.taskTitle.value,this.taskDesc.value, this.cdDom.iniMs, gTtsId, gAccessToken, (xhr)=>{
@@ -372,6 +394,7 @@ class TaskContainer {
         this.tasksList = [];        // Store all existing "Task" Class instances
         this.timerBeingEdited = ''; // Hold the id of the Task who's timer is being edited
 
+        this.is1stClickForTimerEdit = false;
         //  ------------------------
         //  Things To Do Immediately after Instantiating this Class, which should coincide with immediately after the page loads
         //  ------------------------
@@ -412,12 +435,23 @@ class TaskContainer {
                     console.log(xhr.status);
                 }
             });
-            
         }
 
         // Event Listener for Any clicks on the window
+        document.onclick = () => {
+            if (typeof this.timerBeingEdited == 'number'){
+                if(!this.is1stClickForTimerEdit){
+                    let activeTask = this.tasksList[this.getTaskIndexFromTasksList(this.timerBeingEdited)];
+                    console.log('activeTask: ', activeTask);
+    
+                    activeTask.cdDom.setToNotBeingEdited();
+                }
+                this.is1stClickForTimerEdit = false;
+            }
+        }
         // If there is a timer being edited, set it to not being edited
     }
+    
     getTaskIndexFromTasksList(pTaskIdToFind){
         // Find task in tasks list and return its index in the list as well as the task
         let foundTaskIndex = false;
@@ -483,6 +517,7 @@ class TaskContainer {
             }
         });
     }
+
 }
 
 
