@@ -65,8 +65,8 @@ app.get('/', (req, res) => {
 });
 
 // Timer Route
-app.get('/timer', (req, res) => {
-    res.render('timer');
+app.get('/tts-timer', (req, res) => {
+    res.render('tts-timer');
 });
 
 // TTS Main Menu Route

@@ -1,3 +1,6 @@
+const gAccessToken = window.localStorage.getItem('access_token');
+const gTtsId = helpers.getAllUrlParams().tts_id;
+
 // a Task (class:TaskDom) has 3 inputs: 1. title
 //                                      2. description
 //                                      3. duration
@@ -432,7 +435,7 @@ class Task_Manager {
                 let taskDesc = typeof(taskObj.description) == 'string' ? taskObj.description : false;
                 let taskDuration = typeof(taskObj.duration) == 'number' ? taskObj.duration : false;
     
-                if (taskTitle && taskDesc && taskDuration){
+                if (/* taskTitle && taskDesc && */ taskDuration){
                     let newTask = new TaskDom(taskTitle, taskDesc);
                     newTask.build();
                     newTask.updateCountdown();
@@ -457,22 +460,38 @@ class Task_Manager {
 
 }
 
+// Ask server for TTS Title and all Tasks
+ajax.me.getTtsTitleAndAllTtsTasks(gTtsId, gAccessToken, (xhr) => {
+    if (xhr.status == 200){
+        let responseObj = JSON.parse(xhr.response);
+        console.log('responseObj: ', responseObj);
 
-let taskMgr = new Task_Manager(_('tasks-container'), _('start-pause-btn'), _('reset-btn'));
-taskMgr.addTaskArray(
-    AthX6Min
-    /* morningRoutine */
-);
+        // Create Task_Manager Instance
+        let taskMgr = new Task_Manager(_('tasks-container'), _('start-pause-btn'), _('reset-btn'));
 
-_('tasks-container').scrollIntoView(false);
-_('start-pause-btn').onclick = () => {
-    if(taskMgr.state != 'ongoing'){
-        taskMgr.start();
-    } else if (taskMgr.state == 'ongoing'){
-        taskMgr.pause();
+        // Add Tasks
+        taskMgr.addTaskArray(responseObj.tts_tasks_array);
+
+        // Set important Event listeners
+        _('tasks-container').scrollIntoView(false);
+        _('start-pause-btn').onclick = () => {
+            if (taskMgr.state != 'ongoing') {
+                taskMgr.start();
+            } else if (taskMgr.state == 'ongoing') {
+                taskMgr.pause();
+            }
+
+        }
+        _('reset-btn').onclick = () => {
+            taskMgr.reset();
+        }
+    }else if(xhr.status == 403){
+        window.location.assign("/");
+    }else{
+        console.log(xhr.status);
     }
-    
-}
-_('reset-btn').onclick = () => {
-    taskMgr.reset();
-}
+});
+
+
+
+

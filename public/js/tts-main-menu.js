@@ -62,7 +62,7 @@ class TimedTaskSequence {
         this.tts.onclick = () => {
             // Request to server with token
             if(!gEditClick){
-                window.location = "/timer";
+                window.location = "/tts-timer?tts_id=" + this.tts_id;
             }
             gEditClick = false;
             
