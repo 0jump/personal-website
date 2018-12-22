@@ -143,7 +143,7 @@ class CountdownDom extends Countdown {
         
     }
     setToBeingEdited(){
-        console.log(`Task[${this.TASK.id}] is being edited`);
+        console.log(`Task[${this.TASK.id}] is being edited, duration is ${this.iniMs}`);
         this.TASK.TASK_CONTAINER.is1stClickForTimerEdit = true;
         // 1. Add a DOM class linked to a style for being edited
         this.ctr.classList.add('task-timer-being-edited');
@@ -368,6 +368,7 @@ class Task{
         // Put updated time
         console.log(`Updated time for Task[${this.id}], it is ${taskObject.duration}`);
         this.cdDom.updateCountdown(taskObject.duration);
+        this.cdDom.set(taskObject.duration)
         
     }
     taskInputFieldsOnBlurHandler(){
