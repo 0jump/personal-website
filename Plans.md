@@ -52,8 +52,8 @@
   - Refresh Tokens
   - Protect Routes
     1. ~~tts-main-menu~~
-    2. tts-details
-    3. timer
+    2. ~~tts-details~~
+    3. ~~tts-timer~~
 
 ### Dashboard
   - Main menu
@@ -69,8 +69,8 @@
 
   - Edit TTS
     1. Time setting UX
-      - when selected if i press anywhere on the screen it should deselect
-      - Make keyboard show up on mobile devices
+      - ~~when selected if i press anywhere on the screen it should deselect~~
+      - ~~Make keyboard show up on mobile devices~~
       - Support times like 99h99m99s (they do not work at the moment)
     2. Make Design nice
     3. Drag and drop to change order
@@ -80,7 +80,7 @@
   
 ### Other Issues
 
-  - Add secret information to environment variables
+  - Add secret information to environment variables (and not in a stored file)
   - make https work instead of http
   - DB storage of ip addresses (in home_page_visits) is using `varchar(16)`, can be optimized
   - All forms do not submit when I press enter, bcs input is `type="button"` and not `type="submit"`
