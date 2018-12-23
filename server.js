@@ -401,7 +401,6 @@ app.post('/tts',(req,res) => {
                         let needed = {};
                         needed.ttsId = typeof(req.body.tts_id) == 'string' ? req.body.tts_id : false;
                         needed.ttsTitle = typeof(req.body.tts_title) == 'string' ? req.body.tts_title : false;
-                        console.log('req.body.tts_title: ', req.body.tts_title);
                         let invalid = helpers.checkForKeysWithFalseValues(needed);
                         
                         if (invalid.length > 0) {
