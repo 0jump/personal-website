@@ -13,6 +13,7 @@
     2. ~~Create Salt~~
     3. ~~Add hashed pass and salt to db~~
   - Error description boxes
+  - Make user get in if no problem with sign up
 
 #### Sign in
   
