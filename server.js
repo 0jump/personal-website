@@ -451,7 +451,9 @@ httpServer.listen(HTTP_PORT, () => {
 	console.log('HTTP Server running on port', HTTP_PORT);
 });
 
-if(!config.envName == 'staging'){
+console.log('config.envName: ', config.envName);
+if(config.envName != 'staging'){
+    
     const httpsServer = https.createServer(config.https.credentials, app);
 
     httpsServer.listen(443, () => {
