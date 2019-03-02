@@ -188,7 +188,7 @@ class Countdown {
                     this.stopAnimation();
                     this.shouldStop = true;
                 }
-
+            
                 callback(this.leftMs);
 
                 if (!this.shouldStop){
@@ -227,10 +227,10 @@ class Countdown {
 
 
 class TaskDom extends Countdown{
-    constructor(pTaskTitle, pTaskDescription) {
+    constructor(pTaskTitle, pTaskDescription, pTask_ManagerParentInstance) {
         super();
         /* this.ctdn = new Countdown; */
-
+        this.TASK_MANAGER = pTask_ManagerParentInstance;
         this.title = pTaskTitle;
         this.description = pTaskDescription;
         this.duration = 0;
@@ -301,8 +301,24 @@ class TaskDom extends Countdown{
                     this.taskDescription.innerText = this.description;
                 taskDescriptionCtr.appendChild(this.taskDescription);
             taskData.appendChild(taskDescriptionCtr);
-
         this.dom.appendChild(taskData);
+
+        let taskFooter = CDE("div", [["class","task-footer"]]);
+            this.doneBtnCtr = CDE("div", [["class", "done-task-btn-ctr"]]);
+                this.doneBtn = CDE("button", [["class", "done-task-btn"]]);
+                    this.doneBtn.innerText = "Done";
+                    this.doneBtn.onclick = () => {
+                        this.TASK_MANAGER.pause();
+                        this.TASK_MANAGER.activeTask++;
+                        this.TASK_MANAGER.setTaskAsDone(this)
+                        this.TASK_MANAGER.start();
+                       /*  ;
+                        this.TASK_MANAGER.startChain(); */
+                    };
+                this.doneBtnCtr.appendChild(this.doneBtn);
+            taskFooter.appendChild(this.doneBtnCtr);
+
+        this.dom.appendChild(taskFooter);
     }
     updateCountdown(){
         let orgTimeLeft = msToTime(this.leftMs).split(':');
@@ -340,6 +356,7 @@ class TaskDom extends Countdown{
     }
     setAsDone(){
         this.dom.classList.add('done-task');
+        this.dom.classList.remove('active-task');
     }
 
 }
@@ -399,6 +416,7 @@ class Task_Manager {
     }
     activateTask(taskObj){
         taskObj.setAsActive();
+        
         taskObj.dom.scrollIntoView(true);
     }
     setTaskAsDone(taskObj){
@@ -436,7 +454,7 @@ class Task_Manager {
                 let taskDuration = typeof(taskObj.duration) == 'number' ? taskObj.duration : false;
     
                 if (/* taskTitle && taskDesc && */ taskDuration){
-                    let newTask = new TaskDom(taskTitle, taskDesc);
+                    let newTask = new TaskDom(taskTitle, taskDesc, this);
                     newTask.build();
                     newTask.updateCountdown();
                     newTask.set(taskDuration);
