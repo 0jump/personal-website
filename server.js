@@ -22,6 +22,19 @@ const tokenList = {};
 
 const app = express();
 
+// Redirect all requests to https
+if(config.envName != 'staging'){
+    app.use ((req, res, next) => {
+        if (req.secure) {
+                // request was via https, so do no special handling
+                next();
+        } else {
+                // request was via http, so redirect to https
+                res.redirect('https://' + req.headers.host + req.url);
+        }
+    });
+}
+
 // Static Files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -451,7 +464,6 @@ httpServer.listen(HTTP_PORT, () => {
 	console.log('HTTP Server running on port', HTTP_PORT);
 });
 
-console.log('config.envName: ', config.envName);
 if(config.envName != 'staging'){
     
     const httpsServer = https.createServer(config.https.credentials, app);

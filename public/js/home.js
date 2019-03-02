@@ -22,7 +22,7 @@ class LoginBoxSignIn {
             this.titleDescContainer.appendChild(this.loginPageDesc);
         parentDiv.appendChild(this.titleDescContainer);
             this.formCtr = CDE('div', [['class', 'form-ctr']]);
-                this.form = CDE ('form', [['action', ''], ['method', 'post']]);
+                this.form = CDE ('form', [['onsubmit','event.preventDefault();'], ['method', 'post']]);
                     this.emailInputField = CDE('input', [['class', 'input-field'], ['id','email-input-field'], ['type', 'text'], ['placeholder', 'Email Address']]);
                 this.form.appendChild(this.emailInputField);
                     this.passInputField = CDE('input', [['class', 'input-field'], ['id','pass-input-field'], ['type', 'password'], ['placeholder', 'Password']]);
@@ -54,7 +54,7 @@ class LoginBoxSignUp {
     parentDiv.appendChild(this.titleDescContainer);
 
     this.formCtr = CDE('div', [['class', 'form-ctr']]);
-    this.form = CDE ('form', [['action', ''], ['method', 'post']]);
+    this.form = CDE ('form', [['onsubmit','event.preventDefault();'], ['method', 'post']]);
         this.dblFieldCtrNames = CDE('div', [['class', 'dbl-field-ctr']]);
             this.fNameInputField = CDE('input', [['class',"input-field dbl-field-left"], ['id',"first-name-input-field"], ['type',"text"] ,['placeholder',"First Name"]]);
             this.dblFieldCtrNames.appendChild(this.fNameInputField);
@@ -74,7 +74,7 @@ class LoginBoxSignUp {
             this.dblFieldCtrPasswords.appendChild(this.confPassInputField);
         this.form.appendChild(this.dblFieldCtrPasswords);
 
-        this.signUpBtn = CDE ('input', [['class',"submit-btn"], ['type',"button"], ['value',"Sign up"]])
+        this.signUpBtn = CDE ('input', [['class',"submit-btn"], ['type',"submit"], ['value',"Sign up"]])
         this.form.appendChild(this.signUpBtn);
     this.formCtr.appendChild(this.form);
 
@@ -95,10 +95,10 @@ class LoginBoxPromoCode {
         parentDiv.appendChild(this.titleDescContainer);
 
         this.formCtr = CDE('div', [['class', 'form-ctr']]);
-            this.form = CDE ('form', [['action', ''], ['method', 'post']]);
+            this.form = CDE ('form', [['onsubmit','event.preventDefault();']]);
                 this.promocodeInputField = CDE('input', [['class', "input-field"], ['id',"promocode-input-field"], ['type',"text"], ['placeholder','Promocode']]);
             this.form.appendChild(this.promocodeInputField);
-            this.promocodeBtn = CDE ('input', [['class',"submit-btn"], ['type',"button"], ['value',"Submit"]]);
+            this.promocodeBtn = CDE ('input', [['class',"submit-btn"], ['type',"submit"], ['value',"Submit"]]);
             this.form.appendChild(this.promocodeBtn);
         this.formCtr.appendChild(this.form);
         parentDiv.appendChild(this.formCtr);
