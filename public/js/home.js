@@ -27,7 +27,7 @@ class LoginBoxSignIn {
                 this.form.appendChild(this.emailInputField);
                     this.passInputField = CDE('input', [['class', 'input-field'], ['id','pass-input-field'], ['type', 'password'], ['placeholder', 'Password']]);
                 this.form.appendChild(this.passInputField);
-                    this.signInBtn = CDE('input', [['class', 'submit-btn'], ['type', 'button'], ['value', 'Sign in']]);
+                    this.signInBtn = CDE('input', [['class', 'submit-btn'], ['type', 'submit'], ['value', 'Sign in']]);
                 this.form.appendChild(this.signInBtn);    
                 this.formCtr.appendChild(this.form);
 
