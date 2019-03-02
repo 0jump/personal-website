@@ -51,3 +51,11 @@ FLUSH PRIVILEGES;
 
 I am not 100% sure what it does, but after being recommended so much especially after privilege-related posts such as when granting privileges to a user and creating users etc, I think that it is some sort of refresh for everything to take effect.
 
+# Certbot
+
+## Renewal
+
+Your cert will expire on `2019-05-31`. 
+
+To obtain a new or tweaked version of this certificate in the future, simply run certbot
+again. To non-interactively renew *all* of your certificates, run `certbot renew`
