@@ -17,30 +17,15 @@ class TimedTaskSequence {
                     this.ttsTitleCtr.appendChild(this.ttsTitle);
                 this.ttsHeaderRow.appendChild(this.ttsTitleCtr);
 
-                this.ttsDurationCtr = CDE('div', [['class',"tts-duration-ctr"]]);
-                    this.ttsDuration = CDE('span', [['class',"tts-duration"]]);
-                        this.ttsDuration.innerText = pTtsDuration;
-                    this.ttsDurationCtr.appendChild(this.ttsDuration);
-                this.ttsHeaderRow.appendChild(this.ttsDurationCtr);
             this.tts.appendChild(this.ttsHeaderRow);
 
 
             this.ttsRow2 = CDE('div', [['class',"tts-row-2 tts-row"]]);
-                this.ttsStatusCtr = CDE('div', [['class',"tts-status-ctr"]]);
-                    this.ttsStatusIconCtr = CDE('div', [['class','tts-status-icon-ctr']]);
-                        this.ttsStatusIcon = CDE('div', [['class',"tts-status-icon"]]);
-                        
-                        this.ttsStatusIconCtr.appendChild(this.ttsStatusIcon);
-                    this.ttsStatusCtr.appendChild(this.ttsStatusIconCtr);
-
-
-                this.ttsStatusTextCtr = CDE('div', [['class', "tts-status-text-ctr"]]);
-                    this.ttsStatus = CDE("span", [['class', "tts-status"]]);
-                        this.ttsStatus.innerText = 'stopped';
-                    this.ttsStatusTextCtr.appendChild(this.ttsStatus);
-                
-                    this.ttsStatusCtr.appendChild(this.ttsStatusTextCtr);
-                this.ttsRow2.appendChild(this.ttsStatusCtr);
+                this.ttsDurationCtr = CDE('div', [['class',"tts-duration-ctr"]]);
+                    this.ttsDuration = CDE('span', [['class',"tts-duration"]]);
+                        this.ttsDuration.innerText = pTtsDuration;
+                    this.ttsDurationCtr.appendChild(this.ttsDuration);
+                this.ttsRow2.appendChild(this.ttsDurationCtr);
 
                 this.ttsEditBtnCtr = CDE('div', [['class','tts-edit-btn-ctr']]);
                     this.ttsEditBtn = CDE('button',[["class","tts-edit-btn"]]);
