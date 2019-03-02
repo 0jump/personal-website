@@ -168,7 +168,7 @@ class CountdownDom extends Countdown {
                 this.updateCountdown(this.iniMs);
             } else {
                 alert('Could not update Task');
-                console.log(xhr.status)
+                console.log(xhr.status);
             }
         });
     }
