@@ -90,8 +90,8 @@ app.get('/tts-details', (req, res) => {
 });
 
 // HTTPS Requirement (Not sure why and how it works)
-app.get('/.well-known/acme-challenge/z5_m9xFkVA7IZp7_ePWIHuEvK5iKjndLl8Iym', (req, res) => {
-    res.send('z5_m9xFkVA7IZwykj7Zp7_ePWIHuEvK5iKjndLl8IyM.xYo7TzuMhAEAsL3f0V8kQG6vxOS4OctB1fTtuLLf5ow');
+app.get('/.well-known/acme-challenge/EMCcyVLYM6sCWp1vV3XQ7Pqaf5mime-1lqM9MqMQpj0', (req, res) => {
+    res.send('EMCcyVLYM6sCWp1vV3XQ7Pqaf5mime-1lqM9MqMQpj0.xYo7TzuMhAEAsL3f0V8kQG6vxOS4OctB1fTtuLLf5ow');
 });
 
 // AJAX Requests from Client-Side
