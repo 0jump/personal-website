@@ -1,4 +1,4 @@
-const config = require('./lib/config');
+const config = require('./lib/server-configurations');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -8,9 +8,11 @@ const bcrypt = require('bcrypt-nodejs');
 const ajax = require('./lib/ajax');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
+const http = require('http');
+const https = require('https');
 
 // Server settings
-const PORT = config.http.port;
+const HTTP_PORT = config.http.port;
 
 // Bcrypt settings
 const saltRounds = 8;
@@ -442,7 +444,27 @@ app.post('/tts',(req,res) => {
     }
 });
 
+// Starting both http & https servers
+const httpServer = http.createServer(app);
 
-app.listen(PORT, ()=> {
-    console.log(`Server started on port ${PORT}`);
+httpServer.listen(HTTP_PORT, () => {
+	console.log('HTTP Server running on port', HTTP_PORT);
 });
+
+if(!config.envName == 'staging'){
+    const httpsServer = https.createServer(config.https.credentials, app);
+
+    httpsServer.listen(443, () => {
+        console.log('HTTPS Server running on port 443');
+    });
+    
+}
+
+
+
+/* 
+app.listen(PORT, ()=> {
+    
+    console.log(`Server started on port ${PORT}`);
+}); */
+
