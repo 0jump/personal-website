@@ -141,6 +141,24 @@ body{
     color:white;
 }
 
+.task-footer{
+    width:100%;
+    display:flex;
+    justify-content: center;
+}
+
+.done-task-btn-ctr{
+    display:none;
+}
+
+.active-task .done-task-btn-ctr{
+    display:block;
+}
+
+.done-task-btn{
+    
+}
+
 .tasks-manipulation-btn:active{
 
 }
