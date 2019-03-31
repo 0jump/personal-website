@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const http = require('http');
 const https = require('https');
+const taskSeqHelpers = require('./lib/task-sequence');
 
 // Server settings
 const HTTP_PORT = config.http.port;
@@ -283,7 +284,31 @@ app.post('/tts',(req,res) => {
                         if (newTtsTaskObj){
                             dbservices.addNewTtsTask(newTtsTaskObj, authData.user_id, (error, error_desc, newTtsTaskObjWithId)=>{
                                 if(!error){
-                                    res.status(200).json({'tts_task':newTtsTaskObjWithId});
+                                    if (newTtsTaskObj.duration > 0){
+                                        // Get All All other Tasks
+                                        dbservices.getAllTasksForTtsInOrder(authData.user_id, (error, error_desc, ttsTasksArray) => {
+                                            if(!error){
+                                                // Compute the new length of the whole task sequence
+                                                let newTtsDurationInMs = taskSeqHelpers.computeDurationOfTaskSequence(ttsTasksArray);
+
+                                                // Save the new length of the task sequence
+                                                dbservices.updateTtsDuration(newTtsTaskObj.ttsId ,newTtsDurationInMs, (error, error_desc, isUpdated)=> {
+                                                    if(!error){
+                                                        res.status(200).json({'tts_task':newTtsTaskObjWithId});
+                                                    }else{
+                                                        console.log(error, error_desc);
+                                                        res.status(500).send();
+                                                    }
+                                                });
+                                            }else{
+                                                console.log(error, error_desc);
+                                                res.status(500).send();
+                                            }
+                                        })
+                                    } else{
+                                        // If new task duration is 0 do not compute new TTS duration (so we avoid multiple unnecessary MySQL server calls)
+                                        res.status(200).json({'tts_task':newTtsTaskObjWithId});
+                                    }
                                 } else{
                                     res.status(500).send();
                                 }
@@ -357,7 +382,26 @@ app.post('/tts',(req,res) => {
                                         // The User ID is indeed linked to this TTS
                                         dbservices.deleteTtsTask(needed.ttsTaskId, (error_type, error_desc, isDone)=> {
                                             if(!error_type){
-                                                res.status(200).send();
+                                                // Get All Remaining Tasks
+                                                dbservices.getAllTasksForTtsInOrder(needed.ttsId, (error_type, error_desc, ttsTasksArray)=> {
+                                                    if(!error_type){
+                                                        // Compute new TTS Duration
+                                                        let newTtsDurationInMs = taskSeqHelpers.computeDurationOfTaskSequence(ttsTasksArray);
+                                                        
+                                                        // Update to new TTS Duration
+                                                        dbservices.updateTtsDuration(needed.ttsId, newTtsDurationInMs, (error_type, errpr_type, isUpdated)=> {
+                                                            if(!error_type){
+                                                                res.status(200).send();
+                                                            }else{
+                                                                console.log(error_desc);
+                                                                res.status(500).send();
+                                                            }
+                                                        });
+                                                    }else{
+                                                        console.log(error_desc);
+                                                        res.status(500).send();
+                                                    }
+                                                });
                                             }else{
                                                 console.log(error_desc);
                                                 res.status(500).json({"Error":'Could not delete TTS Task'});
