@@ -438,7 +438,27 @@ app.post('/tts',(req,res) => {
                                         // The User ID is indeed linked to this TTS
                                         dbservices.updateTtsTask(needed.ttsTask, (error_type, error_desc, isDone)=> {
                                             if(!error_type){
-                                                res.status(200).send();
+                                                // Get All Tasks to compute their new duration
+                                                dbservices.getAllTasksForTtsInOrder(needed.ttsId, (error_type, error_desc, ttsTasksArray) => {
+                                                    if (!error_type) {
+                                                        // Compute new TTS Duration
+                                                        let newTtsDurationInMs = taskSeqHelpers.computeDurationOfTaskSequence(ttsTasksArray);
+
+                                                        // Update to new TTS Duration
+                                                        dbservices.updateTtsDuration(needed.ttsId, newTtsDurationInMs, (error_type, errpr_type, isUpdated) => {
+                                                            if (!error_type) {
+                                                                res.status(200).send();
+                                                            } else {
+                                                                console.log(error_desc);
+                                                                res.status(500).send();
+                                                            }
+                                                        });
+                                                    } else {
+                                                        console.log(error_desc);
+                                                        res.status(500).send();
+                                                    }
+                                                });                                                
+                                                
                                             }else{
                                                 console.log(error_desc);
                                                 res.status(500).json({"Error":'Could not update TTS Task'});
