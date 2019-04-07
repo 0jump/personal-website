@@ -32,7 +32,7 @@ body {
 }
 
 .details-ctr::placeholder{
-    color:whitesmoke;
+    color:black;
 }
 
 .meta-data-ctr {
@@ -83,8 +83,7 @@ body {
 }
 
 .numbers-ctr{
-    color: white;
-    /* font-weight:300; */
+    color: black;
     position: relative;
 }
 
@@ -102,17 +101,17 @@ body {
 }
 
 .task-timer-being-edited{
-    color:yellow;
+    color:white;
 }
 
 
 .digit{
     font-size: 20px;
-    
+    font-weight: 520;
 }
 
 .digit-lbl {
-
+    font-weight: 518;
 }
 
 .delete-tts-ctr{
@@ -168,15 +167,16 @@ body {
     margin-bottom:10px;
     border:0;
 
-    border-bottom: 1px solid whitesmoke;
+    border-bottom: 1px solid black;
 
-    color:white;
+    color:black;
 
 }
 
 .task-title:focus{
     outline:none;
-    border-bottom: 1px solid rgb(113, 0, 128);
+    border-bottom: 1px solid white;
+    color:white;
 }
 
 .task-desc-ctr{
@@ -187,7 +187,7 @@ body {
 
     margin:0;
     border:none;
-    border-bottom: 1px solid lightgray;
+    border-bottom: 1px solid black;
     width: 230px;
     resize: none;
 
@@ -195,12 +195,13 @@ body {
 }
 
 .task-desc::placeholder{
-    color:white;
+    color:black;
 }
 
 .task-desc:focus{
     outline:none;
-    border-bottom: 1px solid red;
+    color:white;
+    border-bottom: 1px solid white;
 }
 
 .right-ctr{
