@@ -166,6 +166,7 @@ class CountdownDom extends Countdown {
         ajax.me.updateTtsTask(this.TASK.id,this.TASK.taskTitle.value,this.TASK.taskDesc.value, this.iniMs, gTtsId, gAccessToken, (xhr)=>{
             if(xhr.status==200){
                 this.updateCountdown(this.iniMs);
+                this.TASK.TASK_CONTAINER.doAfterEveryTaskUpdate();
             } else {
                 alert('Could not update Task');
                 console.log(xhr.status);
@@ -374,7 +375,7 @@ class Task{
     taskInputFieldsOnBlurHandler(){
         ajax.me.updateTtsTask(this.id,this.taskTitle.value,this.taskDesc.value, this.cdDom.iniMs, gTtsId, gAccessToken, (xhr)=>{
             if(xhr.status==200){
-
+                this.TASK_CONTAINER.doAfterEveryTaskUpdate();
             } else {
                 alert('Could not update Task');
                 console.log(xhr.status)
@@ -396,6 +397,8 @@ class TaskContainer {
         this.timerBeingEdited = ''; // Hold the id of the Task who's timer is being edited
 
         this.is1stClickForTimerEdit = false;
+
+        this.ttsDurationDom = _('tts-duration');
         //  ------------------------
         //  Things To Do Immediately after Instantiating this Class, which should coincide with immediately after the page loads
         //  ------------------------
@@ -414,7 +417,21 @@ class TaskContainer {
                 console.log(xhr.status);
             }
         });
-        
+
+        // Ask Server for TTS Duration
+        ajax.me.getTtsInfo(gTtsId,gAccessToken, (xhr)=> {
+            if(xhr.status==200){
+                console.log('xhr.status: ', xhr.status);
+                let resObj = JSON.parse(xhr.response);
+                let ttsObj = resObj.tts_obj;
+                this.updateTtsDurationInUi(ttsObj.duration);
+            }else if (xhr.status == 403){
+                window.location.assign("/");
+            } else {
+                alert('Could not update Task');
+                console.log(xhr.status)
+            }
+        })
         
         
         // Set up Event Listeners
@@ -498,6 +515,10 @@ class TaskContainer {
                         let newIndexOfTaskToBeDeleted = this.getTaskIndexFromTasksList(pTaskObject.id);
                         this.tasksList.splice(newIndexOfTaskToBeDeleted, 1);
                     }
+
+                    this.doAfterEveryTaskUpdate();
+                }else if (xhr.status == 403){
+                    window.location.assign("/");
                 }else{
                     console.log('status: ', xhr.status);
                     console.log('Could not remove Task')
@@ -512,11 +533,40 @@ class TaskContainer {
         ajax.me.updateTtsTitle(this.ttsTitleInput.value, gTtsId, gAccessToken, (xhr)=>{
             if(xhr.status==200){
 
-            } else {
+            }else if (xhr.status == 403){
+                window.location.assign("/");
+            }  else {
                 alert('Could not update Task');
                 console.log(xhr.status)
             }
         });
+    }
+
+    updateTtsDurationInUi(pDurationInMs){
+        let orgTime = helpers.convertMsToDisplayableTime(pDurationInMs);
+        this.ttsDurationDom.innerText = orgTime;
+    }
+    doAfterEveryTaskUpdate(){
+        /* 
+            1 - Get New Task Sequence Information because after every ajax request related to tasks, information about Task Sequence (especially duration) might have changed, so we have to update it on the UI also
+        */
+        // 1.1 - Get new Duration
+        console.log("Entered do after every task function.");
+        ajax.me.getTtsInfo(gTtsId,gAccessToken, (xhr)=> {
+            if(xhr.status==200){
+                let resObj = JSON.parse(xhr.response);
+                let ttsObj = resObj.tts_obj;
+
+                // 1.2 - Update new Duration in the UI
+                this.updateTtsDurationInUi(ttsObj.duration);
+            }else if (xhr.status == 403){
+                window.location.assign("/");
+            } else {
+                alert('Could not update Task');
+                console.log(xhr.status)
+            }
+        })
+        
     }
 
 }

@@ -135,6 +135,16 @@ ajax.me.getTtsTitleAndAllTtsTasks = (pTtsId, pAccessToken, callback) => {
     }
     ajax.sendJsonPostRequest('tts?func=getTtsTitleAndAllTasksForTtsInOrder',headersObj, reqPayload, callback);
 }
+
+ajax.me.getTtsInfo = (pTtsId, pAccessToken, callback)=> {
+    let reqPayload = { 
+        'tts_id':pTtsId
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tts?func=getTtsInfo',headersObj, reqPayload, callback);
+}
 /* 
 -------------LOW LEVEL AJAX FUNCTIONS--------------
 

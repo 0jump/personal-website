@@ -318,7 +318,7 @@ app.post('/tts',(req,res) => {
                         }
                     }
                 });
-            }else if (func == 'getAllTasksForTtsInOrder' || func == 'getTtsTitleAndAllTasksForTtsInOrder') {
+            }else if (func == 'getAllTasksForTtsInOrder' || func == 'getTtsTitleAndAllTasksForTtsInOrder' || func == 'getTtsInfo') {
                 jwt.verify(access_token, config.jwt.secret, (err, authData) => {
                     if (err) {
                         res.status(403).send();
@@ -330,6 +330,13 @@ app.post('/tts',(req,res) => {
                                 if(!error_type){
                                     if(ttsObj){
                                         // The User ID is indeed linked to this TTS
+                                        
+                                        if (func == 'getTtsInfo'){
+                                            res.status(200).json({
+                                                'tts_obj': ttsObj
+                                            });   
+                                        }
+                                        
                                         dbservices.getAllTasksForTtsInOrder(ttsId, (error_type, error_desc, ttsTasksArray)=> {
                                             if(!error_type){
                                                 switch(func) {
@@ -337,11 +344,12 @@ app.post('/tts',(req,res) => {
                                                         res.status(200).json({'tts_tasks_array': ttsTasksArray});
                                                         break;
                                                     case 'getTtsTitleAndAllTasksForTtsInOrder':
+                                                        
                                                         res.status(200).json({
                                                             'tts_tasks_array': ttsTasksArray,
                                                             'tts_title': ttsObj.title
                                                         });
-                                                        break;
+                                                        break;           
                                                 }
                                                 
                                             }else{
@@ -421,6 +429,7 @@ app.post('/tts',(req,res) => {
             }else if (func == 'updateTtsTask') {
                 jwt.verify(access_token, config.jwt.secret, (err, authData) => {
                     if (err) {
+                        
                         res.status(403).send();
                     } else {
                         let needed = {};

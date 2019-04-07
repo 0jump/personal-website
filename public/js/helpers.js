@@ -48,6 +48,21 @@ helpers.msToTime = (duration) => {
     return hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
 }
 
+helpers.convertMsToDisplayableTime = (pTimeInMs) => {
+    /* 
+        Function that converts time in milliseconds to XXh XXm XXs format
+    */
+    let orgTime = helpers.msToTime(pTimeInMs).split(":");
+    if(orgTime[0][0] !=0 || orgTime[0][1] != 0){
+        return orgTime[0]+"h " + orgTime[1]+"m " + orgTime[2] + "s";
+    }else{
+        if(orgTime[1][0] != 0 || orgTime[1][1] != 0 ){
+            return orgTime[1]+"m " + orgTime[2] + "s";
+        } else {
+            return orgTime[2] + "s";
+        }
+    }
+}
 
 helpers.getAllUrlParams = (url) => {
     // get query string from url (optional) or window

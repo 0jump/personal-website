@@ -198,6 +198,10 @@ body {
     color:black;
 }
 
+.task-desc:focus::placeholder{
+    color:white;
+}
+
 .task-desc:focus{
     outline:none;
     color:white;
