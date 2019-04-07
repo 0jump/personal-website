@@ -5,6 +5,21 @@ const ttsCtr = _('tts-container');
 
 let gEditClick = false;
 
+let convertMsToDisplayableTime = (pTimeInMs) => {
+    /* 
+        Function that converts time in milliseconds to XXh XXm XXs format
+    */
+    let orgTime = helpers.msToTime(pTimeInMs).split(":");
+    if(orgTime[0][0] !=0 || orgTime[0][1] != 0){
+        return orgTime[0]+"h " + orgTime[1]+"m " + orgTime[2] + "s";
+    }else{
+        if(orgTime[1][0] != 0 || orgTime[1][1] != 0 ){
+            return orgTime[1]+"m " + orgTime[2] + "s";
+        } else {
+            return orgTime[2] + "s";
+        }
+    }
+}
 
 class TimedTaskSequence {
     constructor(parentDiv,pTtsId, pTtsTitle, pTtsDuration){
@@ -23,7 +38,7 @@ class TimedTaskSequence {
             this.ttsRow2 = CDE('div', [['class',"tts-row-2 tts-row"]]);
                 this.ttsDurationCtr = CDE('div', [['class',"tts-duration-ctr"]]);
                     this.ttsDuration = CDE('span', [['class',"tts-duration"]]);
-                        this.ttsDuration.innerText = pTtsDuration;
+                        this.ttsDuration.innerText = convertMsToDisplayableTime(pTtsDuration);
                     this.ttsDurationCtr.appendChild(this.ttsDuration);
                 this.ttsRow2.appendChild(this.ttsDurationCtr);
 
