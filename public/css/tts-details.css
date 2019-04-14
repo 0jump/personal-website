@@ -179,6 +179,14 @@ body {
     color:white;
 }
 
+.task-title::placeholder{
+    color:black;
+}
+
+.task-title:focus::placeholder{
+    color:white;
+}
+
 .task-desc-ctr{
 
 }
