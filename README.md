@@ -55,7 +55,8 @@ I am not 100% sure what it does, but after being recommended so much especially 
 
 ## Renewal
 
-Your cert will expire on `2019-05-31`. 
+Your cert will expire on `2019-08-22`. 
 
-To obtain a new or tweaked version of this certificate in the future, simply run certbot
-again. To non-interactively renew *all* of your certificates, run `certbot renew`
+To renew certificate `sudo certbot certonly -d gerardantoun.com -d www.gerardantoun.com`.
+
+To check certificates status: `sudo certbot certificates`
