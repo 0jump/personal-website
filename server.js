@@ -237,7 +237,6 @@ app.post('/tts',(req,res) => {
         if (typeof access_token == 'string' && access_token.length > 0){
             if (func == 'createNewTts'){
                 jwt.verify(access_token, config.jwt.secret, (err, authData) => {
-                    console.log("JWT ERROR", err);
                     if (err) {
                         res.status(403).send();
                     } else {
