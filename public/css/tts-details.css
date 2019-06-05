@@ -82,6 +82,10 @@ body {
     color:whitesmoke;
 }
 
+.duration{
+    font-size:14px;
+}
+
 .numbers-ctr{
     color: black;
     position: relative;
