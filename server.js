@@ -237,6 +237,7 @@ app.post('/tts',(req,res) => {
         if (typeof access_token == 'string' && access_token.length > 0){
             if (func == 'createNewTts'){
                 jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+                    console.log("JWT ERROR", err);
                     if (err) {
                         res.status(403).send();
                     } else {
@@ -508,6 +509,42 @@ app.post('/tts',(req,res) => {
                                             }else{
                                                 console.log(error_desc);
                                                 res.status(500).json({"Error":'Could not update TTS Title'});
+                                            }
+                                        });
+                                    } else {
+                                        res.status(403).json({'Error': 'You cannot access this TTS'});
+                                    }
+                                } else {
+                                    console.log(error_desc)
+                                    res.status(500).send();
+                                }
+                            });
+                        }
+                    }
+                });
+            }else if (func == 'deleteTtsAndTtsTasks'){
+                jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+                    if (err) {
+                        res.status(403).send();
+                    } else {
+                        let needed = {};
+                        needed.ttsId = typeof(req.body.tts_id) == 'string' ? req.body.tts_id : false;
+                        let invalid = helpers.checkForKeysWithFalseValues(needed);
+                        
+                        if (invalid.length > 0) {
+                            res.status(400).json({'Missing':invalid});
+                        } else {
+                            // Check if user has access to this tts
+                            dbservices.getTts(needed.ttsId, authData.user_id, (error_type, error_desc, ttsObj) => {
+                                if(!error_type){
+                                    if(ttsObj){
+                                        // The User ID is indeed linked to this TTS
+                                        dbservices.deleteTtsAndTtsTasks(needed.ttsId, authData.user_id, (error_type, error_desc, isDone)=> {
+                                            if(!error_type){
+                                                res.status(200).send();
+                                            }else{
+                                                console.log(error_desc);
+                                                res.status(500).json({"Error":'Could not Delete TTS and All TTS Tasks'});
                                             }
                                         });
                                     } else {

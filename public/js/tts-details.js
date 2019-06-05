@@ -387,11 +387,12 @@ class Task{
 
 
 class TaskContainer {
-    constructor(taskContainer, newTaskBtn, ttsTitleInput){
+    constructor(taskContainer, newTaskBtn, ttsTitleInput,ttsDeleteBtn){
         // Important DOM Elements that are external to the task container
         this.newTaskBtn = newTaskBtn;       // Button to create a new task
         this.taskCtr = taskContainer;       // Container of all the Task DOM elements
         this.ttsTitleInput = ttsTitleInput; // Input Element to Display TTS Name
+        this.ttsDeleteBtn = ttsDeleteBtn;   // Button to delete TTS
 
         this.tasksList = [];        // Store all existing "Task" Class instances
         this.timerBeingEdited = ''; // Hold the id of the Task who's timer is being edited
@@ -461,13 +462,24 @@ class TaskContainer {
                 if(!this.is1stClickForTimerEdit){
                     let activeTask = this.tasksList[this.getTaskIndexFromTasksList(this.timerBeingEdited)];
                     console.log('activeTask: ', activeTask);
-    
+                    // If there is a timer being edited, set it to not being edited
                     activeTask.cdDom.setToNotBeingEdited();
                 }
                 this.is1stClickForTimerEdit = false;
             }
         }
-        // If there is a timer being edited, set it to not being edited
+        
+        // Delete TTS Button click event listener
+        this.ttsDeleteBtn.onclick = () => {
+            ajax.me.deleteTtsAndTtsTasks(gTtsId,gAccessToken, (xhr)=>{
+                if(xhr.status == 200){
+                    alert('TTS Deleted');
+                    window.location.assign("/tts-main-menu");
+                }else{
+                    console.log(xhr.status);
+                }
+            });
+        }
     }
     
     getTaskIndexFromTasksList(pTaskIdToFind){
@@ -584,9 +596,11 @@ let taskCtr = _('task-ctr');
 // Initial send tts object to save after writing something as tts title
 let ttsTitleInput = _('tts-title');
 
+// Button to Delete TTS
+let ttsDeleteBtn = _('delete-tts-btn');
 
 // Initialize TaskContainer As soon as page loads
-let TaskContainerObj = new TaskContainer(taskCtr, newTaskBtn, ttsTitleInput);
+let TaskContainerObj = new TaskContainer(taskCtr, newTaskBtn, ttsTitleInput, ttsDeleteBtn);
 
 
 
