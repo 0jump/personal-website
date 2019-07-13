@@ -1,0 +1,23 @@
+.navbar{
+    width:100%;
+    height:64px;
+    background-color:white;
+
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px, rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
+}
+.nav-ctr{
+    height:100%;
+    display:flex;
+}
+
+.navbar-logo-ctr{
+    height:100%;
+    width:100%;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-logo{
+    height:50px;
+}
