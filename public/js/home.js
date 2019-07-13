@@ -161,7 +161,7 @@ class LoginBox {
                             window.localStorage.setItem('access_token',responseObj.auth.access_token);
 
                             // Redirect User to tts-main-menu
-                            window.location.assign('tts-main-menu');
+                            window.location.assign('workspace-home');
                         } else {
                             // Display Message According to Status Code and response
                             console.log(xhr.status);

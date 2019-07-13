@@ -99,6 +99,20 @@ app.get('/tts-main-menu', (req, res) => {
  */
 });
 
+app.get('/workspace-home', (req, res) => {
+    res.render('workspace-home');
+/*     jwt.verify(req.token, config.jwt.secret, (err, authData) => {
+        if (err) {
+            res.status(403).json({'Error':'Access to TTS Main menu is Forbidden'});
+        } else {
+            res.json({
+                authData
+            });
+        }
+    });
+ */
+});
+
 // TTS Details Route
 app.get('/tts-details', (req, res) => {
     res.render('tts-details');
@@ -214,10 +228,20 @@ app.post('/auth', (req,res)=> {
         } else {
             res.status(400).json({'Error': 'Missing Required Fields'});
         }
+    } else if (func == 'makeSureUserIsAuthorized'){
+        let access_token = req.header('access_token');
+
+        jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+
+            if (err) {
+                res.status(403).send();
+            } else {
+                res.status(200).send();
+            }
+        });
     } else {
         res.status(400).json({'Error': 'Unknown function'});
     }
-    
 });
 
 app.post('/promocode', (req,res)=> {

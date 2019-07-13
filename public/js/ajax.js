@@ -36,6 +36,13 @@ ajax.me.signIn = (emailAddr, pass, callback) => {
     ajax.sendJsonPostRequest('auth?func=signIn', {}, reqPayload, callback);
 };
 
+ajax.me.makeSureUserIsAuthorized = (pAccessToken, callback) => {
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('auth?func=makeSureUserIsAuthorized', headersObj, {}, callback);
+};
+
 
 // Promocode Services
 
@@ -46,6 +53,8 @@ ajax.me.submitPromocode = (promocode, callback) => {
 
     ajax.sendJsonPostRequest('promocode?func=submitPromocode', {}, reqPayload, callback);
 }
+
+
 
 // TTS Services
 ajax.me.createNewTts = (pAccessToken,callback) => {
@@ -155,6 +164,7 @@ ajax.me.deleteTtsAndTtsTasks = (pTtsId, pAccessToken, callback) => {
     }
     ajax.sendJsonPostRequest('tts?func=deleteTtsAndTtsTasks',headersObj, reqPayload, callback);
 }
+
 /* 
 -------------LOW LEVEL AJAX FUNCTIONS--------------
 
