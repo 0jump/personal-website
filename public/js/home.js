@@ -244,6 +244,7 @@ class LoginBox {
                             ajax.me.createUser(newUser.fName, newUser.lName, newUser.emailAddr, newUser.pass, newUser.passConf, true, (xhr)=>{
                                 if (xhr.status == 200){
                                     console.log(xhr.response);
+                                    window.location.assign('workspace-home');
                                 } else {
                                     // Display Message According to Status Code and response
                                     console.log(xhr.status);
