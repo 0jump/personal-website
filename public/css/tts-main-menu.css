@@ -60,6 +60,9 @@ body{
 }
 
 #new-tts-btn{
+    height: 30px;
+    width: 30px;
+
     outline:0;
 
     padding: 0px 9px;
@@ -72,6 +75,7 @@ body{
     color:white;
 
     font-size:20px;
+    font-weight:500;
 
     border-radius: 50%;
 }
