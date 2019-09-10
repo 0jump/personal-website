@@ -58,5 +58,8 @@ I am not 100% sure what it does, but after being recommended so much especially 
 Your cert will expire on `2019-08-22`. 
 
 To renew certificate `sudo certbot certonly -d gerardantoun.com -d www.gerardantoun.com`.
+I tried this and was easier `sudo certbot renew`.
 
 To check certificates status: `sudo certbot certificates`
+
+Certbot Instructions for every setup [https://certbot.eff.org/all-instructions](https://certbot.eff.org/all-instructions)
