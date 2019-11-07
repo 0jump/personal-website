@@ -9,42 +9,50 @@
     <link rel="stylesheet" href="css/universal.css">
     <link rel="stylesheet" href="css/workspace-header.css">
     <link rel="stylesheet" href="css/workspace-home.css">
+    <link rel="stylesheet" href="css/workspace-sidebar.css">
 
     <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
-    <header>
-        <% include ../partials/workspace-header %>
-    </header>
-    <div class="container">
-        <div class="menu-container">
-            <div class="meta-data-ctr">
-                <div class="page-name-ctr">
-                    <h2 class="page-name">Your Applications</h2>
-                </div>
-            </div>
-            <div class="apps-container" id="apps-container">
-                <div class="app" id="tts-app">
-                    <div class="app-header" id="tts-app-header">
-                        <div class="app-title-ctr">
-                            <div class="app-title">Timed Task Sequence</div>
-                        </div>
+        <div class="sidebar-ctr" id="sidebar-ctr">
+        </div>
+<div class="wrapper" id="wrapper">
+    <div class="inner" id="inner">
+        <header id="header">
+            <% include ../partials/workspace-header %>
+        </header>
+
+        <div class="container" id="container">
+            <div class="menu-container">
+                <div class="meta-data-ctr">
+                    <div class="page-name-ctr">
+                        <h2 class="page-name">Your Applications</h2>
                     </div>
                 </div>
-                <div class="app" id="gym-app">
-                    <div class="app-header" id="gym-app-header">
-                        <div class="app-title-ctr">
-                            <div class="app-title">Gym Tracker</div>
+                <div class="apps-container" id="apps-container">
+                    <div class="app" id="tts-app">
+                        <div class="app-header" id="tts-app-header">
+                            <div class="app-title-ctr">
+                                <div class="app-title">Timed Task Sequence</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app" id="gym-app">
+                        <div class="app-header" id="gym-app-header">
+                            <div class="app-title-ctr">
+                                <div class="app-title">Gym Tracker</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+</div>
     <script src="js/ajax.js"></script>
     <script src="js/dom.js"></script>
     <script src="js/helpers.js"></script>
+    <script src="js/workspace-sidebar.js"></script>
     <script src="js/workspace-home.js"></script>
 </body>
 </html>

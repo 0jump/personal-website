@@ -8,16 +8,16 @@
 .nav-ctr{
     height:100%;
     display:flex;
+    padding: 0 12px;
 }
 
-.navbar-logo-ctr{
-    height:100%;
-    width:100%;
+.nav-menu-icon-ctr{
     display:flex;
     align-items: center;
-    justify-content: center;
 }
 
-.navbar-logo{
-    height:50px;
+.nav-menu-icon{
+    height:33px;
+
+    cursor: pointer;
 }

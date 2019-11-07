@@ -1,0 +1,46 @@
+.wrapper{
+    width: 100%;
+    /* overflow: hidden; */
+}
+
+.wrapper-moving{
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -ms-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+}
+
+.inner{
+    float: right;
+    width: 100%;
+
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -ms-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+}
+
+.sidebar-ctr{
+    height:100%;
+    width:60px;
+    background-color:rgb(6, 6, 48);
+    position: fixed;
+    left: -256px;
+    width: 256px;
+
+    -webkit-transition: left 0.5s;
+    -moz-transition: left 0.5s;
+    -ms-transition: left 0.5s;
+    -o-transition: left 0.5s;
+    transition: left 0.5s;
+}
+
+.open-sidebar{
+    left:0;
+}
+
+.inner-moved-right{
+    margin-right: -256px;
+}
