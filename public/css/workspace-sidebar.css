@@ -26,7 +26,7 @@
     height:100%;
     width:60px;
     background-color:rgb(6, 6, 48);
-    position: fixed;
+    position: absolute;
     left: -256px;
     width: 256px;
 

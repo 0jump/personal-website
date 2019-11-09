@@ -12,9 +12,12 @@ let navMenuBtn = _('nav-menu-icon');
 let isSideBarShown = false;
 
 let resizeWrapperToStayResponsiveWhenSidebarIsOpen = () => {
-    wrapper.style.width = `${window.innerWidth - 256}px`;
-
-    console.log(window.innerWidth);
+    
+    if(window.innerWidth <= 450){
+        // if the width of the window is too small,do nothing because decreasing the width of the content is so small that the burger icon will no longer be visible and therefore the sidebar cannot be closed
+    }else{
+        wrapper.style.width = `${window.innerWidth - 256}px`;
+    }
 }
 
 let showSidebar = () => {
