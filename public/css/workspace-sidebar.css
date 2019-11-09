@@ -1,6 +1,14 @@
+.sub-body{
+    overflow: hidden;
+}
+
 .wrapper{
     width: 100%;
-    /* overflow: hidden; */
+}
+
+.wrapper-sidebar-mobile-friendly{
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .wrapper-moving{
@@ -20,13 +28,14 @@
     -ms-transition: 0.5s;
     -o-transition: 0.5s;
     transition: 0.5s;
+
 }
 
 .sidebar-ctr{
     height:100%;
     width:60px;
     background-color:rgb(6, 6, 48);
-    position: absolute;
+    position: fixed;
     left: -256px;
     width: 256px;
 
@@ -35,6 +44,12 @@
     -ms-transition: left 0.5s;
     -o-transition: left 0.5s;
     transition: left 0.5s;
+}
+
+.sidebar-ctr li{
+    color:rgb(124, 0, 0);
+    font-weight: 800;
+    font-size:25px;
 }
 
 .open-sidebar{
