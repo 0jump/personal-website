@@ -68,5 +68,3 @@ navMenuBtn.onclick = () => {
         showSidebar();
     }
 }
-
-

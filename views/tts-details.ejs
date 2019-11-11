@@ -7,71 +7,80 @@
 
     <link rel="stylesheet" href="css/universal.css">
     <link rel="stylesheet" href="css/workspace-header.css">
+    <link rel="stylesheet" href="css/workspace-sidebar.css">
     <link rel="stylesheet" href="css/tts-details.css">
 
     <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
     <title>TTS Details</title>
 </head>
 <body>
-    <header>
-        <% include ../partials/workspace-header %>
-    </header>
-    <div class="container">
-        <div class="details-ctr">
-            <div class="meta-data-ctr">
-                <div class="tts-title-ctr">
-                    <input class="tts-title" id="tts-title" placeholder="TTS Name">
-                </div>
-                <div class="duration-delete-ctr">
-                    <div class="duration-ctr">
-                        <span class="duration" id="tts-duration">00s</span>
+<div class="sub-body" id="sub-body">
+<div class="sidebar-ctr" id="sidebar-ctr">
+</div>
+<div class="wrapper" id="wrapper">
+    <div class="inner" id="inner">
+        <header>
+            <% include ../partials/workspace-header %>
+        </header>
+        <div class="container">
+            <div class="details-ctr">
+                <div class="meta-data-ctr">
+                    <div class="tts-title-ctr">
+                        <input class="tts-title" id="tts-title" placeholder="TTS Name">
                     </div>
-                    <div class="delete-tts-ctr">
-                        <button class="delete-tts-btn" id="delete-tts-btn">X</button>
+                    <div class="duration-delete-ctr">
+                        <div class="duration-ctr">
+                            <span class="duration" id="tts-duration">00s</span>
+                        </div>
+                        <div class="delete-tts-ctr">
+                            <button class="delete-tts-btn" id="delete-tts-btn">X</button>
+                        </div>
                     </div>
-                </div>
 
+                </div>
+                <div class="task-ctr" id="task-ctr">
+                    
+                </div>
             </div>
-            <div class="task-ctr" id="task-ctr">
-                
-            </div>
-        </div>
-        <button id="new-task-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="30px" height="30px">
-                    <g>
+            <button id="new-task-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="30px" height="30px">
                         <g>
-                            <path d="M492,236H276V20c0-11.046-8.954-20-20-20c-11.046,0-20,8.954-20,20v216H20c-11.046,0-20,8.954-20,20s8.954,20,20,20h216    v216c0,11.046,8.954,20,20,20s20-8.954,20-20V276h216c11.046,0,20-8.954,20-20C512,244.954,503.046,236,492,236z" fill="#FFFFFF"/>
+                            <g>
+                                <path d="M492,236H276V20c0-11.046-8.954-20-20-20c-11.046,0-20,8.954-20,20v216H20c-11.046,0-20,8.954-20,20s8.954,20,20,20h216    v216c0,11.046,8.954,20,20,20s20-8.954,20-20V276h216c11.046,0,20-8.954,20-20C512,244.954,503.046,236,492,236z" fill="#FFFFFF"/>
+                            </g>
                         </g>
-                    </g>
-                    <g>
-                    </g>
-                    <g>
-                    </g>
-                    <g>
-                    </g>
-                    <g>
-                    </g>
-                    <g>
-                    </g>
-                    <g>
-                    </g>
-                    <g>
-                    </g>
-                    <g>
-                    </g>
-                    <g>
-                    </g>
-                    <g>
-                    </g>
-                    <g>
-                    </g><g></g><g> </g><g></g><g></g></svg>
-        </button>
+                        <g>
+                        </g>
+                        <g>
+                        </g>
+                        <g>
+                        </g>
+                        <g>
+                        </g>
+                        <g>
+                        </g>
+                        <g>
+                        </g>
+                        <g>
+                        </g>
+                        <g>
+                        </g>
+                        <g>
+                        </g>
+                        <g>
+                        </g>
+                        <g>
+                        </g><g></g><g> </g><g></g><g></g></svg>
+            </button>
+        </div>
     </div>
-
+</div>
+</div>
 
     <script src="js/ajax.js"></script>
     <script src="js/dom.js"></script>
     <script src="js/helpers.js"></script>
+    <script src="js/workspace-sidebar.js"></script>
     <script src="js/tts-details.js"></script>
 </body>
 </html>
