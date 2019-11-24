@@ -34,7 +34,7 @@
 .sidebar-ctr{
     height:100%;
     width:60px;
-    background-color:rgb(6, 6, 48);
+    background-color:rgb(35, 35, 61);
     position: fixed;
     left: -256px;
     width: 256px;
@@ -58,4 +58,32 @@
 
 .inner-moved-right{
     margin-right: -256px;
+}
+
+.innerSidebar{
+    width:100%;
+}
+
+.innerSidebar .sidebarItem{
+    color:rgb(230, 230, 230);
+    font-size:17px;
+    font-weight:450;
+    padding:15px 0px 15px 15px;
+    cursor: pointer;
+}
+
+.innerSidebar .sidebarItem:hover{
+    background-color:rgb(51, 51, 88);
+    color:white;
+}
+
+.innerSidebar .sidebarItem:active{
+    background-color:rgb(51, 51, 88);
+    color:white;
+}
+
+.innerSidebar a{
+    text-decoration: none;
+    color:inherit;
+    font-weight:inherit;
 }

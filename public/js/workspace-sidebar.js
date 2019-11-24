@@ -32,6 +32,19 @@ let resizeWrapperToStayResponsiveWhenSidebarIsOpen = () => {
     wrapper.style.width = `${window.innerWidth - 256}px`;
 }
 
+let addSidebarContent = (sidebarCtr) => {
+    sidebarCtr.innerHTML = `
+        <div class="innerSidebar">
+            <div class="sidebarItem">
+                <a href="/workspace-home">Workspace Home</a>
+            </div>
+            <div class="sidebarItem">
+                <a href="/tts-main-menu">TTS Main Menu</a>
+            </div>
+        </div>
+    `;
+}
+
 let showSidebar = () => {
     // This is so the opening of the sidebar is a smooth motion with a "transition" property in css. 
     wrapper.classList.toggle("wrapper-moving");
@@ -47,6 +60,9 @@ let showSidebar = () => {
     // Initially resize the content to still be responsive
     makeSidebarMobileFriendly();
     isSideBarShown = true;
+
+    // Add Content to the sidebar
+    addSidebarContent(sidebarCtr);
 }
 
 let hideSideBar = () => {
