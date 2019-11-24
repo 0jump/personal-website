@@ -64,7 +64,11 @@
     width:100%;
 }
 
-.innerSidebar .sidebarItem{
+.sidebar-header{
+    width:100%;
+}
+
+.inner-sidebar .sidebar-item{
     color:rgb(230, 230, 230);
     font-size:17px;
     font-weight:450;
@@ -72,18 +76,17 @@
     cursor: pointer;
 }
 
-.innerSidebar .sidebarItem:hover{
+.inner-sidebar .sidebar-item:hover{
     background-color:rgb(51, 51, 88);
     color:white;
 }
 
-.innerSidebar .sidebarItem:active{
+.inner-sidebar .sidebar-item:active{
     background-color:rgb(51, 51, 88);
     color:white;
 }
 
-.innerSidebar a{
-    text-decoration: none;
+.inner-sidebar .sidebar-item-text{
     color:inherit;
     font-weight:inherit;
 }

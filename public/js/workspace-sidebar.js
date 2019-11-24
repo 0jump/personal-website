@@ -32,18 +32,30 @@ let resizeWrapperToStayResponsiveWhenSidebarIsOpen = () => {
     wrapper.style.width = `${window.innerWidth - 256}px`;
 }
 
-let addSidebarContent = (sidebarCtr) => {
-    sidebarCtr.innerHTML = `
-        <div class="innerSidebar">
-            <div class="sidebarItem">
-                <a href="/workspace-home">Workspace Home</a>
-            </div>
-            <div class="sidebarItem">
-                <a href="/tts-main-menu">TTS Main Menu</a>
-            </div>
-        </div>
-    `;
+let BuildSidebarContent = (sidebarCtr) => {
+    let innerSidebar = CDE('div',[['class','inner-sidebar']]);
+        let sidebarHeader = CDE('div', [['class','sidebar-header']]);
+        innerSidebar.appendChild(sidebarHeader);
+
+        let sidebarBody = CDE('div', [['class','sidebar-body']]);
+            let sidebarItemWorkspaceHome = CDE('div', [['class', 'sidebar-item']]);
+                sidebarItemWorkspaceHome.innerHTML = `<span class="sidebar-item-text">Workspace Home</span>`;
+                sidebarItemWorkspaceHome.onclick = () => {
+                    window.location.href = "/workspace-home";
+                };
+            sidebarBody.appendChild(sidebarItemWorkspaceHome);
+
+            let sidebarItemTtsMainMenu = CDE('div', [['class', 'sidebar-item']]);
+                sidebarItemTtsMainMenu.innerHTML = `<span class="sidebar-item-text">TTS Main Menu</span>`;
+                sidebarItemTtsMainMenu.onclick = () => {
+                    window.location.href = "/tts-main-menu";
+                };
+            sidebarBody.appendChild(sidebarItemTtsMainMenu);
+        innerSidebar.appendChild(sidebarBody);
+    sidebarCtr.appendChild(innerSidebar);
 }
+
+BuildSidebarContent(sidebarCtr);
 
 let showSidebar = () => {
     // This is so the opening of the sidebar is a smooth motion with a "transition" property in css. 
@@ -60,9 +72,6 @@ let showSidebar = () => {
     // Initially resize the content to still be responsive
     makeSidebarMobileFriendly();
     isSideBarShown = true;
-
-    // Add Content to the sidebar
-    addSidebarContent(sidebarCtr);
 }
 
 let hideSideBar = () => {
