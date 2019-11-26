@@ -237,19 +237,18 @@ class CountdownDom extends Countdown {
         this.sD.innerText = orgTimeLeft[2][0];
     }
     isNumberKey(evt){
-        let charCode = (evt.which) ? evt.which : evt.keyCode;
-        
-        if (charCode == 46 || charCode > 31 && (charCode < 48 || charCode > 57)){
-            evt.preventDefault();
+        let numbersArray = ["0","1","2","3","4","5","6","7","8","9"];
+        if(numbersArray.includes(evt.key)){
+            return evt.key;
+        } else {
             return -1;
         }
-        return String.fromCharCode(charCode);
     }
     isBackspace(evt){
         // TODO: Delete if it works without the line below after testing
         /* let charCode = (evt.which) ? evt.which : evt.keyCode; */
         let key = event.keyCode || event.charCode;
-        console.log(key);
+        /* console.log(key); */
         if (key == 8 || key == 46){
             evt.preventDefault();
             console.log('Pressed Backspace');
