@@ -10,10 +10,6 @@ ajax.me.makeSureUserIsAuthorized(gAccessToken,(xhr)=> {
         gTtsAppDOM.onclick = () => {
             window.location.assign("/tts-main-menu");
         }
-        gGymAppDOM.onclick = () => {
-            window.location.assign("/gym-main-menu")
-        }
-
     } else {
         //console.log(xhr.status);
         window.location.assign("/");

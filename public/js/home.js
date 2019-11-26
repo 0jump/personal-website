@@ -164,6 +164,7 @@ class LoginBox {
                             window.location.assign('workspace-home');
                         } else {
                             // Display Message According to Status Code and response
+                            alert("Invalid Credentials");
                             console.log(xhr.status);
                         }
                     });
