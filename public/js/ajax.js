@@ -165,6 +165,15 @@ ajax.me.deleteTtsAndTtsTasks = (pTtsId, pAccessToken, callback) => {
     ajax.sendJsonPostRequest('tts?func=deleteTtsAndTtsTasks',headersObj, reqPayload, callback);
 }
 
+// Debugging emails
+ajax.me.sendDebugEmail = (pEmailSubject, pEmailBody, callback) => {
+    let reqPayload = { 
+        'emailSubject':pEmailSubject,
+        'emailText':pEmailBody
+    }
+    ajax.sendJsonPostRequest('send-debug-email', {}, reqPayload, callback);
+}
+
 /* 
 -------------LOW LEVEL AJAX FUNCTIONS--------------
 

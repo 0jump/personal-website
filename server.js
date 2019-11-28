@@ -11,6 +11,10 @@ const moment = require('moment');
 const http = require('http');
 const https = require('https');
 const taskSeqHelpers = require('./lib/task-sequence');
+const sgMail = require('@sendgrid/mail');
+
+// Set Sendgrid Api Key
+sgMail.setApiKey(config.emails.sendgrid.apiKey);
 
 // Server settings
 const HTTP_PORT = config.http.port;
@@ -251,6 +255,30 @@ app.post('/promocode', (req,res)=> {
     // Check where this promo code leads
 
     // Send to where it leads
+});
+
+app.post('/send-debug-email', (req,res)=> {
+    console.log(`Received:`, req.body);
+    let emailSubject = typeof(req.body.emailSubject) == 'string' && req.body.emailSubject.trim().length > 0 ?  req.body.emailSubject.trim() : "No Subject";
+    let emailText = typeof(req.body.emailText) == 'string' && req.body.emailText.trim().length > 0 ?  req.body.emailText.trim() : "No Text";
+    const msg = {
+    to: 'pytrickdollar@gmail.com',
+    from: 'GA Notifications <notifications@gerardantoun.com>',
+    subject: `GA - ${emailSubject}`,
+    text: emailText,
+    html: emailText,
+    };
+    sgMail.send(msg, (error, result) => {
+        
+        if(error){
+            res.status(500).json({email: 'Not Sent'});
+        }else{
+            console.log('Email Sent');
+            console.log('result: ', result);
+            res.status(200).json({email: 'Sent'});
+        }
+    });
+    
 });
 
 app.post('/tts',(req,res) => {
