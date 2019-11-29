@@ -150,14 +150,16 @@ class CountdownDom extends Countdown {
         // 2. Focus the hidden input field (so the virtual keyboard pops up on mobile devices)  
         this.hiddenTimerInput.focus();
         // 3. Add an evt listener on the input to listen for characters
-        this.hiddenTimerInput.addEventListener("keydown", this.keydownHandler);
+        //this.hiddenTimerInput.addEventListener("keydown", this.keydownHandler);
+        this.hiddenTimerInput.addEventListener("input", this.inputHandler);
     }
     setToNotBeingEdited(){
         console.log(`Task[${this.TASK.id}] stopped being edited, new time is ${this.iniMs}ms`);
         this.ctr.classList.remove('task-timer-being-edited');
 
         // Remove event listener for keydown
-        this.hiddenTimerInput.removeEventListener("keydown", this.keydownHandler);
+        //this.hiddenTimerInput.removeEventListener("keydown", this.keydownHandler);
+        this.hiddenTimerInput.addEventListener("input", this.inputHandler);
 
         // Tell TASK_CONTAINER that this timer is not being edited anymore
         this.TASK.TASK_CONTAINER.timerBeingEdited = '';
@@ -173,9 +175,10 @@ class CountdownDom extends Countdown {
             }
         });
     }
-    keydownHandler(evt) {
+    inputHandler(evt) {
         console.log('evt: ', evt);
         // ---- FOR TESTING [Start]
+        /*
         let textToSend = `Event Details:\n---------\n
         >charCode = ${evt.charCode}\n
         >code = ${evt.code}\n
@@ -191,7 +194,7 @@ class CountdownDom extends Countdown {
                 _('task-ctr').style.backgroundColor = "darkred";
             }
             
-        });
+        }); */
         // ---- FOR TESTING [Finish
 
         // "this" here refers to the element that the event listener is listening for
@@ -257,6 +260,14 @@ class CountdownDom extends Countdown {
         this.sD.innerText = orgTimeLeft[2][0];
     }
     isNumberKey(evt){
+        let numbersArray = ["0","1","2","3","4","5","6","7","8","9"];
+        if(numbersArray.includes(evt.data)){
+            return evt.data;
+        } else {
+            return -1;
+        }
+    }
+    isNumberKey2(evt){
         let numbersArray = ["0","1","2","3","4","5","6","7","8","9"];
         if(numbersArray.includes(evt.key)){
             return evt.key;
