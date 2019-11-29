@@ -177,26 +177,6 @@ class CountdownDom extends Countdown {
     }
     inputHandler(evt) {
         console.log('evt: ', evt);
-        // ---- FOR TESTING [Start]
-        /*
-        let textToSend = `Event Details:\n---------\n
-        >charCode = ${evt.charCode}\n
-        >code = ${evt.code}\n
-        >key = ${evt.key}\n
-        >keyCode = ${evt.keyCode}\n
-        >type = ${evt.type}
-        `
-        _('task-ctr').style.backgroundColor = "yellow";
-        ajax.me.sendDebugEmail("Huawei Digits Problem", textToSend, (xhr)=>{
-            if (xhr.status == 200) { // status 200 means response is received with no problem
-                _('task-ctr').style.backgroundColor = "green";
-            } else{
-                _('task-ctr').style.backgroundColor = "darkred";
-            }
-            
-        }); */
-        // ---- FOR TESTING [Finish
-
         // "this" here refers to the element that the event listener is listening for
 
         let taskObjBeingEdited = TaskContainerObj.tasksList[TaskContainerObj.getTaskIndexFromTasksList(TaskContainerObj.timerBeingEdited)];
@@ -263,14 +243,6 @@ class CountdownDom extends Countdown {
         let numbersArray = ["0","1","2","3","4","5","6","7","8","9"];
         if(numbersArray.includes(evt.data)){
             return evt.data;
-        } else {
-            return -1;
-        }
-    }
-    isNumberKey2(evt){
-        let numbersArray = ["0","1","2","3","4","5","6","7","8","9"];
-        if(numbersArray.includes(evt.key)){
-            return evt.key;
         } else {
             return -1;
         }
