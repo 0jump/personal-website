@@ -157,15 +157,17 @@ body {
 }
 
 .left-ctr{
+    padding-left: 8px;
     display:flex;
     flex-direction: column;
+    width:100%;
 }
 .task-title-ctr{
     display: inline;
 }
 .task-title{
     font-size:16px;
-    width:230px;
+    width:100%;
 
     background-color: transparent;
 
@@ -204,9 +206,10 @@ body {
     margin:0;
     border:none;
     border-bottom: 1px solid black;
-    width: 230px;
-    resize: none;
+    width: 100%;
+    resize: vertical;
 
+    max-height:550px;
 
 }
 
