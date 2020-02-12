@@ -508,7 +508,11 @@ class TaskContainer {
         // Add to the Task Container DOM Element all the Task Objects in the Input Array
         for(let i=0; i < pArrayOfTaskObjects.length; i++){
             this.createTask(pArrayOfTaskObjects[i]);
+            console.log(`pArrayOfTaskObjects[${i}]: `, pArrayOfTaskObjects[i]);
         }
+    }
+    createListOfTaskDomObjects(pArrayOfTaskObjects){
+        // Check Tasks' Order
     }
     deleteTask(pTaskObject){
         let indexOfTaskToBeDeleted = this.getTaskIndexFromTasksList(pTaskObject.id);
