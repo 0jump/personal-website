@@ -624,6 +624,20 @@ app.get('/iot', (req, res) => {
     res.status(200).json({'Msg': "You're alive"});
 });
 
+app.post('/iot', (req, res) => {
+/*     let func = typeof(req.body.func) == 'string' && req.query.func.trim().length > 0 ? req.query.func.trim() : false;
+    // Sing in
+    if (func == 'signIn'){
+        let emailAddr = typeof(req.body.emailAddr) == 'string' && req.body.emailAddr.trim().length > 0 ?  req.body.emailAddr.trim() : false;
+        let plainTextPass =  typeof(req.body.pass) == 'string' && req.body.pass.trim().length > 0 ?  req.body.pass.trim() : false;
+
+        if (emailAddr && plainTextPass){ */
+    let payload = req.body;
+    console.log('payload: ', payload);
+    if(payload.status == "operational"){
+        res.status(200).json({"Msg": "noted"})
+    }
+});
 
 // Starting both http & https servers
 const httpServer = http.createServer(app);
