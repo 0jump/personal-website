@@ -618,6 +618,13 @@ app.post('/tts',(req,res) => {
     }
 });
 
+// IOT API (ESP8266)
+
+app.get('/iot', (req, res) => {
+    res.status(200).json({'Msg': "You're alive"});
+});
+
+
 // Starting both http & https servers
 const httpServer = http.createServer(app);
 
