@@ -633,7 +633,6 @@ app.post('/iot', (req, res) => {
 
         if (emailAddr && plainTextPass){ */
     let payload = req.body;
-    console.log('req: ', req);
     console.log('payload: ', payload);
     if(payload.status == "operational"){
         res.status(200).json({"Msg": "noted"})
