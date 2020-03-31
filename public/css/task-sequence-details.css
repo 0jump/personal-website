@@ -1,0 +1,23 @@
+.task{
+    width:100%;
+    background-color:lightblue;
+    border: 1px rgb(0, 25, 58) solid;
+
+    -webkit-transition: all 0.7s ease-out;
+    -moz-transition: all 0.7s ease-out;
+    -ms-transition: all 0.7s ease-out;
+    -o-transition: all 0.7s ease-out;
+    transition: all 0.7s ease-out;
+}
+
+.details-ctr{
+    width:100%;
+    display:flex;
+    flex-wrap: wrap;
+    padding:20px 20px;
+}
+
+.subtask-ctr{
+    padding:7px;
+    background-color: lightgreen;
+}

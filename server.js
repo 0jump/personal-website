@@ -122,6 +122,11 @@ app.get('/tts-details', (req, res) => {
     res.render('tts-details');
 });
 
+// TS Details Route
+app.get('/task-sequence-details', (req, res) => {
+    res.render('task-sequence-details');
+});
+
 // HTTPS Requirement (Not sure why and how it works)
 app.get('/.well-known/acme-challenge/EMCcyVLYM6sCWp1vV3XQ7Pqaf5mime-1lqM9MqMQpj0', (req, res) => {
     res.send('EMCcyVLYM6sCWp1vV3XQ7Pqaf5mime-1lqM9MqMQpj0.xYo7TzuMhAEAsL3f0V8kQG6vxOS4OctB1fTtuLLf5ow');
@@ -281,6 +286,133 @@ app.post('/send-debug-email', (req,res)=> {
     
 });
 
+app.post('/tasks',(req,res) => {
+    let func = typeof(req.query.func) == 'string' && req.query.func.trim().length > 0 ? req.query.func.trim() : false;
+    
+    if (func){
+        let access_token = req.header('access_token');
+        if (typeof access_token == 'string' && access_token.length > 0){
+            if (func == 'getTaskWithChildrenDeepAsArray'){
+                jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+                    if (err) {
+                        res.status(403).send();
+                    } else {
+                        let taskToGetWithChildrenId = typeof(req.body.task_id) == 'string' ? req.body.task_id : false;
+                        // Get Task With Children (Deep) From Database as an array with no hierarchy
+                        dbservices.getTaskWithChildrenDeepAsArray(authData.user_id, taskToGetWithChildrenId, (error_type, error_desc, taskAndChildrenArray) => {
+                            if(!error_type){
+                                res.status(200).json({"task_and_children_array" :taskAndChildrenArray});
+                            }
+                        });
+                    }
+                });
+            } else if(func=="createNewRootTaskForUser"){
+                jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+                    if (err) {
+                        res.status(403).send();
+                    } else {
+                        
+                        // Create Root Task And one Child Task (Both empty)
+                        let datetime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+
+                        let emptyRootTaskObj = {
+                            title: '',
+                            parent_id: null,
+                            previous_sibling_id: null,
+                            next_sibling_id: null,
+                            creator_user_id: authData.user_id,
+                            date_created: datetime,
+                            is_deleted: 0,
+                        }
+                        
+                        dbservices.addNewTaskWithoutTouchingAnyOtherTasks(authData.user_id, emptyRootTaskObj, (err_type, err_desc, newRootTaskId)=> {
+                            if(!err_type){
+                                let emptyRootChildTaskObj = {
+                                    title: '',
+                                    parent_id: newRootTaskId,
+                                    previous_sibling_id: null,
+                                    next_sibling_id: null,
+                                    creator_user_id: authData.user_id,
+                                    date_created: datetime,
+                                    is_deleted: 0,
+                                }
+                                dbservices.addNewTaskWithoutTouchingAnyOtherTasks(authData.user_id, emptyRootChildTaskObj, (err_type, err_desc, newRootChildTaskId)=> {
+
+                                    if(!err_type){
+                                        
+                                        res.status(200).json({"task_id": newRootTaskId});
+                                    }else{
+                                        res.status(500).json({"Error": "Could not create child Task"});
+                                    }
+                                })
+                            }else{
+                                res.status(500);
+                            }
+                        });
+                    }
+                });
+            }else if(func=="createNewTaskForUser"){
+
+                jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+                    if (err) {
+                        res.status(403).send();
+                    } else {
+                        let neededItems = req.body;
+                        let neededItemsKeysArray = Object.keys(neededItems);
+                        
+                        let datetime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+                        
+                        let emptyTaskObj = {
+                            title: '',
+                            parent_id: req.body.parent_id,
+                            creator_user_id: authData.user_id,
+                            date_created: datetime,
+                            is_deleted: 0,
+                        }
+                        if(neededItemsKeysArray.includes("next_sibling_id")){
+                            // Incoming task should be before "next_sibling_id"
+                            emptyTaskObj.next_sibling_id = neededItems.next_sibling_id;
+                        }else if(neededItemsKeysArray.includes("previous_sibling_id")){
+                            // Incoming task should be after "previous_sibling_id"
+                            emptyTaskObj.previous_sibling_id = neededItems.previous_sibling_id;
+                        }
+                        //console.log('emptyTaskObj: ', emptyTaskObj);
+                        dbservices.addNewTaskAndChangeNextAndPreviousTasks(authData.user_id, emptyTaskObj, (err_type, err_desc, newTaskAndChangesToImplement)=> {
+                            if(!err_type){
+                                res.status(200).json(newTaskAndChangesToImplement);
+                            }else{
+                                res.status(500).json({"error": "invalid input parent id of new task does not match its next sibling's parent's id"});
+                            }
+                        });
+                    }
+                });
+            }else if(func=="deleteTaskForUser"){
+                jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+                    if (err) {
+                        res.status(403).send();
+                    } else {
+                        let taskToDelId = req.body.task_id;
+                        
+                        let datetime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+    
+                        //console.log('emptyTaskObj: ', emptyTaskObj);
+                        dbservices.deleteTaskAndChangeNextAndPreviousTasks(authData.user_id, taskToDelId, (err_type, err_desc, deletedTaskIdAndChangesToImplement)=> {
+                            if(!err_type){
+                                res.status(200).json(deletedTaskIdAndChangesToImplement);
+                            }else{
+                                res.status(500);
+                            }
+                        });
+                    }
+                });
+            }
+        } else {
+            res.status(403).send();
+        }
+    }else{
+        res.status(400).json({'Error': 'Missing Required Fields'});
+    }
+});
 app.post('/tts',(req,res) => {
     let func = typeof(req.query.func) == 'string' && req.query.func.trim().length > 0 ? req.query.func.trim() : false;
     

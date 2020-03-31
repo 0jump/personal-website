@@ -62,14 +62,23 @@ class TimedTaskSequence {
 }
 
 newTtsButton.onclick = () => {
-    ajax.me.createNewTts(gAccessToken,(xhr)=>{
+/*     ajax.me.createNewTts(gAccessToken,(xhr)=>{
         if(xhr.status == 200){
             let responseObj = JSON.parse(xhr.response);
 
             //Save TTS ID 
-            window.location.assign("tts-details?tts_id=" + responseObj.tts_id);
+            // window.location.assign("tts-details?tts_id=" + responseObj.tts_id);
+            window.location.assign("task-sequence-details");
         }
-    });
+    }); */
+    ajax.me.createNewRootTaskForUser(gAccessToken, (xhr) => {
+        if(xhr.status == 200){
+            let responseObj = JSON.parse(xhr.response);
+            //Save TTS ID 
+            // window.location.assign("tts-details?tts_id=" + responseObj.tts_id);
+            window.location.assign("task-sequence-details?task_id=" + responseObj.task_id);
+        }
+    })
 }
 
 

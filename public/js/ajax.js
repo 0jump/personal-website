@@ -55,6 +55,48 @@ ajax.me.submitPromocode = (promocode, callback) => {
 }
 
 
+// Task Services
+ajax.me.createNewRootTaskForUser = (pAccessToken, callback) => {
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tasks?func=createNewRootTaskForUser', headersObj, {}, callback);
+}
+
+ajax.me.getTaskWithChildrenDeepAsArray = (pAccessToken, pTaskId, callback) => {
+    let reqPayload = { 
+        'task_id':pTaskId,
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tasks?func=getTaskWithChildrenDeepAsArray', headersObj, reqPayload, callback);
+}
+
+ajax.me.createNewTaskForUser = (pAccessToken, pParentId, pRefSiblingId, pBeforeOrAfter, callback) => {
+    let reqPayload = { 
+        'parent_id':pParentId
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    if(pBeforeOrAfter == "after"){
+        reqPayload.previous_sibling_id = pRefSiblingId;
+    }else if(pBeforeOrAfter == "before"){
+        reqPayload.next_sibling_id = pRefSiblingId;
+    }
+    ajax.sendJsonPostRequest('tasks?func=createNewTaskForUser', headersObj, reqPayload, callback);
+}
+
+ajax.me.deleteTask = (pAccessToken, pTaskId, callback)=>{
+    let reqPayload = { 
+        'task_id':pTaskId
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tasks?func=deleteTaskForUser', headersObj, reqPayload, callback);
+}
 
 // TTS Services
 ajax.me.createNewTts = (pAccessToken,callback) => {
@@ -174,6 +216,7 @@ ajax.me.sendDebugEmail = (pEmailSubject, pEmailBody, callback) => {
     ajax.sendJsonPostRequest('send-debug-email', {}, reqPayload, callback);
 }
 
+
 /* 
 -------------LOW LEVEL AJAX FUNCTIONS--------------
 
@@ -212,7 +255,7 @@ ajax.sendJsonPostRequest = (url, headersObject, jsonObj,callback)=> {
         }
     };
     var data = JSON.stringify(jsonObj);
-    console.log(xhr);
+    //console.log(xhr);
     xhr.send(data);
 };
 
