@@ -621,7 +621,7 @@ app.post('/tts',(req,res) => {
 // IOT API (ESP8266)
 
 app.get('/iot', (req, res) => {
-    res.status(200).json({'Msg': "You're alive"});
+    res.render('iot');
 });
 
 app.post('/iot', (req, res) => {
