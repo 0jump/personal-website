@@ -12,6 +12,7 @@ const http = require('http');
 const https = require('https');
 const taskSeqHelpers = require('./lib/task-sequence');
 const sgMail = require('@sendgrid/mail');
+const iotTracker = require('./lib/iot');
 
 // Set Sendgrid Api Key
 sgMail.setApiKey(config.emails.sendgrid.apiKey);
@@ -625,17 +626,23 @@ app.get('/iot', (req, res) => {
 });
 
 app.post('/iot', (req, res) => {
-/*     let func = typeof(req.body.func) == 'string' && req.query.func.trim().length > 0 ? req.query.func.trim() : false;
-    // Sing in
-    if (func == 'signIn'){
-        let emailAddr = typeof(req.body.emailAddr) == 'string' && req.body.emailAddr.trim().length > 0 ?  req.body.emailAddr.trim() : false;
-        let plainTextPass =  typeof(req.body.pass) == 'string' && req.body.pass.trim().length > 0 ?  req.body.pass.trim() : false;
-
-        if (emailAddr && plainTextPass){ */
     let payload = req.body;
-    console.log('payload: ', payload);
-    if(payload.status == "operational"){
-        res.status(200).json({"Msg": "noted"})
+    try{
+        let jsonObjResponse = iotTracker.processMsg(payload);
+        res.status(200).json(jsonObjResponse);
+    }catch(err){
+        console.log(err);
+        switch(err["err_type"]) {
+            case "wrong_msg_format":
+            res.status(400).send();
+            break;
+            case "device_unknown":
+            res.status(400).send();
+            break;
+            default:
+            res.status(500).send();
+              // code block
+        }
     }
 });
 
