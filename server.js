@@ -631,17 +631,16 @@ app.post('/iot', (req, res) => {
         let jsonObjResponse = iotTracker.processMsg(payload);
         res.status(200).json(jsonObjResponse);
     }catch(err){
-        console.log(err);
+        // console.log(err);
         switch(err["err_type"]) {
             case "wrong_msg_format":
-            res.status(400).send();
-            break;
+                res.status(400).send();
+                break;
             case "device_unknown":
-            res.status(400).send();
-            break;
+                res.status(400).send();
+                break;
             default:
-            res.status(500).send();
-              // code block
+                res.status(500).send();
         }
     }
 });
