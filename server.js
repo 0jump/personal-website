@@ -626,6 +626,26 @@ app.get('/iot', (req, res) => {
 });
 
 app.post('/iot', (req, res) => {
+    /* 
+    -----------------------------------------------
+    |            MESSAGES FROM BROWSER            |
+    -----------------------------------------------
+    */
+    let func = typeof(req.query.func) == 'string' && req.query.func.trim().length > 0 ? req.query.func.trim() : false;
+    if(func){
+        switch (func){
+            case "getKnownIotDevices":
+                let knownDeviceArray = iotTracker.getAllKnownDevices();
+                res.status(200).json(knownDeviceArray);
+        }
+    }
+
+    /* 
+    -----------------------------------------------
+    | MESSAGES FROM IOT DEVICE (NOT FROM BROWSER) |
+    -----------------------------------------------
+    */
+
     let payload = req.body;
     try{
         let jsonObjResponse = iotTracker.processMsg(payload);

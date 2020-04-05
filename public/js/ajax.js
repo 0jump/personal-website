@@ -174,6 +174,14 @@ ajax.me.sendDebugEmail = (pEmailSubject, pEmailBody, callback) => {
     ajax.sendJsonPostRequest('send-debug-email', {}, reqPayload, callback);
 }
 
+// IOT
+ajax.me.getKnownIotDevices = (callback) => {
+    let reqPayload = {};
+    let headersObj = {};
+
+    ajax.sendJsonPostRequest('iot?func=getKnownIotDevices',headersObj, reqPayload, callback);
+}
+
 /* 
 -------------LOW LEVEL AJAX FUNCTIONS--------------
 
@@ -212,7 +220,7 @@ ajax.sendJsonPostRequest = (url, headersObject, jsonObj,callback)=> {
         }
     };
     var data = JSON.stringify(jsonObj);
-    console.log(xhr);
+    //console.log(xhr);
     xhr.send(data);
 };
 
