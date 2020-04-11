@@ -109,18 +109,9 @@ class Task {
             this.initialSubtasksDomDisplay();
         }
     }
-    findFirstSubtask(){
-        // returns subtask with previous_subtask == null
-        let subtasksKeys = Object.keys(this.subtasks)
-        for (let i=0; i < subtasksKeys.length; i++){
-            let subtask = this.subtasks[subtasksKeys[i]];
-            if(subtask.previousSibling == null){
-                return subtask;
-            }
-        }
-    }
+
     initialSubtasksDomDisplay(){
-        let subtask = this.findFirstSubtask();
+        let subtask = this.getFirstSubtask();
         subtask.createDomTask();
         this.domSubtaskContainer.appendChild(subtask.domTask);
         while(subtask.nextSibling != null){
@@ -198,6 +189,7 @@ class Task {
         }
     }
     implementChanges(pChangesToImplementObj){
+        // When message coming from server contains a "changes_to_implement" section
         let changesToImplement = pChangesToImplementObj;
         let changesToImplementKeysArr = Object.keys(changesToImplement);
         for(let i =0; i< changesToImplementKeysArr.length; i++){
@@ -218,44 +210,6 @@ class Task {
             }
         }
     }
-    /* createSubtask(pPreviousSiblingId, pNextSiblingId){
-        console.log("I am", this.id, 'creating task between', pPreviousSiblingId, 'and', pNextSiblingId);
-        ajax.me.createNewTaskForUser(gAccessToken, this.id, pPreviousSiblingId,pNextSiblingId, (xhr)=> {
-            if(xhr.status == 200){
-                let newJsonTaskObjAndChangesToImplement = JSON.parse(xhr.response);
-                console.log('newJsonTaskObjAndChangesToImplement: ', newJsonTaskObjAndChangesToImplement);
-
-                let newJsonTask = newJsonTaskObjAndChangesToImplement.new_task;
-                let changesToImplement = newJsonTaskObjAndChangesToImplement.changes_to_implement;
-
-                let newTaskObj = new Task(newJsonTask);
-                newTaskObj.onTaskCreationRelationshipsUpdate(this);
-                newTaskObj.createDomTask();
-
-                this.addSubtaskToCorrectPlaceInDom(newTaskObj);
-                let changesToImplementKeysArr = Object.keys(changesToImplement);
-                for(let i =0; i< changesToImplementKeysArr.length; i++){
-                    let taskToBeChangedId = changesToImplementKeysArr[i];
-                    let taskToBeChanged = this.subtasks[taskToBeChangedId];
-
-                    let changePropertyObj = changesToImplement[taskToBeChangedId];
-
-                    let changePropertyObjKeysArray = Object.keys(changePropertyObj);
-                    let propertyNameKey = changePropertyObjKeysArray[0];
-                    let propertyNameValue = changePropertyObj[propertyNameKey];
-
-                    if(propertyNameKey == "next_sibling_id"){
-                        taskToBeChanged.nextSibling = this.subtasks[propertyNameValue];
-                    }
-                    if(propertyNameKey == "previous_sibling_id"){
-                        taskToBeChanged.previousSibling = this.subtasks[propertyNameValue];
-                    }
-                }   
-            } else{
-                console.log("status", xhr.status);
-            }
-        });
-    } */
     addSubtaskToCorrectPlaceInDom(pTaskToAdd){
         let subtasksKeysArray = Object.keys(this.subtasks);
 
@@ -282,22 +236,6 @@ class Task {
             }
         }
     }
-/*     deleteSubtask(pSubtask){
-
-        if (pSubtask.previousSibling != null){
-            pSubtask.previousSibling.nextSibling = pSubtask.nextSibling;
-        }
-        if (pSubtask.nextSibling != null) {
-            pSubtask.nextSibling.previousSibling = pSubtask.previousSibling;
-        }
-
-        this.domSubtaskContainer.removeChild(this.subtasks[pSubtask.id].domTask);
-        delete this.subtasks[pSubtask.id];
-
-        if (Object.keys(this.subtasks).length == 0){
-            this.domTask.removeChild(this.domSubtaskContainer);
-        }
-    } */
     deleteSubtask(pSubtaskToDel){
         ajax.me.deleteTask(gAccessToken, pSubtaskToDel.id, (xhr)=> {
             if(xhr.status == 200){
@@ -323,129 +261,15 @@ class Task {
         });
     }
     getLastSubtask(){
-
         return this.subtasks[this.domSubtaskContainer.lastChild.id];
-
-
-        
     }
-    changeOrderMoveUp(pSubtaskId){
-        console.log("Parent: I am", this.id, "Trying to move up", pSubtaskId);
-        // Check current position of the subtask that wants to change pos.
-        let currentSubtaskPosition = this.orderedSubtaskIdsList.indexOf(pSubtaskId);
-        console.log(pSubtaskId,"'s current position is", currentSubtaskPosition);
-        // If position is the 1st (=currentSubtaskPosition == 0) 
-        if(currentSubtaskPosition == 0){
-            // Do nothing for now, it can't go further up
-        }else if(currentSubtaskPosition > 0){
-            let newPosition = currentSubtaskPosition - 1;
-            // Check the id of the subtask that occupies this position
-            let occupantId = this.orderedSubtaskIdsList[newPosition];
-            console.log("Should be moved to position", newPosition, "in place of", occupantId);
-
-            // Remove the subtask id from that position in the ordered subtasks list
-            this.orderedSubtaskIdsList.splice(currentSubtaskPosition, 1);
-
-            // Get the new index of the previous occupant
-            let newOccupantPos = this.orderedSubtaskIdsList.indexOf(occupantId);
-
-            // Insert the desired subtask id in place of the old occupant which will have +1 to his index
-            this.orderedSubtaskIdsList.splice(newOccupantPos, 0, pSubtaskId);
-
-            // Now to change the actual dom element position
-            this.domSubtaskContainer.insertBefore(this.subtasks[pSubtaskId].domTask,this.subtasks[occupantId].domTask);
-
-        }else{
-            console.log("Error: Could not find the subtask with the id:", pSubtaskId, "in the ordered subtasks list.")
-        }
-    }
-    moveMyselfUpWithinParentTask(){
-        // Changes to previousSibling (if I have one)
-        if (this.previousSibling != null){
-            this.parentTask.domSubtaskContainer.insertBefore(this.domTask,this.previousSibling.domTask);
-            if(this.previousSibling.previousSibling != null){
-                this.previousSibling.previousSibling.nextSibling = this;
-            }
-            let myNewPreviousSibling = this.previousSibling.previousSibling;
-
-            this.previousSibling.nextSibling = this.nextSibling
-            this.previousSibling.previousSibling = this;
-            if(this.nextSibling != null){
-                this.nextSibling.previousSibling = this.previousSibling;
-            }
-
-            this.nextSibling = this.previousSibling;
-            this.previousSibling = myNewPreviousSibling;
-            
-        }
-    }
-    moveMyselfDownWithinParentTask(){
-        if (this.nextSibling != null){
-            this.parentTask.domSubtaskContainer.insertBefore(this.domTask,this.nextSibling.domTask.nextSibling);
-            if(this.nextSibling.nextSibling != null){
-                this.nextSibling.nextSibling.previousSibling = this;
-            }
-            let myNewNextSibling = this.nextSibling.nextSibling;
-
-            this.nextSibling.previousSibling = this.previousSibling;
-            this.nextSibling.nextSibling = this;
-
-            if(this.previousSibling != null){
-                this.previousSibling.nextSibling = this.nextSibling;
-            }
-
-            this.previousSibling = this.nextSibling;
-            this.nextSibling = myNewNextSibling;
-        }
-    }
-    changeOrderMoveDown(pSubtaskId){
-        //console.log("Parent: I am", this.id, "Trying to move down", pSubtaskId);
-        // Check current position of the subtask that wants to change pos.
-        let currentSubtaskPosition = this.orderedSubtaskIdsList.indexOf(pSubtaskId);
-        //console.log(pSubtaskId,"'s current position is", currentSubtaskPosition);
-        // If position is the Last in the list of ordered subtasks 
-        if(currentSubtaskPosition == this.orderedSubtaskIdsList.length - 1){
-            // Do nothing for now, it can't go further down
-        }else if(currentSubtaskPosition < this.orderedSubtaskIdsList.length - 1){
-            let newPosition = currentSubtaskPosition + 1;
-            // Check the id of the subtask that occupies this position
-            let occupantId = this.orderedSubtaskIdsList[newPosition];
-            //console.log("Should be moved to position", newPosition, "in place of", occupantId);
-
-            console.log('[Before]: ', this.orderedSubtaskIdsList);
-            // Remove the subtask id from that position in the ordered subtasks list
-            this.orderedSubtaskIdsList.splice(currentSubtaskPosition, 1);
-            console.log(`[After Del ${pSubtaskId}]: `, this.orderedSubtaskIdsList);
-            
-
-            // Get the new index of the previous occupant
-            let newOccupantPos = this.orderedSubtaskIdsList.indexOf(occupantId) + 1;
-
-            // Insert the desired subtask id in place of the old occupant which will have +1 to his index
-            this.orderedSubtaskIdsList.splice(newOccupantPos, 0, pSubtaskId);
-            // Now to change the actual dom element position
-            this.domSubtaskContainer.insertBefore(this.subtasks[pSubtaskId].domTask,this.subtasks[occupantId].domTask.nextSibling); 
-
-        }else{
-            console.log("Error: Could not find the subtask with the id:", pSubtaskId, "in the ordered subtasks list.")
-        }
-    }
-    TakeSubTasks(pObjSubtasks){
-        if(pObjSubtasks != undefined){
-            let  lArrKeys = Object.keys(pObjSubtasks);
-            for(let i = 0; i < lArrKeys.length; i++){
-                let ljSubtask = pObjSubtasks[lArrKeys[i]];
-                let lSubtask = new Task(ljSubtask.id, this, ljSubtask.previous_sibling_id, ljSubtask.next_sibling_id);
-                lSubtask.prv=ljSubtask.subtasks;
-                this.subtasks[lSubtask.id] = lSubtask;
-            }
-            lArrKeys = Object.keys(this.subtasks);
-            for(let i = 0; i < lArrKeys.length; i++){
-                let lSubtask = this.subtasks[lArrKeys[i]];
-                lSubtask.previousSibling = this.subtasks[lSubtask.previousSibling];
-                lSubtask.nextSibling = this.subtasks[lSubtask.nextSibling];
-    
-                lSubtask.TakeSubTasks(lSubtask.prv);
+    getFirstSubtask(){
+        // returns subtask with previous_subtask == null
+        let subtasksKeys = Object.keys(this.subtasks)
+        for (let i=0; i < subtasksKeys.length; i++){
+            let subtask = this.subtasks[subtasksKeys[i]];
+            if(subtask.previousSibling == null){
+                return subtask;
             }
         }
     }

@@ -73,6 +73,16 @@ ajax.me.getTaskWithChildrenDeepAsArray = (pAccessToken, pTaskId, callback) => {
     ajax.sendJsonPostRequest('tasks?func=getTaskWithChildrenDeepAsArray', headersObj, reqPayload, callback);
 }
 
+ajax.me.getFirstGenerationSubtasks = (pAccessToken,pTaskId, callback) => {
+    let reqPayload = { 
+        'task_id':pTaskId,
+    }
+    let headersObj = {
+        'access_token': pAccessToken // Access token contains user id
+    }
+    ajax.sendJsonPostRequest('tasks?func=getFirstGenerationSubtasks', headersObj, reqPayload, callback);
+}
+
 ajax.me.createNewTaskForUser = (pAccessToken, pParentId, pRefSiblingId, pBeforeOrAfter, callback) => {
     let reqPayload = { 
         'parent_id':pParentId

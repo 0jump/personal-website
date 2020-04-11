@@ -1,0 +1,156 @@
+body{
+    background-color: whitesmoke;
+}
+
+.container {
+    width:100%;
+
+    padding: 20px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-container{
+    width: 100%;
+    max-width:400px;
+    
+    /* background-color: #E0E0E0; */
+    background-color:white; 
+
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px, rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
+    border-radius: 2px;
+    overflow:hidden;
+
+}
+
+.meta-data-ctr{
+    background-color:white;
+
+    padding: 12px 12px;
+
+    width:100%;
+
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.page-name-ctr{
+    display:flex;
+    width:50%;
+}
+
+.page-name{
+    margin:0;
+
+    font-size: 25px;
+
+    font-weight:600;
+}
+
+.new-ts-btn-ctr {
+    width:50%;
+
+    display:flex;
+    align-items: center;
+
+    justify-content:flex-end;
+}
+
+#new-ts-btn{
+    height: 30px;
+    width: 30px;
+
+    outline:0;
+
+    padding: 0px 9px;
+
+    border: none;
+    outline:none;
+
+    background-color:red;
+
+    color:white;
+
+    font-size:20px;
+    font-weight:500;
+
+    border-radius: 50%;
+}
+
+.ts-container{
+    padding:10px 7px;
+}
+
+.task-sequence{
+    background-color: #7C92FF;
+
+    border-radius: 2px;
+
+
+    -webkit-box-shadow: inset 0px 0px 2px 1px rgba(0,0,0,0.25);
+    -moz-box-shadow: inset 0px 0px 2px 1px rgba(0,0,0,0.25);
+    box-shadow: inset 0px 0px 2px 1px rgba(0,0,0,0.25);
+
+    margin-top:12px;
+    padding:10px;
+
+    cursor: pointer;
+}
+
+.task-sequence:nth-child(2n) {
+    background-color: #74D9FF;
+}
+
+.task-sequence:first-child{
+    margin-top:0;
+}
+.tts-row{
+    width:100%;
+}
+.tts-header-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ts-title-ctr{
+
+}
+
+.ts-title {
+    color:black;
+    margin:0;
+    font-size:18px;
+    font-weight:600;
+}
+
+.tts-edit-btn-ctr{
+
+}
+
+.tts-edit-btn{
+    height:27px;
+    width:27px;
+    background-color: transparent;
+    outline:none;
+    border:none;
+    border: 1px black solid;
+    border-radius:50%;
+    cursor: pointer;
+}
+
+.tts-edit-btn:hover{
+    -webkit-box-shadow: -1px 2px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: -1px 2px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: -1px 2px 5px 0px rgba(0,0,0,0.75);
+    border: black 1.03px solid;
+    transition: ease-in-out 100ms;
+}
+
+
+.tts-edit-btn-icon{
+
+}

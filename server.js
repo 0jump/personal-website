@@ -103,6 +103,21 @@ app.get('/tts-main-menu', (req, res) => {
  */
 });
 
+// Task Sequences Main Menu Route
+app.get('/task-sequences-menu', (req, res) => {
+    res.render('task-sequences-menu');
+/*     jwt.verify(req.token, config.jwt.secret, (err, authData) => {
+        if (err) {
+            res.status(403).json({'Error':'Access to TTS Main menu is Forbidden'});
+        } else {
+            res.json({
+                authData
+            });
+        }
+    });
+ */
+});
+
 app.get('/workspace-home', (req, res) => {
     res.render('workspace-home');
 /*     jwt.verify(req.token, config.jwt.secret, (err, authData) => {
@@ -405,6 +420,25 @@ app.post('/tasks',(req,res) => {
                         });
                     }
                 });
+            }else if(func == "getFirstGenerationSubtasks"){
+                
+                jwt.verify(access_token, config.jwt.secret, (err, authData) => {
+                    if (err) {
+                        res.status(403).send();
+                    } else {
+                        let taskId = req.body.task_id;
+                        
+                        dbservices.getTaskChildrenOneLayerAsArray(authData.user_id, taskId, (err_type, err_desc, tasksArray)=> {
+                            if(!err_type){
+                                console.log("user:", authData.user_id, ", task:", taskId);
+                                res.status(200).json(tasksArray);
+                                
+                            }else{
+                                res.status(500);
+                            }
+                        });
+                    }
+                });
             }
         } else {
             res.status(403).send();
@@ -413,6 +447,8 @@ app.post('/tasks',(req,res) => {
         res.status(400).json({'Error': 'Missing Required Fields'});
     }
 });
+
+
 app.post('/tts',(req,res) => {
     let func = typeof(req.query.func) == 'string' && req.query.func.trim().length > 0 ? req.query.func.trim() : false;
     
