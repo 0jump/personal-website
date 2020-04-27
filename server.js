@@ -6,6 +6,7 @@ const dbservices = require('./lib/dbservices');
 const helpers = require('./lib/helpers'); 
 const bcrypt = require('bcrypt-nodejs');
 const ajax = require('./lib/ajax');
+const TasksHandler = require('./lib/tasks-request-handler');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const http = require('http');
@@ -302,6 +303,17 @@ app.post('/send-debug-email', (req,res)=> {
 });
 
 app.post('/tasks',(req,res) => {
+    helpers.verifyAccessToken(req, (authData)=>{
+        if(authData){
+            let handler = new TasksHandler(req, res, authData);
+            handler.handle();
+        }else{
+            res.status(403).send();
+        }
+    });
+
+    
+/*
     let func = typeof(req.query.func) == 'string' && req.query.func.trim().length > 0 ? req.query.func.trim() : false;
     
     if (func){
@@ -445,7 +457,8 @@ app.post('/tasks',(req,res) => {
         }
     }else{
         res.status(400).json({'Error': 'Missing Required Fields'});
-    }
+    } 
+*/
 });
 
 
