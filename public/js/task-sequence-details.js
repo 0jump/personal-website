@@ -1,6 +1,7 @@
 const gAccessToken = window.localStorage.getItem('access_token');
 const gRootTaskId= helpers.getAllUrlParams().task_id;
-
+let gRootTask;
+let gCutTask = null; 
 
 let container = _("container");
 let fid = -1;
@@ -67,7 +68,8 @@ class Task {
                         this.domDeleteTaskBtn.innerText = 'Delete Task';
                         this.domDeleteTaskBtn.onclick = () => {
                             //console.log("Child: Asking parent", this.parentTask.id,"to delete me:", this.id);
-                            this.parentTask.deleteSubtask(this);
+                            console.log("I AM TASK");
+                            //this.parentTask.deleteSubtask(this);
                         }
                     this.domDeleteTaskBtnCtr.appendChild(this.domDeleteTaskBtn);
                 this.domDetailsCtr.appendChild(this.domDeleteTaskBtnCtr);
@@ -98,7 +100,35 @@ class Task {
                         }
                     this.domMoveDownBtnCtr.appendChild(this.domMoveDownBtn);
                 this.domDetailsCtr.appendChild(this.domMoveDownBtnCtr);
+                
+                this.domCutBtnCtr = CDE('div', [['class','cut-btn-ctr']]);
+                    this.domCutBtn = CDE('button', [['class','cut-btn']]);
+                        this.domCutBtn.innerText = "Cut";
+                        this.domCutBtn.onclick = () => {
+                            this.cutTask();
+                        }
+                    this.domCutBtnCtr.appendChild(this.domCutBtn);
+                this.domDetailsCtr.appendChild(this.domCutBtnCtr);
 
+
+                this.domPasteBeforeBtnCtr = CDE('div', [['class','paste-before-btn-ctr']]);
+                    this.domPasteBeforeBtn = CDE('button', [['class','paste-before-btn']]);
+                        this.domPasteBeforeBtn.innerText = "Paste Before Me";
+                        this.domPasteBeforeBtn.onclick = () => {
+                            this.pasteBeforeMe();
+                        }
+                    this.domPasteBeforeBtnCtr.appendChild(this.domPasteBeforeBtn);
+                this.domDetailsCtr.appendChild(this.domPasteBeforeBtnCtr);
+
+                this.domPasteInMeAtTheEndBtnCtr = CDE('div', [['class','paste-in-me-at-the-end-btn-ctr']]);
+                    this.domPasteInMeAtTheEndBtn = CDE('button', [['class','paste-in-me-at-the-end-btn']]);
+                        this.domPasteInMeAtTheEndBtn.innerText = "Paste In Me At The End";
+                        this.domPasteInMeAtTheEndBtn.onclick = () => {
+                            this.pasteInMeAtTheEnd()
+                        }
+                    this.domPasteInMeAtTheEndBtnCtr.appendChild(this.domPasteInMeAtTheEndBtn);
+                this.domDetailsCtr.appendChild(this.domPasteInMeAtTheEndBtnCtr);
+                
             this.domTask.appendChild(this.domDetailsCtr);
 
         let subtaskCount = Object.keys(this.subtasks).length;
@@ -109,7 +139,6 @@ class Task {
             this.initialSubtasksDomDisplay();
         }
     }
-
     initialSubtasksDomDisplay(){
         let subtask = this.getFirstSubtask();
         subtask.createDomTask();
@@ -125,8 +154,11 @@ class Task {
         // Use to ask parent to give next sibling and previous sibling Task Objects after initialization of all tasks
         if(this.jsonTaskObj.parent_id != null){
             this.parentTask = pInitializedTasksObj[this.jsonTaskObj.parent_id];
-            this.parentTask.subtasks[this.id] = this;
-            
+            if (typeof(this.parentTask) === 'undefined'){
+                this.parentTask = null;
+            }else{
+                this.parentTask.subtasks[this.id] = this;
+            }
         }else{
             this.parentTask = null;
         }
@@ -175,7 +207,7 @@ class Task {
                     
                     this.addSubtaskToCorrectPlaceInDom(newTaskObj); 
 
-                    this.implementChanges(changesToImplement);
+                    this.implementChangesForSubtasks(changesToImplement);
                 } else{
                     console.log("status", xhr.status);
                 }
@@ -188,25 +220,26 @@ class Task {
             alert("Unable to create subtask");
         }
     }
-    implementChanges(pChangesToImplementObj){
+    implementChangesForSubtasks(pChangesToImplementObj){
         // When message coming from server contains a "changes_to_implement" section
         let changesToImplement = pChangesToImplementObj;
         let changesToImplementKeysArr = Object.keys(changesToImplement);
         for(let i =0; i< changesToImplementKeysArr.length; i++){
             let taskToBeChangedId = changesToImplementKeysArr[i];
             let taskToBeChanged = this.subtasks[taskToBeChangedId];
+            if(typeof(taskToBeChanged) !== 'undefined'){
+                let changePropertyObj = changesToImplement[taskToBeChangedId];
 
-            let changePropertyObj = changesToImplement[taskToBeChangedId];
-
-            let changePropertyObjKeysArray = Object.keys(changePropertyObj);
-            let propertyNameKey = changePropertyObjKeysArray[0];
-            let propertyNameValue = changePropertyObj[propertyNameKey];
-
-            if(propertyNameKey == "next_sibling_id"){
-                taskToBeChanged.nextSibling = this.subtasks[propertyNameValue];
-            }
-            if(propertyNameKey == "previous_sibling_id"){
-                taskToBeChanged.previousSibling = this.subtasks[propertyNameValue];
+                let changePropertyObjKeysArray = Object.keys(changePropertyObj);
+                let propertyNameKey = changePropertyObjKeysArray[0];
+                let propertyNameValue = changePropertyObj[propertyNameKey];
+    
+                if(propertyNameKey == "next_sibling_id"){
+                    taskToBeChanged.nextSibling = this.subtasks[propertyNameValue];
+                }
+                if(propertyNameKey == "previous_sibling_id"){
+                    taskToBeChanged.previousSibling = this.subtasks[propertyNameValue];
+                }
             }
         }
     }
@@ -249,7 +282,7 @@ class Task {
 
                 // Check if there are no more subtasks to remove subtaskscontainer from dom
                 let subtasksKeysArray = Object.keys(this.subtasks);
-                this.implementChanges(changesToImplementObj);
+                this.implementChangesForSubtasks(changesToImplementObj);
                 if (subtasksKeysArray.length == 0){
                     this.domSubtaskContainer.parentNode.removeChild(this.domSubtaskContainer);
                     delete this.domSubtaskContainer;
@@ -259,6 +292,62 @@ class Task {
                 console.log(xhr.status);
             }
         });
+    }
+    cutTask() {
+        this.domTask.classList.add("cut-task");
+        gCutTask = this;
+    }
+    pasteBeforeMe(){
+        ajax.me.moveTaskBefore(gAccessToken, gCutTask.id, this.parentTask.id, this.id, (xhr)=>{
+            
+            if(xhr.status == 200){
+                let changesToImplementAndOldAndNewParentIds = JSON.parse(xhr.response);
+                let changesToImplementObj = changesToImplementAndOldAndNewParentIds.changes_to_implement;
+                let oldParentId = changesToImplementAndOldAndNewParentIds.old_parent_id;
+                let newParentId = changesToImplementAndOldAndNewParentIds.new_parent_id;
+
+                gRootTask.getSubtaskByIdDeep(oldParentId).implementChangesForSubtasks(changesToImplementObj);
+                gRootTask.getSubtaskByIdDeep(newParentId).implementChangesForSubtasks(changesToImplementObj);
+            }else if(xhr.status == 400){
+                // Display that not allowed to move task into one of its descendants
+                alert("You cannot move task into one of its descendants, or before itself");
+            }else{
+                console.log(xhr.status);
+            }
+        })
+    }
+    pasteInMeAtTheEnd(){
+        ajax.me.moveTaskBefore(gAccessToken, gCutTask.id, this.id, null, (xhr)=>{
+            
+            if(xhr.status == 200){
+                let changesToImplementAndOldAndNewParentIds = JSON.parse(xhr.response);
+                let changesToImplementObj = changesToImplementAndOldAndNewParentIds.changes_to_implement;
+                let oldParentId = changesToImplementAndOldAndNewParentIds.old_parent_id;
+                let newParentId = changesToImplementAndOldAndNewParentIds.new_parent_id;
+
+                gRootTask.getSubtaskByIdDeep(oldParentId).implementChangesForSubtasks(changesToImplementObj);
+                gRootTask.getSubtaskByIdDeep(newParentId).implementChangesForSubtasks(changesToImplementObj);
+            }else if(xhr.status == 400){
+                // Display that not allowed to move task into one of its descendants
+                alert("You cannot move task into one of its descendants");
+            }else{
+                console.log(xhr.status);
+            }
+        })
+    }
+    getSubtaskByIdDeep(pId){
+        if(this.id == pId){
+            return this
+        }else{
+            let subtaskKeys = Object.keys(this.subtasks)
+            for(let i = 0; i < subtaskKeys.length; i++){
+                let lResult = this.subtasks[subtaskKeys[i]].getSubtaskByIdDeep(pId);
+                if (lResult != null){
+                    return lResult;
+                }
+            }   
+            return null;
+        }
     }
     getLastSubtask(){
         return this.subtasks[this.domSubtaskContainer.lastChild.id];
@@ -275,24 +364,58 @@ class Task {
     }
 }
 
+class RootTask extends Task {
+    constructor(pJsonTaskObj) {
+        super(pJsonTaskObj);
+
+    }
+    deleteMyself(){
+        ajax.me.deleteTask(gAccessToken, this.id, (xhr)=> {
+            if(xhr.status == 200){
+                location.assign("/task-sequences-menu");
+            }else{
+                console.log(xhr.status);
+            }
+        });
+    }
+    updateDomTask() {
+        // Delete Unused Buttons 
+        this.domDetailsCtr.removeChild(this.domMoveUpBtnCtr);
+        this.domDetailsCtr.removeChild(this.domMoveDownBtnCtr);
+        this.domDetailsCtr.removeChild(this.domPasteBeforeBtnCtr);
+        this.domDetailsCtr.removeChild(this.domCutBtnCtr);
+        
+        // Changing event listeners
+        this.domDeleteTaskBtn.onclick = () => {
+            this.deleteMyself();
+        }
+    }
+}
+
+
 let rootTask;
 
-ajax.me.getTaskWithChildrenDeepAsArray(gAccessToken,gRootTaskId, (xhr)=> {
+ajax.me.getTaskWithChildrenDeepAndParentAsJsonObj(gAccessToken,gRootTaskId, (xhr)=> {
     if(xhr.status == 200){
         let jsonRes = JSON.parse(xhr.response);
-        let taskAndChildrenArray = jsonRes.task_and_children_array;
-        console.log('taskAndChildrenArray: ', taskAndChildrenArray);
+        
+        let rootTaskObj = jsonRes.task;
+        let childrenArray = jsonRes.children_array;
+        let parentOfRootTaskJsonObj = jsonRes.parent_task;
+
         let receivedTasksObj = {}; // filled with Task -type objects
         
-        //console.log('taskAndChildrenArray: ', taskAndChildrenArray);
-        
-        for(let ii = 0; ii < taskAndChildrenArray.length; ii++){
-            let jsonTaskObj = taskAndChildrenArray[ii];
+        // Transform children task (JSON) to instances of class Task
+        for(let ii = 0; ii < childrenArray.length; ii++){
+            let jsonTaskObj = childrenArray[ii];
             
             // Convert To Class "Task"
             let newTaskObj = new Task(jsonTaskObj);
             receivedTasksObj[newTaskObj.id] = newTaskObj;
         }
+
+        gRootTask = new RootTask(rootTaskObj);
+        receivedTasksObj[gRootTask.id] = gRootTask;
 
         receivedTasksObjKeysArray = Object.keys(receivedTasksObj);
         //console.log('receivedTasksObj: ', receivedTasksObj);
@@ -304,9 +427,11 @@ ajax.me.getTaskWithChildrenDeepAsArray(gAccessToken,gRootTaskId, (xhr)=> {
 
         //console.log('receivedTasksObj: ', receivedTasksObj);
 
-        rootTask = receivedTasksObj[gRootTaskId];
-        rootTask.createDomTask();
-        container.appendChild(rootTask.domTask);
+        gRootTask.createDomTask();
+        gRootTask.updateDomTask();
+        container.appendChild(gRootTask.domTask);
+        gRootTask.parentTask = new Task(parentOfRootTaskJsonObj);
+
     } else {
         //console.log(xhr.status);
         window.location.assign("/");

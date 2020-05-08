@@ -1,7 +1,9 @@
 const gAccessToken = window.localStorage.getItem('access_token');
 
 class TaskSequencesManager {
-    constructor(){
+    constructor(pRootTaskId){
+        console.log('pRootTaskId: ', pRootTaskId);
+        this.rootTaskId = pRootTaskId;
         this.taskSequences = [];
         this.taskSeqCtr = _("ts-container");
         this.newTsBtn = _("new-ts-btn");
@@ -11,7 +13,7 @@ class TaskSequencesManager {
         }
     }
     getTasksFromServer(callback){
-        ajax.me.getFirstGenerationSubtasks(gAccessToken, null, (xhr)=> {
+        ajax.me.getFirstGenerationSubtasks(gAccessToken, this.rootTaskId, (xhr)=> {
             if(xhr.status == 200){
                 console.log('JSON.parse(xhr.response): ', JSON.parse(xhr.response));
                 callback(JSON.parse(xhr.response));
@@ -31,12 +33,10 @@ class TaskSequencesManager {
     }
     createTaskSequence(){
         // ask server to create new task sequence and add it to taskSequences array and display it
-        ajax.me.createNewTaskForUser(gAccessToken, null, null, "before", (xhr)=>{
+        ajax.me.createNewTaskForUser(gAccessToken, this.rootTaskId, null, "before", (xhr)=>{
             if(xhr.status == 200){
-                let newTaskSeq = new TaskSequence(jsonTask);
-                newTaskSeq.createDomElement();
-                this.taskSequences.push(newTaskSeq);
-                this.taskSeqCtr.appendChild(newTaskSeq.dom);
+                let newTaskId = JSON.parse(xhr.response).new_task.id;
+                window.location.assign("/task-sequence-details?task_id=" + newTaskId);
             }else if(xhr.status == 403){
                 window.location.assign("/");
             }
@@ -72,6 +72,10 @@ class TaskSequence{
                         this.domId.innerText = this.id;
                     this.domIdCtr.appendChild(this.domId);
                 this.domHeaderRow.appendChild(this.domIdCtr);
+
+                this.dom.onclick = () => {
+                    window.location.assign("/task-sequence-details?task_id=" + this.id);
+                }
             this.dom.appendChild(this.domHeaderRow);
     }
     changeDomTitle(pNewTitle){
@@ -79,9 +83,18 @@ class TaskSequence{
     }
 }
 
-let taskSeqManager = new TaskSequencesManager();
-taskSeqManager.getTasksFromServer((jsonArray)=>{
-    taskSeqManager.constructTaskSequences(jsonArray);
-    taskSeqManager.displayTaskSequences();
-    console.log(taskSeqManager.taskSequences);
-});
+ajax.me.getRootTaskForUserifNotFoundCreateIt(gAccessToken, (xhr) => {
+    if(xhr.status == 200){
+        let rootTaskId = JSON.parse(xhr.response).task_id;
+        let taskSeqManager = new TaskSequencesManager(rootTaskId);
+        taskSeqManager.getTasksFromServer((jsonArray)=>{
+            taskSeqManager.constructTaskSequences(jsonArray);
+            taskSeqManager.displayTaskSequences();
+            console.log(taskSeqManager.taskSequences);
+        });
+    }else if (xhr.status == 403){
+        window.location.assign("/");
+    }else{
+        console.log("status", xhr.status);
+    }
+})

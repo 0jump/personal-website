@@ -45,12 +45,12 @@ let BuildSidebarContent = (sidebarCtr) => {
                 };
             sidebarBody.appendChild(sidebarItemWorkspaceHome);
 
-            let sidebarItemTtsMainMenu = CDE('div', [['class', 'sidebar-item']]);
-                sidebarItemTtsMainMenu.innerHTML = `<span class="sidebar-item-text">TTS Main Menu</span>`;
-                sidebarItemTtsMainMenu.onclick = () => {
-                    window.location.href = "/tts-main-menu";
-                };
-            sidebarBody.appendChild(sidebarItemTtsMainMenu);
+            let sidebarItemTaskSequencesMenu = CDE('div', [['class', 'sidebar-item']]);
+                sidebarItemTaskSequencesMenu.innerHTML = `<span class="sidebar-item-text">Task Sequences Menu</span>`;
+                sidebarItemTaskSequencesMenu.onclick = () => {
+                        window.location.href = "/task-sequences-menu";
+                    };
+            sidebarBody.appendChild(sidebarItemTaskSequencesMenu);
         innerSidebar.appendChild(sidebarBody);
     sidebarCtr.appendChild(innerSidebar);
 }

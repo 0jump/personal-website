@@ -73,6 +73,16 @@ ajax.me.getTaskWithChildrenDeepAsArray = (pAccessToken, pTaskId, callback) => {
     ajax.sendJsonPostRequest('tasks?func=getTaskWithChildrenDeepAsArray', headersObj, reqPayload, callback);
 }
 
+ajax.me.getTaskWithChildrenDeepAndParentAsJsonObj = (pAccessToken, pTaskId, callback) => {
+    let reqPayload = { 
+        'task_id':pTaskId
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tasks?func=getTaskWithChildrenDeepAndParentAsJsonObj', headersObj, reqPayload, callback);
+}
+
 ajax.me.getFirstGenerationSubtasks = (pAccessToken,pTaskId, callback) => {
     let reqPayload = { 
         'task_id':pTaskId,
@@ -81,6 +91,14 @@ ajax.me.getFirstGenerationSubtasks = (pAccessToken,pTaskId, callback) => {
         'access_token': pAccessToken // Access token contains user id
     }
     ajax.sendJsonPostRequest('tasks?func=getFirstGenerationSubtasks', headersObj, reqPayload, callback);
+}
+
+ajax.me.getRootTaskForUserifNotFoundCreateIt = (pAccessToken, callback) => {
+    let reqPayload = { }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tasks?func=getRootTaskForUserifNotFoundCreateIt', headersObj, reqPayload, callback);
 }
 
 ajax.me.createNewTaskForUser = (pAccessToken, pParentId, pRefSiblingId, pBeforeOrAfter, callback) => {
@@ -106,6 +124,19 @@ ajax.me.deleteTask = (pAccessToken, pTaskId, callback)=>{
         'access_token': pAccessToken
     }
     ajax.sendJsonPostRequest('tasks?func=deleteTaskForUser', headersObj, reqPayload, callback);
+}
+
+ajax.me.moveTaskBefore = (pAccessToken, pTaskId, pNewParentId, pNewNextSiblingId, callback) => {
+    // moves task before new next sibling
+    let reqPayload = { 
+        'task_id':pTaskId,
+        'new_next_sibling_id': pNewNextSiblingId,
+        'new_parent_id': pNewParentId
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tasks?func=moveTaskBefore', headersObj, reqPayload, callback);
 }
 
 // TTS Services
