@@ -74,4 +74,8 @@ Gives the creator of a certain task the permission `can_give_permissions`. Usual
 
 - `pTaskId`: Task to add the permission `can_give_permissions` to
 - `pUserId`: User who created the task
+- `callback`: callback function, taking as parameters:
+  - `err_type`: string
+  - `err_desc`: string
+  - `isPermissionGiven`: boolean
 
