@@ -128,6 +128,32 @@ class Task {
                     this.domPasteInMeAtTheEndBtnCtr.appendChild(this.domPasteInMeAtTheEndBtn);
                 this.domDetailsCtr.appendChild(this.domPasteInMeAtTheEndBtnCtr);
                 
+                this.domDetailsCtr.appendChild(CDE('hr', [['class','separator']]));
+
+
+                this.domShareUserInputCtr = CDE('div', [['class', 'share-user-input-ctr']]);
+                    this.domShareUserInput = CDE('input', [['class', 'share-user-input'],['placeholder','user id']]);
+                    this.domShareUserInputCtr.appendChild(this.domShareUserInput );
+                this.domDetailsCtr.appendChild(this.domShareUserInputCtr);
+
+                this.domSharePermissionTypeInputCtr = CDE('div', [['class', 'share-permission-type-input-ctr']]);
+                    this.domSharePermissionTypeInput = CDE('input', [['class', 'share-permission-type-input'], ['placeholder','permission type']]);
+                        
+                    this.domSharePermissionTypeInputCtr.appendChild(this.domSharePermissionTypeInput );
+                this.domDetailsCtr.appendChild(this.domSharePermissionTypeInputCtr);
+
+                this.domShareBtnCtr = CDE('div', [['class','share-btn-ctr']]);
+                    this.domShareBtn = CDE('button', [['class','share-btn']]);
+                        this.domShareBtn.innerText = "Share";
+                        this.domShareBtn.onclick = () => {
+                            console.log("domShareUserInput", this.domShareUserInput.value);
+                            console.log('domSharePermissionTypeInput: ', this.domSharePermissionTypeInput.value);
+
+                            this.grantUserPermissionOverMe(this.domShareUserInput.value, this.domSharePermissionTypeInput.value);
+                        }
+                    this.domShareBtnCtr.appendChild(this.domShareBtn);
+                this.domDetailsCtr.appendChild(this.domShareBtnCtr);
+
             this.domTask.appendChild(this.domDetailsCtr);
 
         let subtaskCount = Object.keys(this.subtasks).length;
@@ -258,6 +284,15 @@ class Task {
 
             }
         }
+    }
+    grantUserPermissionOverMe(pPermissionReceiverId, pTypeOfPermission){
+        ajax.me.setTaskPermissionForUser(gAccessToken, this.id,pPermissionReceiverId , pTypeOfPermission, (xhr)=>{
+            if(xhr.status == 200){
+                alert("Permission Granted");
+            }else{
+                console.log(xhr.status);
+            }
+        }) 
     }
     addSubtaskToCorrectPlaceInDom(pTaskToAdd){
         let subtasksKeysArray = Object.keys(this.subtasks);

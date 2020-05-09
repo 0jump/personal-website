@@ -31,3 +31,11 @@
 .cut-task{
     background-color: rgb(157, 174, 180);
 }
+
+.separator{
+    width: 100%;
+}
+
+.share-user-input{
+    width:60px;
+}

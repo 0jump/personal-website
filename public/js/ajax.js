@@ -56,10 +56,9 @@ ajax.me.submitPromocode = (promocode, callback) => {
 
 
 // Task Services
-ajax.me.setTaskPermissionForUser = (pAccessToken, pTaskId, pPermissionGiverId, pPermissionReceiverId, pTypeOfPermission, callback) => {
+ajax.me.setTaskPermissionForUser = (pAccessToken, pTaskId, pPermissionReceiverId, pTypeOfPermission, callback) => {
     let reqPayload = { 
         'task_id':pTaskId,
-        'permission_giver_id': pPermissionGiverId,
         'permission_receiver_id': pPermissionReceiverId,
         'permission_type': pTypeOfPermission
     }
@@ -69,7 +68,6 @@ ajax.me.setTaskPermissionForUser = (pAccessToken, pTaskId, pPermissionGiverId, p
     
     ajax.sendJsonPostRequest('tasks?func=setTaskPermissionForUser', headersObj, reqPayload, callback);
 }
-
 
 ajax.me.createNewRootTaskForUser = (pAccessToken, callback) => {
     let headersObj = {
