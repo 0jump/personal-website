@@ -68,8 +68,7 @@ class Task {
                         this.domDeleteTaskBtn.innerText = 'Delete Task';
                         this.domDeleteTaskBtn.onclick = () => {
                             //console.log("Child: Asking parent", this.parentTask.id,"to delete me:", this.id);
-                            console.log("I AM TASK");
-                            //this.parentTask.deleteSubtask(this);
+                            this.parentTask.deleteSubtask(this);
                         }
                     this.domDeleteTaskBtnCtr.appendChild(this.domDeleteTaskBtn);
                 this.domDetailsCtr.appendChild(this.domDeleteTaskBtnCtr);
@@ -224,22 +223,39 @@ class Task {
         // When message coming from server contains a "changes_to_implement" section
         let changesToImplement = pChangesToImplementObj;
         let changesToImplementKeysArr = Object.keys(changesToImplement);
-        for(let i =0; i< changesToImplementKeysArr.length; i++){
+        for(let i = 0; i< changesToImplementKeysArr.length; i++){
             let taskToBeChangedId = changesToImplementKeysArr[i];
+            
             let taskToBeChanged = this.subtasks[taskToBeChangedId];
             if(typeof(taskToBeChanged) !== 'undefined'){
+                console.log("I am", this.id, "I found", taskToBeChanged.id,"in my subtasks");
+
                 let changePropertyObj = changesToImplement[taskToBeChangedId];
+                console.log(`[${this.id}]`,'changePropertyObj: ', changePropertyObj);
 
                 let changePropertyObjKeysArray = Object.keys(changePropertyObj);
-                let propertyNameKey = changePropertyObjKeysArray[0];
-                let propertyNameValue = changePropertyObj[propertyNameKey];
+                console.log(`[${this.id}]`,'changePropertyObjKeysArray: ', changePropertyObjKeysArray);
+
+                for(let ii = 0; ii < changePropertyObjKeysArray.length; ii++){
+                    let propertyNameKey = changePropertyObjKeysArray[ii];
+                    let propertyNameValue = changePropertyObj[propertyNameKey];
     
-                if(propertyNameKey == "next_sibling_id"){
-                    taskToBeChanged.nextSibling = this.subtasks[propertyNameValue];
+                    if(propertyNameKey == "next_sibling_id"){
+                        if(typeof(this.subtasks[propertyNameValue]) == 'undefined'){
+                            taskToBeChanged.nextSibling = null;
+                        }else{
+                            taskToBeChanged.nextSibling = this.subtasks[propertyNameValue];
+                        }
+                    }
+                    if(propertyNameKey == "previous_sibling_id"){
+                        if(typeof(this.subtasks[propertyNameValue]) == 'undefined'){
+                            taskToBeChanged.previousSibling = null;
+                        }else{
+                            taskToBeChanged.previousSibling = this.subtasks[propertyNameValue];
+                        }
+                    }
                 }
-                if(propertyNameKey == "previous_sibling_id"){
-                    taskToBeChanged.previousSibling = this.subtasks[propertyNameValue];
-                }
+
             }
         }
     }
@@ -298,16 +314,38 @@ class Task {
         gCutTask = this;
     }
     pasteBeforeMe(){
-        ajax.me.moveTaskBefore(gAccessToken, gCutTask.id, this.parentTask.id, this.id, (xhr)=>{
-            
+        let cutTaskId = gCutTask.id;
+        ajax.me.moveTaskBefore(gAccessToken, cutTaskId, this.parentTask.id, this.id, (xhr)=>{
             if(xhr.status == 200){
                 let changesToImplementAndOldAndNewParentIds = JSON.parse(xhr.response);
                 let changesToImplementObj = changesToImplementAndOldAndNewParentIds.changes_to_implement;
                 let oldParentId = changesToImplementAndOldAndNewParentIds.old_parent_id;
                 let newParentId = changesToImplementAndOldAndNewParentIds.new_parent_id;
 
-                gRootTask.getSubtaskByIdDeep(oldParentId).implementChangesForSubtasks(changesToImplementObj);
-                gRootTask.getSubtaskByIdDeep(newParentId).implementChangesForSubtasks(changesToImplementObj);
+                let oldParentTask = gRootTask.getSubtaskByIdDeep(oldParentId);
+                let newParentTask = gRootTask.getSubtaskByIdDeep(newParentId);
+
+                let taskToBeMoved = gRootTask.getSubtaskByIdDeep(cutTaskId);
+
+                if(oldParentId != newParentId){
+                    
+                    taskToBeMoved.parentTask = newParentTask;
+                    delete oldParentTask.subtasks[taskToBeMoved.id];
+                    newParentTask.subtasks[taskToBeMoved.id] = taskToBeMoved;
+
+                    oldParentTask.implementChangesForSubtasks(changesToImplementObj);
+                }
+                newParentTask.implementChangesForSubtasks(changesToImplementObj);
+                newParentTask.domSubtaskContainer.insertBefore(taskToBeMoved.domTask, this.domTask);
+
+                taskToBeMoved.domTask.classList.remove("cut-task");
+
+                // Check if there are no more subtasks in old parent task to remove subtaskscontainer from dom
+                let subtasksKeysArray = Object.keys(oldParentTask.subtasks);
+                if (subtasksKeysArray.length == 0) {
+                    oldParentTask.domSubtaskContainer.parentNode.removeChild(oldParentTask.domSubtaskContainer);
+                    delete oldParentTask.domSubtaskContainer;
+                }
             }else if(xhr.status == 400){
                 // Display that not allowed to move task into one of its descendants
                 alert("You cannot move task into one of its descendants, or before itself");
@@ -317,16 +355,41 @@ class Task {
         })
     }
     pasteInMeAtTheEnd(){
-        ajax.me.moveTaskBefore(gAccessToken, gCutTask.id, this.id, null, (xhr)=>{
-            
+        let cutTaskId = gCutTask.id;
+        ajax.me.moveTaskBefore(gAccessToken, cutTaskId, this.id, null, (xhr)=>{
             if(xhr.status == 200){
                 let changesToImplementAndOldAndNewParentIds = JSON.parse(xhr.response);
                 let changesToImplementObj = changesToImplementAndOldAndNewParentIds.changes_to_implement;
+
                 let oldParentId = changesToImplementAndOldAndNewParentIds.old_parent_id;
                 let newParentId = changesToImplementAndOldAndNewParentIds.new_parent_id;
 
-                gRootTask.getSubtaskByIdDeep(oldParentId).implementChangesForSubtasks(changesToImplementObj);
-                gRootTask.getSubtaskByIdDeep(newParentId).implementChangesForSubtasks(changesToImplementObj);
+                let oldParentTask = gRootTask.getSubtaskByIdDeep(oldParentId);
+                let newParentTask = gRootTask.getSubtaskByIdDeep(newParentId);
+
+                let taskToBeMoved = gRootTask.getSubtaskByIdDeep(cutTaskId);
+
+                if(oldParentId != newParentId){
+                    
+                    taskToBeMoved.parentTask = newParentTask;
+                    delete oldParentTask.subtasks[taskToBeMoved.id];
+                    newParentTask.subtasks[taskToBeMoved.id] = taskToBeMoved;
+
+                    oldParentTask.implementChangesForSubtasks(changesToImplementObj);
+                }
+                newParentTask.implementChangesForSubtasks(changesToImplementObj);
+
+                newParentTask.addSubtaskToCorrectPlaceInDom(taskToBeMoved);
+                /* newParentTask.domSubtaskContainer.insertBefore(taskToBeMoved.domTask, this.domTask); */
+
+                taskToBeMoved.domTask.classList.remove("cut-task");
+
+                // Check if there are no more subtasks in old parent task to remove subtaskscontainer from dom
+                let subtasksKeysArray = Object.keys(oldParentTask.subtasks);
+                if (subtasksKeysArray.length == 0) {
+                    oldParentTask.domSubtaskContainer.parentNode.removeChild(oldParentTask.domSubtaskContainer);
+                    delete oldParentTask.domSubtaskContainer;
+                }
             }else if(xhr.status == 400){
                 // Display that not allowed to move task into one of its descendants
                 alert("You cannot move task into one of its descendants");
