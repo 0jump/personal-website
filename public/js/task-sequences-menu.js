@@ -5,8 +5,11 @@ class TaskSequencesManager {
         console.log('pRootTaskId: ', pRootTaskId);
         this.rootTaskId = pRootTaskId;
         this.taskSequences = [];
-        this.taskSeqCtr = _("ts-container");
+        this.taskSeqCtr = _("owned-ts-container");
         this.newTsBtn = _("new-ts-btn");
+
+        this.sharedTaskSeqCtr = _("shared-ts-ctr");
+        this.sharedTaskSequences = [];
 
         this.newTsBtn.onclick = ()=>{
             this.createTaskSequence();
@@ -15,7 +18,15 @@ class TaskSequencesManager {
     getTasksFromServer(callback){
         ajax.me.getFirstGenerationSubtasks(gAccessToken, this.rootTaskId, (xhr)=> {
             if(xhr.status == 200){
-                console.log('JSON.parse(xhr.response): ', JSON.parse(xhr.response));
+                callback(JSON.parse(xhr.response));
+            }else if(xhr.status == 403){
+                window.location.assign("/");
+            }
+        });
+    }
+    getSharedTasksFromServer(callback){
+        ajax.me.getTasksSharedWithUser(gAccessToken, (xhr)=> {
+            if(xhr.status == 200){
                 callback(JSON.parse(xhr.response));
             }else if(xhr.status == 403){
                 window.location.assign("/");
@@ -29,6 +40,15 @@ class TaskSequencesManager {
         for(let i = 0; i < this.taskSequences.length; i ++){
             this.taskSequences[i].createDomElement();
             this.taskSeqCtr.appendChild(this.taskSequences[i].dom);
+        }
+    }
+    displaySharedTaskSequences(){
+        /* When page is loaded, there is a request to get all root tasks
+        The response is an array which contains json objects representing the task sequences
+        Convert these json objs into "TaskSequence" objects */
+        for(let i = 0; i < this.sharedTaskSequences.length; i ++){
+            this.sharedTaskSequences[i].createDomElement();
+            this.sharedTaskSeqCtr.appendChild(this.sharedTaskSequences[i].dom);
         }
     }
     createTaskSequence(){
@@ -46,6 +66,12 @@ class TaskSequencesManager {
         for(let i = 0; i < pJsonArray.length; i ++){
             let jsonTask = pJsonArray[i];
             this.taskSequences.push(new TaskSequence(jsonTask));
+        }
+    }
+    constructSharedTaskSequences(pJsonArray){
+        for(let i = 0; i < pJsonArray.length; i ++){
+            let jsonTask = pJsonArray[i];
+            this.sharedTaskSequences.push(new TaskSequence(jsonTask));
         }
     }
 }
@@ -90,8 +116,13 @@ ajax.me.getRootTaskForUserifNotFoundCreateIt(gAccessToken, (xhr) => {
         taskSeqManager.getTasksFromServer((jsonArray)=>{
             taskSeqManager.constructTaskSequences(jsonArray);
             taskSeqManager.displayTaskSequences();
-            console.log(taskSeqManager.taskSequences);
+            console.log('Owned Task Sequences: ', taskSeqManager.taskSequences);
         });
+        taskSeqManager.getSharedTasksFromServer((sharedTasksJsonArray) => {
+            taskSeqManager.constructSharedTaskSequences(sharedTasksJsonArray);
+            taskSeqManager.displaySharedTaskSequences();
+            console.log('Shared Task Sequences: ', taskSeqManager.sharedTaskSequences);
+        })
     }else if (xhr.status == 403){
         window.location.assign("/");
     }else{

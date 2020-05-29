@@ -16,11 +16,13 @@ class Task {
         this.previousSibling = null;
         this.nextSibling = null;
         this.subtasks = {};
+        this.elements = {};
         
         // jsonTaskObject - Only used in constructor - DO NOT reference elsewhere
         this.jsonTaskObj = pJsonTaskObj;
 
-        this.title = 'New Task';
+
+        this.title = pJsonTaskObj.title;
     
         this.domTask;
 
@@ -41,6 +43,7 @@ class Task {
                 this.domTaskTitleCtr = CDE('div', [['class','task-title-ctr']]);
                     this.domTitleInput = CDE('input', [["class", 'task-title']]);
                         this.domTitleInput.value = this.title; 
+                        this.domTitleInput.onblur = () => {this.updateMyTitle()}
                     this.domTaskTitleCtr.appendChild(this.domTitleInput);
                 this.domDetailsCtr.appendChild(this.domTaskTitleCtr);
 
@@ -153,6 +156,29 @@ class Task {
                         }
                     this.domShareBtnCtr.appendChild(this.domShareBtn);
                 this.domDetailsCtr.appendChild(this.domShareBtnCtr);
+                
+                this.domSharedWithCtr = CDE('div', [['class', 'shared-with-ctr']]);
+                    this.domSharedWithLabel = CDE('span', [['class', 'shared-with-lbl']]);
+                        this.domSharedWithLabel.innerText = "Shared with:"
+                    this.domSharedWithCtr.appendChild(this.domSharedWithLabel);
+                    this.domListOfSharedUsers = CDE('ul', [['class','list-shared-users']]);
+                        this.getMySharedUsersAndDisplayThem();
+                    this.domSharedWithCtr.appendChild(this.domListOfSharedUsers);
+                    
+                this.domDetailsCtr.appendChild(this.domSharedWithCtr);
+
+                this.domDetailsCtr.appendChild(CDE('hr', [['class','separator']]));
+
+                this.domElementsCtr = CDE('div', [['class', 'elements-ctr']])
+                    
+                this.domDetailsCtr.appendChild(this.domElementsCtr)
+                
+                this.domAddElementBtnCtr = CDE('div', [['class', 'add-elem-btn-ctr']])
+                    this.domAddElementBtn = CDE('button', [['class', 'add-elem-btn']])
+                        this.domAddElementBtn.innerText = "Add Element"
+                        this.domAddElementBtn.onclick = () => {this.createElement(null)};
+                    this.domAddElementBtnCtr.appendChild(this.domAddElementBtn)
+                this.domDetailsCtr.appendChild(this.domAddElementBtnCtr)
 
             this.domTask.appendChild(this.domDetailsCtr);
 
@@ -245,6 +271,32 @@ class Task {
             alert("Unable to create subtask");
         }
     }
+    createElement(pNewNextSiblingId){
+        ajax.me.createNewElementForTask(gAccessToken, this.id, pNewNextSiblingId, (xhr)=> {
+            if(xhr.status == 200){
+                let newJsonElemObjAndChangesToImplement = JSON.parse(xhr.response);
+
+                let newJsonElem = newJsonElemObjAndChangesToImplement.new_element;
+                let changesToImplement = newJsonElemObjAndChangesToImplement.changes_to_implement;
+
+                let newElemObj = new Element(newJsonElem);
+                
+
+                //newElemObj.onTaskCreationRelationshipsUpdate(this);
+                
+                newElemObj.createDomElem();
+                this.domElementsCtr.appendChild(newElemObj.domElem)
+                
+                //this.addSubtaskToCorrectPlaceInDom(newElemObj); 
+
+                //this.implementChangesForSubtasks(changesToImplement);
+            }else if(xhr.status == 403){
+                window.location.assign("/");
+            } else{
+                console.log("status", xhr.status);
+            }
+        });
+    }
     implementChangesForSubtasks(pChangesToImplementObj){
         // When message coming from server contains a "changes_to_implement" section
         let changesToImplement = pChangesToImplementObj;
@@ -254,13 +306,13 @@ class Task {
             
             let taskToBeChanged = this.subtasks[taskToBeChangedId];
             if(typeof(taskToBeChanged) !== 'undefined'){
-                console.log("I am", this.id, "I found", taskToBeChanged.id,"in my subtasks");
+                //console.log("I am", this.id, "I found", taskToBeChanged.id,"in my subtasks");
 
                 let changePropertyObj = changesToImplement[taskToBeChangedId];
-                console.log(`[${this.id}]`,'changePropertyObj: ', changePropertyObj);
+                //console.log(`[${this.id}]`,'changePropertyObj: ', changePropertyObj);
 
                 let changePropertyObjKeysArray = Object.keys(changePropertyObj);
-                console.log(`[${this.id}]`,'changePropertyObjKeysArray: ', changePropertyObjKeysArray);
+                //console.log(`[${this.id}]`,'changePropertyObjKeysArray: ', changePropertyObjKeysArray);
 
                 for(let ii = 0; ii < changePropertyObjKeysArray.length; ii++){
                     let propertyNameKey = changePropertyObjKeysArray[ii];
@@ -285,6 +337,27 @@ class Task {
             }
         }
     }
+    getMySharedUsersAndDisplayThem(){
+        ajax.me.getAllUsersThatHaveExplicitPermissionsOnTask(gAccessToken,this.id, (xhr)=>{
+            if(xhr.status == 200){
+                let returnedJsonObj = JSON.parse(xhr.response);
+                let usersPermissionsObj = returnedJsonObj.users_and_permissions;
+                let usersPermissionsKeys = Object.keys(usersPermissionsObj);
+                for(let i = 0; i < usersPermissionsKeys.length; i++){
+                    let userId = usersPermissionsKeys[i];
+                    let permissionType = usersPermissionsObj[userId];
+
+                    if(permissionType != 'no_permission'){
+                        let newDomListItem = CDE('li', [['class', 'shared-user-li']])
+                        newDomListItem.innerText = `#${userId}: ${permissionType}`;
+                        this.domListOfSharedUsers.appendChild(newDomListItem);
+                    }   
+                }
+            }else{
+
+            }
+        })
+    }
     grantUserPermissionOverMe(pPermissionReceiverId, pTypeOfPermission){
         ajax.me.setTaskPermissionForUser(gAccessToken, this.id,pPermissionReceiverId , pTypeOfPermission, (xhr)=>{
             if(xhr.status == 200){
@@ -294,6 +367,19 @@ class Task {
             }
         }) 
     }
+    updateMyTitle(){
+        ajax.me.updateTaskTitle(gAccessToken, this.id, this.domTitleInput.value, (xhr)=>{
+            if(xhr.status==200){
+                
+            }else if (xhr.status == 403){
+                window.location.assign("/");
+            }  else {
+                alert('Could not update Task Title');
+                console.log(xhr.status)
+            }
+        })
+        
+    }
     addSubtaskToCorrectPlaceInDom(pTaskToAdd){
         let subtasksKeysArray = Object.keys(this.subtasks);
 
@@ -302,8 +388,6 @@ class Task {
             this.domTask.appendChild(this.domSubtaskContainer);
         }else{
             if(this.domSubtaskContainer == undefined){
-                
-                console.log("added subtask ctr");
                 this.domSubtaskContainer = CDE('div',[['class','subtask-ctr']]);
                 this.domTask.appendChild(this.domSubtaskContainer);
             }
@@ -383,7 +467,7 @@ class Task {
                 }
             }else if(xhr.status == 400){
                 // Display that not allowed to move task into one of its descendants
-                alert("You cannot move task into one of its descendants, or before itself");
+                alert(JSON.parse(xhr.response).error);
             }else{
                 console.log(xhr.status);
             }
@@ -427,7 +511,7 @@ class Task {
                 }
             }else if(xhr.status == 400){
                 // Display that not allowed to move task into one of its descendants
-                alert("You cannot move task into one of its descendants");
+                alert(JSON.parse(xhr.response).error);
             }else{
                 console.log(xhr.status);
             }
@@ -493,13 +577,13 @@ class RootTask extends Task {
 
 let rootTask;
 
-ajax.me.getTaskWithChildrenDeepAndParentAsJsonObj(gAccessToken,gRootTaskId, (xhr)=> {
+ajax.me.getTaskWithChildrenDeepWithPermissionsSharedWithUser(gAccessToken,gRootTaskId, (xhr)=> {
     if(xhr.status == 200){
         let jsonRes = JSON.parse(xhr.response);
         
         let rootTaskObj = jsonRes.task;
         let childrenArray = jsonRes.children_array;
-        let parentOfRootTaskJsonObj = jsonRes.parent_task;
+        // let parentOfRootTaskJsonObj = jsonRes.parent_task;
 
         let receivedTasksObj = {}; // filled with Task -type objects
         
@@ -513,6 +597,7 @@ ajax.me.getTaskWithChildrenDeepAndParentAsJsonObj(gAccessToken,gRootTaskId, (xhr
         }
 
         gRootTask = new RootTask(rootTaskObj);
+
         receivedTasksObj[gRootTask.id] = gRootTask;
 
         receivedTasksObjKeysArray = Object.keys(receivedTasksObj);
@@ -528,7 +613,7 @@ ajax.me.getTaskWithChildrenDeepAndParentAsJsonObj(gAccessToken,gRootTaskId, (xhr
         gRootTask.createDomTask();
         gRootTask.updateDomTask();
         container.appendChild(gRootTask.domTask);
-        gRootTask.parentTask = new Task(parentOfRootTaskJsonObj);
+        // gRootTask.parentTask = new Task(parentOfRootTaskJsonObj);
 
     } else {
         //console.log(xhr.status);

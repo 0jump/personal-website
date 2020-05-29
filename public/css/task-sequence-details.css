@@ -39,3 +39,8 @@
 .share-user-input{
     width:60px;
 }
+
+.list-shared-users{
+    margin:0;
+    font-size:15px;
+}

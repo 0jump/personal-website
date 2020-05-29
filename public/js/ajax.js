@@ -56,6 +56,17 @@ ajax.me.submitPromocode = (promocode, callback) => {
 
 
 // Task Services
+ajax.me.getAllUsersThatHaveExplicitPermissionsOnTask = (pAccessToken, pTaskId, callback) => {
+    let reqPayload = {
+        'task_id':pTaskId
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    
+    ajax.sendJsonPostRequest('tasks?func=getAllUsersThatHaveExplicitPermissionsOnTask', headersObj, reqPayload, callback);
+}
+
 ajax.me.setTaskPermissionForUser = (pAccessToken, pTaskId, pPermissionReceiverId, pTypeOfPermission, callback) => {
     let reqPayload = { 
         'task_id':pTaskId,
@@ -69,12 +80,50 @@ ajax.me.setTaskPermissionForUser = (pAccessToken, pTaskId, pPermissionReceiverId
     ajax.sendJsonPostRequest('tasks?func=setTaskPermissionForUser', headersObj, reqPayload, callback);
 }
 
-ajax.me.createNewRootTaskForUser = (pAccessToken, callback) => {
+ajax.me.getClosestAncestorExplicitPermission = (pAccessToken, pTaskId, callback) => {
+    let reqPayload = { 
+        'task_id':pTaskId
+    }
     let headersObj = {
         'access_token': pAccessToken
     }
-    ajax.sendJsonPostRequest('tasks?func=createNewRootTaskForUser', headersObj, {}, callback);
+
+    ajax.sendJsonPostRequest('tasks?func=getClosestAncestorExplicitPermission', headersObj, reqPayload, callback);
 }
+
+ajax.me.getTasksSharedWithUser = (pAccessToken, callback) => {
+    let reqPayload = { 
+        
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+
+    ajax.sendJsonPostRequest('tasks?func=getTasksSharedWithUser', headersObj, reqPayload, callback);
+}
+
+ajax.me.getTaskWithChildrenDeepWithPermissionsSharedWithUser = (pAccessToken, pTaskId, callback) => {
+    let reqPayload = { 
+        'task_id':pTaskId
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tasks?func=getTaskWithChildrenDeepWithPermissionsSharedWithUser', headersObj, reqPayload, callback);
+
+}
+
+/* ajax.me.setTaskPermissionForTaskAndChildrenDeep = (pAccessToken, pTaskId, pPermissionReceiverId, pTypeOfPermission, callback) => {
+    let reqPayload = { 
+        'task_id':pTaskId,
+        'permission_receiver_id': pPermissionReceiverId,
+        'permission_type': pTypeOfPermission
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tasks?func=setTaskPermissionForTaskAndChildrenDeep', headersObj, reqPayload, callback);
+}   */
 
 ajax.me.getTaskWithChildrenDeepAsArray = (pAccessToken, pTaskId, callback) => {
     let reqPayload = { 
@@ -259,6 +308,30 @@ ajax.me.deleteTtsAndTtsTasks = (pTtsId, pAccessToken, callback) => {
         'access_token': pAccessToken
     }
     ajax.sendJsonPostRequest('tts?func=deleteTtsAndTtsTasks',headersObj, reqPayload, callback);
+}
+
+ajax.me.updateTaskTitle = (pAccessToken, pTaskId, pNewTitle, callback) => {
+    let reqPayload = { 
+        'task_id':pTaskId,
+        'new_title': pNewTitle
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tasks?func=updateTaskTitle', headersObj, reqPayload, callback);
+}
+
+// Task Elements
+
+ajax.me.createNewElementForTask = (pAccessToken, pTaskId, pNewNextSiblingId, callback) => {
+    let reqPayload = { 
+        'task_id':pTaskId,
+        'previous_sibling_id':pNewNextSiblingId
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tasks?func=addNewElementForTask', headersObj, reqPayload, callback);
 }
 
 // Debugging emails
