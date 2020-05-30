@@ -82,7 +82,7 @@ Removes record of permission (given to a certain user on a certain task) from th
 
 ##### Returns (in callback)
 
-`bool isRecordRemoved` that is true if record is removed and false if not.
+`bool isRecordRemoved` that is true if record is succesfully removed and false if not.
 
 ### getExplicitTaskPermissionForTaskAndUser
 
@@ -99,6 +99,22 @@ Gets explicit permission of a specific task for a specific user.
 ##### Returns (in callback)
 
 `string permissionType` is the type of permission that that task has for that user.  It can be `null` if that task does not have an explicit permission for that user.
+
+### getTaskWithPermissions
+
+```javascript
+getTaskWithPermissions(pUserId, pTaskId, callback)
+```
+
+Gets the task object (as json object) with its permission type for a specific user.
+
+- `pUserId`: Id of the user who is the receiver of the permission
+- `pTaskId`: Id of the task that the permission is concerning
+- `callback`:
+
+##### Returns (in callback)
+
+`object taskAndPermissionObj` is an object that has all the attributes of a task (like it is stored in the database, `id`, `next_sibling_id`, `parent_id`, etc...) in addition to the attribute `permission_type` that holds the permission type of that task. This attribute will be `null` if the task has no explicit permission for the user.
 
 ### getClosestAncestorWithExplicitPermissionTaskObj
 
@@ -132,7 +148,21 @@ Gets only the permission of the closest ancestor that possesses an explicit perm
 
 `string permissionType` is the type of permission that that task has for that user.  It can be `null` if that task does not have an explicit permission for that user.
 
+### checkIfUserCanGivePermission
 
+```javascript
+checkIfUserCanGivePermission(pUserId, pTaskId, callback)
+```
+
+Checks if a certain user can give permission on a certain task. Looks at the closest ancestor that has an explicit permission to see if they have the permission to give permissions to other users.
+
+- `pUserId`: Id of the user who is being checked
+- `pTaskId`: Id of the task that the permission is concerning
+- `callback`:
+
+##### Returns (in callback)
+
+`bool canGivePermissions` that is true if user can give permission and is false if they cannot.
 
 
 
