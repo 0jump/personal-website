@@ -16,7 +16,35 @@ This is when a user can see and edit a task. They can change whatever they want 
 
 This is when a user can give permissions to other users. They can for example let a user see the task, but not edit it. They can also stop users that could see it from seeing it.
 
-**[Warning]** What should happen when a user tries to set the permission of someone that has the permission `can_give_permissions`?
+**[Warning]** What should happen when a user tries to set the permission of someone that has the permission `can_give_permissions`? (For now it is possible to set the permission of a user who also has `can_give_permissions` permission)
+
+## owner
+
+This is the highest level of permission, granted when a **User Root Task** is created. Which means every task descendant from that is owned by the user who owns the User Root Task by inheritance.
+
+# Explicit vs. Implicit Permission
+
+The **Task Tree** is a hierarchical structure, so descendants of a certain task have the same *or more* permissions. You cannot have a task with worse permission as a descendant of a task with a relatively better permission.
+
+**For example**: Task *A* has `can_edit` permission, while task *B* has `read_only` permission for a certain user. (`can_edit` > `read_only`)
+- A is a descendant of B: **Valid**
+- B is a descendant of A: **Invalid**
+
+## Explicit Permission
+
+An **"Explicit"** permission is a permission given explicitly by the user to a task. 
+
+#### Example
+
+User **A** wants to share a task with user **B**, **A** gives **B** an *explicit permission* on that task. Now **B** can view/edit (depending on the permission given) this task.
+
+## Implicit/Inherited Permission
+
+An **"Implicit"** or **"Inherited"** permission is the default state of most tasks (except the **User Root Task** that is usually given explicit `owner` permission on creation). This means that when a task is created inside another task, it automatically takes the permission of its **closest ancestor that has an explicit permission**.
+
+#### Example
+
+User **A** wants to share task **T** with user **B**. User **A** gives permission `can_edit` to user **B** on Task **T**. Now any of the two users can add new tasks to task **T**. Any new task created as a subtask of **T** has an **implicit/inherited** permission which is that of the **closest ancestor that has an explicit permission** which in this case is **T** with the permission `can_edit`. 
 
 # Storage in the Database
 
@@ -25,6 +53,14 @@ This is when a user can give permissions to other users. They can for example le
 | id               | user_id                                       | task_id                                         | permission_type       | creator_user_id                      | date_created                   |
 |------------------|-----------------------------------------------|-------------------------------------------------|-----------------------|--------------------------------------|--------------------------------|
 | id of the record | id of the user that the permission applies to | id of the task that this permission applies to  | permission type/level | id of user who gave this permission  | date this permission was given |
+
+### Explicit vs. Implicit Permissions
+
+An **explicit permission** is stored as a record in the database. When this explicit permission is to be removed, the record is erased from the table. 
+
+An **implicit permission** is not stored in the database. It is gathered from the **closest ancestor** that has in explicit permission.
+
+**Warning:** this is not the best way to this because there will be no storage of history of actions on permissions. This might be something to look into..
 
 ## Functions On Permissions In The Database
 
