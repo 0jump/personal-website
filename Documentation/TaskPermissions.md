@@ -27,6 +27,7 @@ This is the highest level of permission, granted when a **User Root Task** is cr
 The **Task Tree** is a hierarchical structure, so descendants of a certain task have the same *or more* permissions. You cannot have a task with worse permission as a descendant of a task with a relatively better permission.
 
 **For example**: Task *A* has `can_edit` permission, while task *B* has `read_only` permission for a certain user. (`can_edit` > `read_only`)
+
 - A is a descendant of B: **Valid**
 - B is a descendant of A: **Invalid**
 
@@ -44,7 +45,7 @@ An **"Implicit"** or **"Inherited"** permission is the default state of most tas
 
 #### Example
 
-User **A** wants to share task **T** with user **B**. User **A** gives permission `can_edit` to user **B** on Task **T**. Now any of the two users can add new tasks to task **T**. Any new task created as a subtask of **T** has an **implicit/inherited** permission which is that of the **closest ancestor that has an explicit permission** which in this case is **T** with the permission `can_edit`. 
+User **A** wants to share task **T** with user **B**. User **A** gives permission `can_edit` to user **B** on Task **T**. Now any of the two users can add new tasks to task **T**. Any new task created as a subtask of **T** has an **implicit/inherited** permission which is that of the **closest ancestor that has an explicit permission** which in this case is **T** with the permission `can_edit`.
 
 # Storage in the Database
 
@@ -84,6 +85,68 @@ Removes record of permission (given to a certain user on a certain task) from th
 
 `bool isRecordRemoved` that is true if record is succesfully removed and false if not.
 
+### updateOrAddIfNotExistsTaskPermissionForUserWithoutTouchingAnything
+
+```javascript
+updateOrAddIfNotExistsTaskPermissionForUserWithoutTouchingAnything(pTaskId, pPermissionGiverReceiverId, pNewTypeOfPermission, callback)
+```
+
+Makes sure that there is an explicit permission for a specific task and a specific user.
+Checks if there is an explicit permission for a specific task and a specific user. If that does exist, the permission is changed to the new permission. If not a new permission record is added.
+
+**Caution:** this function does not have a giver and a receiver, the giver **is** the receiver. Also, this function does not do **any** permission checks to see if the giver can give a permission. It is mainly in fringe situations where it is like the application is giving the permission. For example when a **User Root Task** is created (because that task is not a child of any task with permissions).
+
+- `pPermissionGiverReceiverId`: Id of the user who is the receiver and the giver of the permission
+- `pTaskId`: Id of the task that the permission is concerning
+- `pNewTypeOfPermission`: new permission to assign to task and user
+- `callback`:
+
+##### Returns (in callback)
+
+`bool isAddedOrUpdated` that is true if permission is succesfully added/changed and false if not.
+
+### updateOrAddIfNotExistsTaskPermissionWithoutCheckingIfPermGiverCanGivePerm
+
+```javascript
+updateOrAddIfNotExistsTaskPermissionForUser(pTaskId, pPermissionGiverId, pPermissionReceiverId, pNewTypeOfPermission, callback)
+```
+
+Makes sure that there is an explicit permission for a specific task and a specific user.
+Checks if there is an explicit permission for a specific task and a specific user. If that does exist, the permission is changed to the new permission. If not a new permission record is added.
+
+**Caution:** Permission checks **are not** performed to make sure the permission giver is allowed to give permissions on the task in question.
+
+- `pTaskId`: Id of the task that the permission is concerning
+- `pPermissionGiverId`: the user that is giving the permission
+- `pPermissionReceiverId`: Id of the user who is the receiver of the permission
+- `pNewTypeOfPermission`: new permission to assign to task and user
+- `callback`:
+
+##### Returns (in callback)
+
+`bool isAddedOrUpdated` that is true if permission is succesfully added/changed and false if not.
+
+### updateOrAddIfNotExistsTaskPermissionForUser
+
+```javascript
+updateOrAddIfNotExistsTaskPermissionForUser(pTaskId, pPermissionGiverId, pPermissionReceiverId, pNewTypeOfPermission, callback)
+```
+
+Makes sure that there is an explicit permission for a specific task and a specific user.
+Checks if there is an explicit permission for a specific task and a specific user. If that does exist, the permission is changed to the new permission. If not a new permission record is added.
+
+**Note:** Permission checks **are** performed to make sure the permission giver is allowed to give permissions on the task in question and to make sure the permission receiver can have the permission on that task changed (for example if they are not an `owner` of that task).
+
+- `pTaskId`: Id of the task that the permission is concerning
+- `pPermissionGiverId`: the user that is giving the permission
+- `pPermissionReceiverId`: Id of the user who is the receiver of the permission
+- `pNewTypeOfPermission`: new permission to assign to task and user
+- `callback`:
+
+##### Returns (in callback)
+
+`bool isAddedOrUpdated` that is true if permission is succesfully added/changed and false if not.
+
 ### getExplicitTaskPermissionForTaskAndUser
 
 ```javascript
@@ -93,6 +156,7 @@ getExplicitTaskPermissionForTaskAndUser(pTaskId, pUserId, callback)
 Gets explicit permission of a specific task for a specific user.
 
 - `pUserId`: Id of the user who is the receiver of the permission
+- `pPermissionReceiverId`: Id of the user who is the receiver of the permission
 - `pTaskId`: Id of the task that the permission is concerning
 - `callback`:
 
@@ -163,78 +227,3 @@ Checks if a certain user can give permission on a certain task. Looks at the clo
 ##### Returns (in callback)
 
 `bool canGivePermissions` that is true if user can give permission and is false if they cannot.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-------------------------------
-
-### setTaskPermissionForUser
-
-```javascript
-db.setTaskPermissionForUser(pTaskId, pPermissionGiverId, pPermissionReceiverId, pTypeOfPermission, callback);
-```
-
-The `pPermissionGiverId` grants any permission they want to the `pPermissionReceiverId` as long as they themselves have the permission (`can_give_permissions`) to grant permissions of said task (`pTaskId`).
-
-- `pTaskId`: Task that the permission change is concerning
-- `pPermissionGiverId`: the user that is giving the permission
-- `pPermissionReceiverId`: the user that the permission is concerning, they will be the one that will be able to read, write or give other people permissions
-- `pTypeOfPermission`: Permission type that the `pPermissionGiverId` wishes to grant to `pPermissionReceiverId` on the `pTaskId`
-- `callback`: callback function, taking as parameters:
-  - `err_type`: string
-  - `err_desc`: string
-  - `isPermissionGiven`: boolean
-
-### getLastPermissionForTaskAndUser
-
-```javascript
-db.getLastPermissionForTaskAndUser(pTaskId, pUserId, callback);
-```
-
-Get the permission type of `pUserId` concerning `pTaskId`. It gets the most recent record about said user and said task and returns it, because the last record represents the current permission.
-
-- `pTaskId`: Task to get the permission of
-- `pUserId`: User to check the permission of
-- `callback`: callback function, taking as parameters:
-  - `err_type`: string
-  - `err_desc`: string
-  - `isPermissionGiven`: boolean
-
-### giveOwnerCanGivePermissionsPermission
-
-```javascript
-db.giveOwnerCanGivePermissionsPermission(pUserId, pTaskId, callback);
-```
-
-Gives the creator of a certain task the permission `can_give_permissions`. Usually used to let the user use and be able to give other users permissions as they please.
-
-- `pTaskId`: Task to add the permission `can_give_permissions` to
-- `pUserId`: User who created the task
-- `callback`: callback function, taking as parameters:
-  - `err_type`: string
-  - `err_desc`: string
-  - `isPermissionGiven`: boolean
-
