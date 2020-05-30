@@ -54,7 +54,7 @@ User **A** wants to share task **T** with user **B**. User **A** gives permissio
 |------------------|-----------------------------------------------|-------------------------------------------------|-----------------------|--------------------------------------|--------------------------------|
 | id of the record | id of the user that the permission applies to | id of the task that this permission applies to  | permission type/level | id of user who gave this permission  | date this permission was given |
 
-### Explicit vs. Implicit Permissions
+## Explicit vs. Implicit Permissions
 
 An **explicit permission** is stored as a record in the database. When this explicit permission is to be removed, the record is erased from the table. 
 
@@ -67,6 +67,99 @@ An **implicit permission** is not stored in the database. It is gathered from th
 Functions found in the `dbservices.js` library that are responsible for everything related to getting and setting permissions.
 
 **Note:** records of permission setting are never deleted or updated. When a user's permission is going to be changed, a new record is created. The current permission of a user concerning a certain task is the most recent record created.
+
+### removePermissionRecord
+
+```javascript
+removePermissionRecord(pUserId, pTaskId, callback)
+```
+
+Removes record of permission (given to a certain user on a certain task) from the database.
+
+- `pPermissionReceiverId`: Id of the user who is the receiver of the permission
+- `pTaskId`: Id of the task that the permission is concerning
+- `callback`:
+
+##### Returns (in callback)
+
+`bool isRecordRemoved` that is true if record is removed and false if not.
+
+### getExplicitTaskPermissionForTaskAndUser
+
+```javascript
+getExplicitTaskPermissionForTaskAndUser(pTaskId, pUserId, callback)
+```
+
+Gets explicit permission of a specific task for a specific user.
+
+- `pUserId`: Id of the user who is the receiver of the permission
+- `pTaskId`: Id of the task that the permission is concerning
+- `callback`:
+
+##### Returns (in callback)
+
+`string permissionType` is the type of permission that that task has for that user.  It can be `null` if that task does not have an explicit permission for that user.
+
+### getClosestAncestorWithExplicitPermissionTaskObj
+
+```javascript
+getClosestAncestorWithExplicitPermissionTaskObj(pUserId, pTaskId, callback)
+```
+
+Gets the task object (as json object) of the closest ancestor that possesses an explicit permission for a specific task and a specific user. The closest ancestor is the task itself if it has an explicit permission for the user.
+
+- `pUserId`: Id of the user who is the receiver of the permission
+- `pTaskId`: Id of the task that the permission is concerning
+- `callback`:
+
+##### Returns (in callback)
+
+`object taskAndPermissionObj` is an object that has all the attributes of a task (like it is stored in the database, `id`, `next_sibling_id`, `parent_id`, etc...) in addition to the attribute `permission_type` that holds the permission type of that task. This function will return `null` if the task has no ancestors that have an explicit permission for the user.
+
+### getClosestAncestorExplicitPermission
+
+```javascript
+getClosestAncestorExplicitPermission(pUserId, pTaskId, callback)
+```
+
+Gets only the permission of the closest ancestor that possesses an explicit permission for a specific task and a specific user. The closest ancestor is the task itself if it has an explicit permission for the user.
+
+- `pUserId`: Id of the user who is the receiver of the permission
+- `pTaskId`: Id of the task that the permission is concerning
+- `callback`:
+
+##### Returns (in callback)
+
+`string permissionType` is the type of permission that that task has for that user.  It can be `null` if that task does not have an explicit permission for that user.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------
 
 ### setTaskPermissionForUser
 
