@@ -1,6 +1,8 @@
 const gAccessToken = window.localStorage.getItem('access_token');
 const gRootTaskId= helpers.getAllUrlParams().task_id;
 let gRootTask;
+let gCutElementId;
+
 let gCutTask = null; 
 
 let container = _("container");
@@ -131,6 +133,16 @@ class Task {
                     this.domPasteInMeAtTheEndBtnCtr.appendChild(this.domPasteInMeAtTheEndBtn);
                 this.domDetailsCtr.appendChild(this.domPasteInMeAtTheEndBtnCtr);
                 
+
+                this.domShowElementsBtnCtr = CDE('div', []);
+                this.domShowElementsBtn = CDE('button', []);
+                    this.domShowElementsBtn.innerText = "Show Elements";
+                    this.domShowElementsBtn.onclick = () => {
+                        console.log(this.elements);
+                    }
+                this.domShowElementsBtnCtr.appendChild(this.domShowElementsBtn);
+            this.domDetailsCtr.appendChild(this.domShowElementsBtnCtr);
+
                 this.domDetailsCtr.appendChild(CDE('hr', [['class','separator']]));
 
 
@@ -169,9 +181,7 @@ class Task {
 
                 this.domDetailsCtr.appendChild(CDE('hr', [['class','separator']]));
 
-                this.domElementsCtr = CDE('div', [['class', 'elements-ctr']])
-                    
-                this.domDetailsCtr.appendChild(this.domElementsCtr)
+                // Here goes the domElementsCtr
                 
                 this.domAddElementBtnCtr = CDE('div', [['class', 'add-elem-btn-ctr']])
                     this.domAddElementBtn = CDE('button', [['class', 'add-elem-btn']])
@@ -181,7 +191,15 @@ class Task {
                 this.domDetailsCtr.appendChild(this.domAddElementBtnCtr)
 
             this.domTask.appendChild(this.domDetailsCtr);
-
+        
+        let elementCount = Object.keys(this.elements).length;
+        if(elementCount > 0){
+            this.domElementsCtr = CDE('div', [['class', 'elements-ctr']])
+            this.domDetailsCtr.insertBefore(this.domElementsCtr, this.domAddElementBtnCtr);
+            
+            this.initialElementsDomDisplay();
+        }
+        
         let subtaskCount = Object.keys(this.subtasks).length;
         if(subtaskCount > 0){
             this.domSubtaskContainer = CDE('div',[['class','subtask-ctr']]);
@@ -198,6 +216,16 @@ class Task {
             subtask = subtask.nextSibling;
             subtask.createDomTask();
             this.domSubtaskContainer.appendChild(subtask.domTask);
+        }
+    }
+    initialElementsDomDisplay(){
+        let element = this.getFirstElement();
+        element.createDomElem();
+        this.domElementsCtr.appendChild(element.domElem);
+        while(element.nextSibling != null){
+            element = element.nextSibling;
+            element.createDomElem();
+            this.domElementsCtr.appendChild(element.domElem);
         }
     }
     initialRelationshipsUpdate(pInitializedTasksObj){
@@ -242,6 +270,7 @@ class Task {
             this.nextSibling = null;
         }
     }
+    
     createSubtask(pBeforeOrAfter, pRefSiblingId){
         if(pBeforeOrAfter == "before"){
             ajax.me.createNewTaskForUser(gAccessToken, this.id, pRefSiblingId, "before", (xhr)=> {
@@ -259,6 +288,8 @@ class Task {
                     this.addSubtaskToCorrectPlaceInDom(newTaskObj); 
 
                     this.implementChangesForSubtasks(changesToImplement);
+                } else if(xhr.status == 403){
+                    window.location.assign("/");
                 } else{
                     console.log("status", xhr.status);
                 }
@@ -282,14 +313,13 @@ class Task {
                 let newElemObj = new Element(newJsonElem);
                 
 
-                //newElemObj.onTaskCreationRelationshipsUpdate(this);
+                newElemObj.onElemCreationRelationshipsUpdate(this);
                 
                 newElemObj.createDomElem();
-                this.domElementsCtr.appendChild(newElemObj.domElem)
-                
-                //this.addSubtaskToCorrectPlaceInDom(newElemObj); 
 
-                //this.implementChangesForSubtasks(changesToImplement);
+                this.addElementToCorrectPlaceInDom(newElemObj); 
+
+                this.implementChangesForElements(changesToImplement);
             }else if(xhr.status == 403){
                 window.location.assign("/");
             } else{
@@ -330,6 +360,46 @@ class Task {
                             taskToBeChanged.previousSibling = null;
                         }else{
                             taskToBeChanged.previousSibling = this.subtasks[propertyNameValue];
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+    implementChangesForElements(pChangesToImplementObj){
+        // When message coming from server contains a "changes_to_implement" section
+        let changesToImplement = pChangesToImplementObj;
+        let changesToImplementKeysArr = Object.keys(changesToImplement);
+        for(let i = 0; i< changesToImplementKeysArr.length; i++){
+            let elemToBeChangedId = changesToImplementKeysArr[i];
+            
+            let elemToBeChanged = this.elements[elemToBeChangedId];
+            if(typeof(elemToBeChanged) !== 'undefined'){
+                //console.log("I am", this.id, "I found", elemToBeChanged.id,"in my elements");
+
+                let changePropertyObj = changesToImplement[elemToBeChangedId];
+                //console.log(`[${this.id}]`,'changePropertyObj: ', changePropertyObj);
+
+                let changePropertyObjKeysArray = Object.keys(changePropertyObj);
+                //console.log(`[${this.id}]`,'changePropertyObjKeysArray: ', changePropertyObjKeysArray);
+
+                for(let ii = 0; ii < changePropertyObjKeysArray.length; ii++){
+                    let propertyNameKey = changePropertyObjKeysArray[ii];
+                    let propertyNameValue = changePropertyObj[propertyNameKey];
+    
+                    if(propertyNameKey == "next_sibling_id"){
+                        if(typeof(this.elements[propertyNameValue]) == 'undefined'){
+                            elemToBeChanged.nextSibling = null;
+                        }else{
+                            elemToBeChanged.nextSibling = this.elements[propertyNameValue];
+                        }
+                    }
+                    if(propertyNameKey == "previous_sibling_id"){
+                        if(typeof(this.elements[propertyNameValue]) == 'undefined'){
+                            elemToBeChanged.previousSibling = null;
+                        }else{
+                            elemToBeChanged.previousSibling = this.elements[propertyNameValue];
                         }
                     }
                 }
@@ -404,6 +474,29 @@ class Task {
             }
         }
     }
+    addElementToCorrectPlaceInDom(pElemToAdd){
+        let elemKeysArray = Object.keys(this.elements);
+
+        if (elemKeysArray.length == 0){
+            this.domElementsCtr = CDE('div',[['class','elements-ctr']]);
+            this.domDetailsCtr.insertBefore(this.domElementsCtr, this.domAddElementBtnCtr);
+        }else{
+            if(this.domElementsCtr == undefined){
+                this.domElementsCtr = CDE('div',[['class','elements-ctr']]);
+                this.domDetailsCtr.insertBefore(this.domElementsCtr, this.domAddElementBtnCtr);
+            }
+        }
+        if(pElemToAdd.previousSibling != null){
+            pElemToAdd.previousSibling.domElem.after(pElemToAdd.domElem);
+        }else{
+            if(pElemToAdd.nextSibling != null){
+                pElemToAdd.nextSibling.domElem.before(pElemToAdd.domElem);
+            }else{
+                // If no next and no prev sibling
+                this.domElementsCtr.appendChild(pElemToAdd.domElem);
+            }
+        }
+    }
     deleteSubtask(pSubtaskToDel){
         ajax.me.deleteTask(gAccessToken, pSubtaskToDel.id, (xhr)=> {
             if(xhr.status == 200){
@@ -423,6 +516,32 @@ class Task {
                     delete this.domSubtaskContainer;
                 }
                 
+            }else{
+                console.log(xhr.status);
+            }
+        });
+    }
+    deleteElement(pElemToDelete){
+        ajax.me.deleteElement(gAccessToken, pElemToDelete.id, (xhr) => {
+            if(xhr.status == 200 ){
+                let jsonResponse = JSON.parse(xhr.response);
+                console.log('jsonResponse: ', jsonResponse);
+
+                let changesToImplementObj = jsonResponse.changes_to_implement;
+                let elemToDeleteId = jsonResponse.delete_element;
+
+                this.domElementsCtr.removeChild(this.elements[elemToDeleteId].domElem);
+                delete this.elements[elemToDeleteId];
+
+                // Check if there are no more subtasks to remove subtaskscontainer from dom
+                let elementsKeysArray = Object.keys(this.elements);
+                this.implementChangesForElements(changesToImplementObj);
+                if (elementsKeysArray.length == 0){
+                    this.domElementsCtr.parentNode.removeChild(this.domElementsCtr);
+                    delete this.domElementsCtr;
+                }
+            }else if(xhr.status == 403){
+                window.location.assign("/");
             }else{
                 console.log(xhr.status);
             }
@@ -517,6 +636,59 @@ class Task {
             }
         })
     }
+    pasteElementBefore(pNewNextSiblingId, pNewParentId,pElementToMoveId = gCutElementId){
+        let cutElementId = pElementToMoveId;
+        
+        ajax.me.moveElementBefore(gAccessToken, pElementToMoveId, pNewNextSiblingId, pNewParentId, (xhr) => {
+            if(xhr.status ==200){
+                let changesToImplementAndOldAndNewTaskIds = JSON.parse(xhr.response);
+                let changesToImplementObj = changesToImplementAndOldAndNewTaskIds.changes_to_implement;
+
+                let newTaskId = changesToImplementAndOldAndNewTaskIds.new_task_id;
+                let oldTaskId = changesToImplementAndOldAndNewTaskIds.old_task_id;
+
+                let oldTask = gRootTask.getSubtaskByIdDeep(oldTaskId);
+                let newTask = gRootTask.getSubtaskByIdDeep(newTaskId);
+
+                let elementToBeMoved = oldTask.getElementById(cutElementId);
+                console.log('elementToBeMoved: ', elementToBeMoved);
+
+                if(oldTask != newTask){
+                    elementToBeMoved.task = newTask;
+                    delete oldTask.elements[elementToBeMoved.id];
+                    newTask.elements[elementToBeMoved.id] = elementToBeMoved;
+
+                    oldTask.implementChangesForElements(changesToImplementObj);
+                }
+                newTask.implementChangesForElements(changesToImplementObj);
+
+                newTask.addElementToCorrectPlaceInDom(elementToBeMoved);
+
+                // Check if there are no more elements in old task to remove elementsContainer from dom
+                let elementsKeysArray = Object.keys(oldTask.elements);
+                if (elementsKeysArray.length == 0) {
+                    oldTask.domElementsCtr.parentNode.removeChild(oldTask.domElementsCtr);
+                    delete oldTask.domElementsCtr;
+                }
+            }else if(xhr.status == 403){
+                window.location.assign("/");
+            } else{
+                console.log("status", xhr.status);
+            }
+        })
+    }
+    getElementById(pId){
+        let elementKeys = Object.keys(this.elements)
+        for(let i = 0; i < elementKeys.length; i++){
+            let lResult = this.elements[elementKeys[i]];
+            if (lResult != null){
+                if(lResult.id  == pId){
+                    return lResult;
+                }
+            }
+        }   
+        return null;
+    }
     getSubtaskByIdDeep(pId){
         if(this.id == pId){
             return this
@@ -541,6 +713,16 @@ class Task {
             let subtask = this.subtasks[subtasksKeys[i]];
             if(subtask.previousSibling == null){
                 return subtask;
+            }
+        }
+    }
+    getFirstElement(){
+        // returns element with previous_subtask == null
+        let elementKeys = Object.keys(this.elements)
+        for (let i=0; i < elementKeys.length; i++){
+            let element = this.elements[elementKeys[i]];
+            if(element.previousSibling == null){
+                return element;
             }
         }
     }
@@ -577,7 +759,7 @@ class RootTask extends Task {
 
 let rootTask;
 
-ajax.me.getTaskWithChildrenDeepWithPermissionsSharedWithUser(gAccessToken,gRootTaskId, (xhr)=> {
+ajax.me.getTaskWithChildrenDeepWithPermissionsSharedWithUserAndElements(gAccessToken,gRootTaskId, (xhr)=> {
     if(xhr.status == 200){
         let jsonRes = JSON.parse(xhr.response);
         
@@ -601,19 +783,44 @@ ajax.me.getTaskWithChildrenDeepWithPermissionsSharedWithUser(gAccessToken,gRootT
         receivedTasksObj[gRootTask.id] = gRootTask;
 
         receivedTasksObjKeysArray = Object.keys(receivedTasksObj);
-        //console.log('receivedTasksObj: ', receivedTasksObj);
+        
         for(let ii = 0; ii < receivedTasksObjKeysArray.length; ii++){
             let taskObj = receivedTasksObj[receivedTasksObjKeysArray[ii]];
 
             taskObj.initialRelationshipsUpdate(receivedTasksObj);
         }
 
-        //console.log('receivedTasksObj: ', receivedTasksObj);
+        /*--------------------- 
+                ELEMENTS
+        ---------------------*/
+
+        let elementsArray = jsonRes.elements_array;
+        let receivedElementsObj = {};
+
+        // Transform elements (JSON) to instances of class Element
+        for(let ii = 0; ii < elementsArray.length; ii++){
+            let jsonElemObj = elementsArray[ii];
+            
+            // Convert To Class "Element"
+            let newElemObj = new Element(jsonElemObj);
+            receivedElementsObj[newElemObj.id] = newElemObj;
+        }
+
+        receivedElementsObjKeysArray = Object.keys(receivedElementsObj);
+
+        for(let ii = 0; ii < receivedElementsObjKeysArray.length; ii++){
+            let elemObj = receivedElementsObj[receivedElementsObjKeysArray[ii]];
+
+            elemObj.initialRelationshipsUpdate(receivedElementsObj, receivedTasksObj);
+
+        }
+        /*--------------------- 
+                ROOT TASK
+        ---------------------*/
 
         gRootTask.createDomTask();
         gRootTask.updateDomTask();
         container.appendChild(gRootTask.domTask);
-        // gRootTask.parentTask = new Task(parentOfRootTaskJsonObj);
 
     } else {
         //console.log(xhr.status);

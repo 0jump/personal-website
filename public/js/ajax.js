@@ -110,8 +110,19 @@ ajax.me.getTaskWithChildrenDeepWithPermissionsSharedWithUser = (pAccessToken, pT
         'access_token': pAccessToken
     }
     ajax.sendJsonPostRequest('tasks?func=getTaskWithChildrenDeepWithPermissionsSharedWithUser', headersObj, reqPayload, callback);
-
 }
+
+ajax.me.getTaskWithChildrenDeepWithPermissionsSharedWithUserAndElements = (pAccessToken, pTaskId, callback) => {
+    let reqPayload = { 
+        'task_id':pTaskId
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tasks?func=getTaskWithChildrenDeepWithPermissionsSharedWithUserAndElements', headersObj, reqPayload, callback);
+}
+
+
 
 /* ajax.me.setTaskPermissionForTaskAndChildrenDeep = (pAccessToken, pTaskId, pPermissionReceiverId, pTypeOfPermission, callback) => {
     let reqPayload = { 
@@ -334,6 +345,28 @@ ajax.me.createNewElementForTask = (pAccessToken, pTaskId, pNewNextSiblingId, cal
     ajax.sendJsonPostRequest('tasks?func=addNewElementForTask', headersObj, reqPayload, callback);
 }
 
+ajax.me.deleteElement = (pAccessToken, pElementId, callback) => {
+    let reqPayload = { 
+        'element_id':pElementId
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tasks?func=deleteElement', headersObj, reqPayload, callback);
+}
+
+ajax.me.moveElementBefore = (pAccessToken, pElementId, pNewNextSiblingId, pNewTaskId, callback) => {
+    let reqPayload = { 
+        'element_id':pElementId,
+        'next_sibling_id': pNewNextSiblingId,
+        'task_id': pNewTaskId
+    }
+    let headersObj = {
+        'access_token': pAccessToken
+    }
+    ajax.sendJsonPostRequest('tasks?func=moveElementBefore', headersObj, reqPayload, callback);
+}
+
 // Debugging emails
 ajax.me.sendDebugEmail = (pEmailSubject, pEmailBody, callback) => {
     let reqPayload = { 
@@ -342,6 +375,7 @@ ajax.me.sendDebugEmail = (pEmailSubject, pEmailBody, callback) => {
     }
     ajax.sendJsonPostRequest('send-debug-email', {}, reqPayload, callback);
 }
+
 
 
 /* 
